@@ -5,6 +5,7 @@ machine_type = 'i686-m64'
 
 module_dict = {
     'vocab' : 'srilm/vocab.pyx',
+    'ngram' : 'srilm/ngram.pyx',
     }
 
 modules = []
@@ -15,12 +16,16 @@ for n, s in module_dict.iteritems():
         language = 'c++',
         define_macros = [('HAVE_ZOPEN','1')],
         include_dirs = ['../include'],
-        library_dirs = ['../lib/%s' % machine_type],
+        libraries = ['lbfgs'],
+        library_dirs = ['../lib/%s' % machine_type, '/lm/scratch/yi_su/local/lib'],
+        extra_compile_args = ['-fopenmp'],
+        extra_link_args = ['-fopenmp'],
         extra_objects = ['../lib/%s/liboolm.a' % machine_type, 
                          '../lib/%s/libdstruct.a' % machine_type,
                          '../lib/%s/libmisc.a' % machine_type,
-                         '../lib/%s/libz.a' % machine_type],
+                         '../lib/%s/libz.a' % machine_type]
         ))
+
 
 setup(
     name = 'srilm',

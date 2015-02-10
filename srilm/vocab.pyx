@@ -1,9 +1,6 @@
 from cython.operator cimport dereference as deref
 
 cdef class vocab:
-    cdef Vocab *thisptr
-    cdef VocabIter *iterptr
-
     vocab_none = Vocab_None
 
     def __cinit__(self, VocabIndex start = 0, VocabIndex end = Vocab_None-1):
