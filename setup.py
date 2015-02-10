@@ -1,6 +1,28 @@
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
 
+machine_type = 'i686-m64'
+
+module_dict = {
+    'vocab' : 'srilm/vocab.pyx',
+    'file' : 'srilm/file.pyx'
+    }
+
+modules = []
+for n, s in module_dict.iteritems():
+    modules.append(Extension(
+        name = n,
+        sources = [s],
+        language = 'c++',
+        define_macros = [('HAVE_ZOPEN','1')],
+        include_dirs = ['../include'],
+        library_dirs = ['../lib/%s' % machine_type],
+        extra_objects = ['../lib/%s/liboolm.a' % machine_type, 
+                         '../lib/%s/libdstruct.a' % machine_type,
+                         '../lib/%s/libmisc.a' % machine_type,
+                         '../lib/%s/libz.a' % machine_type],
+        ))
+
 setup(
     name = 'srilm',
     version = '0.1',
@@ -9,16 +31,5 @@ setup(
     author_email = 'nuance1979@hotmail.com',
     packages = ['srilm'],
     ext_package = 'srilm',
-    ext_modules = cythonize(Extension(
-            name = 'vocab',
-            sources = ['srilm/vocab.pyx'],
-            language = 'c++',
-            define_macros = [('HAVE_ZOPEN','1')],
-            include_dirs = ['../include'],
-            library_dirs = ['../lib/macosx'],
-            extra_objects = ["../lib/macosx/liboolm.a", 
-                             "../lib/macosx/libdstruct.a",
-                             "../lib/macosx/libmisc.a",
-                             "../lib/macosx/libz.a"],
-            )))
-
+    ext_modules = cythonize(modules)
+)
