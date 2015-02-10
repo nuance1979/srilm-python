@@ -4,7 +4,9 @@ cdef class vocab:
     cdef Vocab *thisptr
     cdef VocabIter *iterptr
 
-    def __cinit__(self, VocabIndex start = 0 , VocabIndex end = Vocab_None-1):
+    vocab_none = Vocab_None
+
+    def __cinit__(self, VocabIndex start = 0, VocabIndex end = Vocab_None-1):
         self.thisptr = new Vocab(start, end)
 
     def __dealloc__(self):
@@ -48,7 +50,7 @@ cdef class vocab:
     def __iter__(self):
         self.iterptr = new VocabIter(deref(self.thisptr))
         return self
-    
+
     def __next__(self):
         cdef VocabString s = self.iterptr.next()
         if s == NULL:
