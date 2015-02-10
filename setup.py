@@ -5,7 +5,6 @@ machine_type = 'i686-m64'
 
 module_dict = {
     'vocab' : 'srilm/vocab.pyx',
-    'file' : 'srilm/file.pyx'
     }
 
 modules = []

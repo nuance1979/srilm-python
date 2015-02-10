@@ -34,18 +34,22 @@ cdef class vocab:
         return self.thisptr.highIndex()
 
     def read(self, fname):
-        cdef VocabIndex s
-        with open(fname) as f:
-            s = 0
-            for word in f:
-                self.thisptr.addWord(word.strip())
-                s += 1
-        return s
-    
+        cdef File *fptr
+        cdef unsigned int i
+        if not isinstance(fname, bytes):
+            raise TypeError('Expect string')
+        fptr = new File(<const char*>fname, 'r', 1)
+        i = self.thisptr.read(deref(fptr))
+        del fptr
+        return i
+
     def write(self, fname):
-        with open(fname, 'w') as fout:
-            for word in self:
-                fout.write(word+'\n')
+        cdef File *fptr
+        if not isinstance(fname, bytes):
+            raise TypeError('Expect string')
+        fptr = new File(<const char*>fname, 'w', 1)
+        self.thisptr.write(deref(fptr))
+        del fptr
 
     def __iter__(self):
         self.iterptr = new VocabIter(deref(self.thisptr))

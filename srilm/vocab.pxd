@@ -1,3 +1,5 @@
+from srilm_file cimport File
+
 cdef extern from "Vocab.h":
     ctypedef unsigned int VocabIndex
     ctypedef const char* VocabString
@@ -9,6 +11,8 @@ cdef extern from "Vocab.h":
         VocabIndex getIndex(VocabString token)
         void remove(VocabString token)
         void remove(VocabIndex index)
+        unsigned int read(File &file)
+        void write(File &file)
         unsigned int numWords()
         VocabIndex highIndex()
 
