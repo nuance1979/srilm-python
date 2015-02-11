@@ -1,3 +1,2 @@
-import vocab
-import ngram
-
+from srilm import vocab
+from srilm import ngram
