@@ -1,0 +1,7 @@
+o Debug ngram.stats iterator
+o Add estimate() to ngram.lm
+o Add maxent.lm module
+o Add more tests
+o Add a Doxygen setup with doxy.py
+o Improve Makefile to run tests with 'make test'
+o Add docstring docs
