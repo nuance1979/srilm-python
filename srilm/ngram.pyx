@@ -1,3 +1,6 @@
+import Cython.Compiler.Options
+Cython.Compiler.Options.annotate = True
+
 from cython.operator cimport dereference as deref
 from vocab cimport vocab
 from cpython cimport array
