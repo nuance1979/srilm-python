@@ -1,4 +1,4 @@
 cdef extern from "Prob.h":
-    ctypedef LogP
-    ctypedef LogP2
-    ctypedef Prob
+    ctypedef float LogP
+    ctypedef double LogP2
+    ctypedef double Prob

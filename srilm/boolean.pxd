@@ -1,2 +1,4 @@
+from libcpp cimport bool
+
 cdef extern from "Boolean.h":
-    ctypedef Boolean
+    ctypedef bool Boolean
