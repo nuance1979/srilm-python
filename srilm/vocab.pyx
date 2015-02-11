@@ -1,7 +1,8 @@
 from cython.operator cimport dereference as deref
 
+vocab_none = Vocab_None
+
 cdef class vocab:
-    vocab_none = Vocab_None
 
     def __cinit__(self, VocabIndex start = 0, VocabIndex end = Vocab_None-1):
         self.thisptr = new Vocab(start, end)
