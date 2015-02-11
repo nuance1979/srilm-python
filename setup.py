@@ -1,7 +1,17 @@
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
+import subprocess
 
-machine_type = 'i686-m64'
+machine_type = subprocess.check_output(["/bin/bash", "../sbin/machine-type"]).strip()
+
+if machine_type == 'i686-m64':
+    compile_args = ['-fopenmp']
+    link_args = ['-fopenmp']
+    lib_dirs = ['/lm/scratch/yi_su/local/lib']
+elif machine_type == 'macosx':
+    compile_args = None
+    link_args = None
+    lib_dirs = ['/opt/local/lib']
 
 module_dict = {
     'vocab' : 'srilm/vocab.pyx',
@@ -17,9 +27,9 @@ for n, s in module_dict.iteritems():
         define_macros = [('HAVE_ZOPEN','1')],
         include_dirs = ['../include'],
         libraries = ['lbfgs'],
-        library_dirs = ['../lib/%s' % machine_type, '/lm/scratch/yi_su/local/lib'],
-        extra_compile_args = ['-fopenmp'],
-        extra_link_args = ['-fopenmp'],
+        library_dirs = ['../lib/%s' % machine_type] + lib_dirs,
+        extra_compile_args = compile_args,
+        extra_link_args = link_args,
         extra_objects = ['../lib/%s/liboolm.a' % machine_type, 
                          '../lib/%s/libdstruct.a' % machine_type,
                          '../lib/%s/libmisc.a' % machine_type,
