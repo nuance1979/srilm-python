@@ -1,4 +1,4 @@
-from srilm_file cimport File
+from common cimport File
 
 cdef extern from "Vocab.h":
     ctypedef unsigned int VocabIndex
