@@ -11,3 +11,14 @@ cdef extern from "Ngram.h":
         LogP wordProb(VocabIndex word, const VocabIndex *context)
         Boolean read(File &file, Boolean limitVocab)
         Boolean write(File &file)
+
+cdef class ngram:
+    cdef Ngram *thisptr
+
+cdef extern from "NgramStats.h":
+    cdef cppclass NgramStats:
+        NgramStats(Vocab &vocab, unsigned int order)
+        unsigned getorder()
+
+cdef class stats:
+    cdef NgramStats *thisptr

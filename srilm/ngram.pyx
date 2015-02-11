@@ -4,7 +4,6 @@ from cpython cimport array
 from array import array
 
 cdef class ngram:
-    cdef Ngram *thisptr
 
     def __cinit__(self, vocab v, unsigned order = defaultNgramOrder):
         self.thisptr = new Ngram(deref(<Vocab *>(v.thisptr)), order)
@@ -47,3 +46,15 @@ cdef class ngram:
         ok = self.thisptr.write(deref(fptr))
         del fptr
         return ok
+
+cdef class stats:
+
+    def __cinit__(self, vocab v, unsigned int order):
+        self.thisptr = new NgramStats(deref(<Vocab *>(v.thisptr)), order)
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    @property
+    def order(self):
+        return self.thisptr.getorder()
