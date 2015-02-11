@@ -20,6 +20,7 @@ cdef extern from "Vocab.h":
         VocabIter(Vocab &vocab)
         void init()
         VocabString next()
+        VocabString next(VocabIndex &index)
 
 cdef class vocab:
     cdef Vocab *thisptr

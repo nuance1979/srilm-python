@@ -53,12 +53,13 @@ cdef class vocab:
         return self
 
     def __next__(self):
-        cdef VocabString s = self.iterptr.next()
+        cdef VocabIndex index
+        cdef VocabString s = self.iterptr.next(index)
         if s == NULL:
             del self.iterptr
             raise StopIteration
         else:
-            return <bytes>s
+            return (<bytes>s, index)
 
     def __contains__(self, token):
         return self.thisptr.getIndex(<VocabString>token) != Vocab_None
