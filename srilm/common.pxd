@@ -1,4 +1,5 @@
 from libcpp cimport bool
+from array import array
 
 cdef extern from "Boolean.h":
     ctypedef bool Boolean
@@ -15,3 +16,9 @@ cdef extern from "File.h":
 cdef extern from "TextStats.h":
     cdef cppclass TextStats:
         TextStats()
+
+cdef extern from "Discount.h":
+    cdef cppclass Discount:
+        Discount()
+
+
