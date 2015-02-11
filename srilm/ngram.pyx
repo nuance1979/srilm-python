@@ -50,7 +50,7 @@ cdef class lm:
             raise MemoryError
 
     def wordProb(self, VocabIndex word, context):
-        if context is None:
+        if not context:
             return self.thisptr.wordProb(word, NULL)
         elif _iswords(context):
             _tocstring(self.order, self.keysptr, context)
@@ -98,7 +98,7 @@ cdef class stats:
 
     def findCount(self, words):
         cdef NgramCount *p
-        if words is None:
+        if not words:
             p = self.thisptr.findCount(NULL)
             return 0 if p == NULL else deref(p)
         elif _iswords(words):
@@ -110,7 +110,7 @@ cdef class stats:
 
     def insertCount(self, words, count = 1):
         cdef NgramCount *p
-        if words is None:
+        if not words:
             p = self.thisptr.insertCount(NULL)
             p[0] += count
         elif _iswords(words):
@@ -123,7 +123,7 @@ cdef class stats:
     def removeCount(self, words):
         cdef NgramCount count
         cdef Boolean b
-        if words is None:
+        if not words:
             b = self.thisptr.removeCount(NULL, &count)
             return count if b else 0
         elif _iswords(words):
