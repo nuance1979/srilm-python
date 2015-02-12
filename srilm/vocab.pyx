@@ -22,8 +22,9 @@ cdef class vocab:
     def read(self, const char *fname):
         cdef File *fptr
         fptr = new File(<const char*>fname, 'r', 1)
-        self.thisptr.read(deref(fptr))
+        cdef bint ok = self.thisptr.read(deref(fptr))
         del fptr
+        return ok
 
     def write(self, const char *fname):
         cdef File *fptr
