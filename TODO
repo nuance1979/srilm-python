@@ -1,7 +1,7 @@
-o Debug ngram.stats iterator
+x Debug ngram.stats iterator [Use Vocab_None as end-of-seq symbol!!!]
 o Add estimate() to ngram.lm
 o Add maxent.lm module
-o Add more tests
+- Add more tests; need class TestNgramLM
 o Add a Doxygen setup with doxy.py
 o Improve Makefile to run tests with 'make test'
 o Add docstring docs
