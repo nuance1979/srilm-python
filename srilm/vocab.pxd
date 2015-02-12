@@ -14,7 +14,7 @@ cdef extern from "Vocab.h":
         unsigned int read(File &file)
         void write(File &file)
         unsigned int numWords()
-        VocabIndex highIndex()
+        VocabIndex &unkIndex()
 
     cdef cppclass VocabIter:
         VocabIter(Vocab &vocab)

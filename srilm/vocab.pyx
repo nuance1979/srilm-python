@@ -1,4 +1,6 @@
 from cython.operator cimport dereference as deref
+from cpython cimport array
+from array import array
 
 VOCAB_NONE = Vocab_None
 
@@ -9,6 +11,10 @@ cdef class vocab:
 
     def __dealloc__(self):
         del self.thisptr
+
+    property unk:
+        def __get__(self):
+            return self.thisptr.unkIndex()
 
     def add(self, VocabString token):
         return self.thisptr.addWord(token)
@@ -31,6 +37,29 @@ cdef class vocab:
         fptr = new File(<const char*>fname, 'w', 1)
         self.thisptr.write(deref(fptr))
         del fptr
+
+    def index(self, words, bint bUseUnk = True):
+        cdef array.array res = array('I', [])
+        cdef VocabIndex index
+        for w in words:
+            index = self.thisptr.getIndex(<VocabString>w)
+            if index == Vocab_None:
+                if bUseUnk:
+                    index = self.thisptr.unkIndex()
+                else:
+                    raise IndexError('Out of vocabulary word')
+            res.append(index)
+        return res
+
+    def string(self, index):
+        cdef VocabString word
+        res = []
+        for i in index:
+            word = self.thisptr.getWord(<VocabIndex>i)
+            if word == NULL:
+                raise IndexError('Out of vocabulary index')
+            res.append(word)
+        return res
 
     def __iter__(self):
         self.iterptr = new VocabIter(deref(self.thisptr))

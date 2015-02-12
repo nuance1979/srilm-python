@@ -1,5 +1,6 @@
 import unittest
 import srilm
+import array
 
 class TestVocab(unittest.TestCase):
 
@@ -33,6 +34,22 @@ class TestVocab(unittest.TestCase):
         for w, i in self.vocab:
             self.assertEqual(self.vocab[w], i)
             self.assertEqual(self.vocab[i], w)
+
+    def test_index(self):
+        a = ['<unk>', '<unk>', '<unk>']
+        b = array.array('I', [0,0,0])
+        self.assertEqual(self.vocab.index(a), b)
+        a = ['xixi', 'haha']
+        b = array.array('I', [self.vocab.unk, self.vocab.unk])
+        self.assertEqual(self.vocab.index(a), b)
+        self.assertRaises(IndexError, self.vocab.index, a, False)
+
+    def test_string(self):
+        a = ['<unk>', '<unk>', '<unk>']
+        b = array.array('I', [0,0,0])
+        self.assertEqual(self.vocab.string(b), a)
+        b = [1,3,100]
+        self.assertRaises(IndexError, self.vocab.string, b)
 
     def tearDown(self):
         del self.vocab
