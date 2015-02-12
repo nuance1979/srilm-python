@@ -35,17 +35,16 @@ cdef class lm:
         PyMem_Free(self.keysptr)
         del self.thisptr
 
-    @property
-    def order(self):
-        return self.thisptr.setorder(0)
+    property order:
+        def __get__(self):
+            return self.thisptr.setorder(0)
 
-    @order.setter
-    def order(self, unsigned neworder):
-        cdef VocabIndex *p = <VocabIndex *>PyMem_Realloc(self.keysptr, (neworder+1) * sizeof(VocabIndex))
-        if p == NULL:
-            raise MemoryError
-        self.keysptr = p
-        self.thisptr.setorder(neworder)
+        def __set__(self, unsigned neworder):
+            cdef VocabIndex *p = <VocabIndex *>PyMem_Realloc(self.keysptr, (neworder+1) * sizeof(VocabIndex))
+            if p == NULL:
+                raise MemoryError
+            self.keysptr = p
+            self.thisptr.setorder(neworder)
 
     def prob(self, VocabIndex word, context):
         """Return log probability of p(word | context)"""

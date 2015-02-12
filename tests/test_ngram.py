@@ -36,7 +36,36 @@ class TestNgramStats(unittest.TestCase):
 
     def tearDown(self):
         del self.stats
+        del self.vocab
+
+class TestNgramLM(unittest.TestCase):
+    
+    def setUp(self):
+        self.vocab = srilm.vocab.vocab()
+        self.lm = srilm.ngram.lm(self.vocab, 3)
+
+    def test_order(self):
+        self.lm.order = 4
+        self.assertEqual(self.lm.order, 4)
+
+    def test_prob(self):
+        pass
+
+    def test_train(self):
+        pass
+
+    def test_eval(self):
+        pass
+
+    def test_read_write(self):
+        pass
+
+    def tearDown(self):
+        del self.lm
+        del self.vocab
+
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
+    suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2]))
