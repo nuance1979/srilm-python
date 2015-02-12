@@ -56,6 +56,9 @@ class TestNgramLM(unittest.TestCase):
         self.assertEqual(self.lm.order, 3)
         self.lm.order = 4
         self.assertEqual(self.lm.order, 4)
+        with self.assertRaises(OverflowError) as cm:
+            self.lm.order = -1
+        self.assertEqual(type(cm.exception), OverflowError)
 
     def test_prob(self):
         pass

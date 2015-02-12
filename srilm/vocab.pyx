@@ -1,6 +1,6 @@
 from cython.operator cimport dereference as deref
 
-vocab_none = Vocab_None
+VOCAB_NONE = Vocab_None
 
 cdef class vocab:
 
@@ -37,7 +37,7 @@ cdef class vocab:
         return self
 
     def __next__(self):
-        cdef VocabIndex index
+        cdef VocabIndex index = 0
         cdef VocabString s = self.iterptr.next(index)
         if s == NULL:
             del self.iterptr

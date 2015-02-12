@@ -6,6 +6,9 @@ class TestVocab(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.vocab()
 
+    def test_const(self):
+        self.assertGreater(srilm.vocab.VOCAB_NONE, 0)
+
     def test_in(self):
         self.assertIn('<unk>', self.vocab)
 

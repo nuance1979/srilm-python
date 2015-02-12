@@ -1,5 +1,5 @@
 all:
-	python setup.py build
+	python2.7 setup.py build
 
 clean:
-	python setup.py clean
+	python2.7 setup.py clean
