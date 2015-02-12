@@ -7,9 +7,6 @@ class TestVocab(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.vocab()
 
-    def test_const(self):
-        self.assertGreater(srilm.vocab.VOCAB_NONE, 0)
-
     def test_in(self):
         self.assertIn('<unk>', self.vocab)
 
@@ -42,7 +39,6 @@ class TestVocab(unittest.TestCase):
         a = ['xixi', 'haha']
         b = array.array('I', [self.vocab.unk, self.vocab.unk])
         self.assertEqual(self.vocab.index(a), b)
-        self.assertRaises(IndexError, self.vocab.index, a, False)
 
     def test_string(self):
         a = ['<unk>', '<unk>', '<unk>']

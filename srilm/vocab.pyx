@@ -2,8 +2,6 @@ from cython.operator cimport dereference as deref
 from cpython cimport array
 from array import array
 
-VOCAB_NONE = Vocab_None
-
 cdef class vocab:
 
     def __cinit__(self, VocabIndex start = 0, VocabIndex end = Vocab_None-1):
@@ -38,16 +36,11 @@ cdef class vocab:
         self.thisptr.write(deref(fptr))
         del fptr
 
-    def index(self, words, bint bUseUnk = True):
+    def index(self, words):
         cdef array.array res = array('I', [])
         cdef VocabIndex index
         for w in words:
-            index = self.thisptr.getIndex(<VocabString>w)
-            if index == Vocab_None:
-                if bUseUnk:
-                    index = self.thisptr.unkIndex()
-                else:
-                    raise IndexError('Out of vocabulary word')
+            index = self.thisptr.getIndex(<VocabString>w, self.thisptr.unkIndex())
             res.append(index)
         return res
 

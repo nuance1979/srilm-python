@@ -8,6 +8,7 @@ cdef extern from "Vocab.h":
         Vocab(VocabIndex start, VocabIndex end)
         VocabIndex addWord(VocabString token)
         VocabString getWord(VocabIndex index)
+        VocabIndex getIndex(VocabString token, VocabIndex unkIndex)
         VocabIndex getIndex(VocabString token)
         void remove(VocabString token)
         void remove(VocabIndex index)
