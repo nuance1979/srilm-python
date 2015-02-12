@@ -1,6 +1,3 @@
-import Cython.Compiler.Options
-Cython.Compiler.Options.annotate = True
-
 from cython.operator cimport dereference as deref
 
 vocab_none = Vocab_None
@@ -13,41 +10,23 @@ cdef class vocab:
     def __dealloc__(self):
         del self.thisptr
 
-    def addWord(self, token):
-        return self.thisptr.addWord(<VocabString>token)
+    def add(self, VocabString token):
+        return self.thisptr.addWord(token)
 
-    def getWord(self, VocabIndex index):
-        return <bytes>self.thisptr.getWord(index)
+    def get(self, key):
+        return self.__getitem__(key)
 
-    def getIndex(self, token):
-        return self.thisptr.getIndex(<VocabString>token)
+    def remove(self, key):
+        self.__delitem__(key)
 
-    def remove(self, token):
-        self.thisptr.remove(<VocabString>token)
-
-    def remove(self, VocabIndex index):
-        self.thisptr.remove(index)
-
-    def numWords(self):
-        return self.thisptr.numWords()
-
-    def highIndex(self):
-        return self.thisptr.highIndex()
-
-    def read(self, fname):
+    def read(self, const char *fname):
         cdef File *fptr
-        cdef unsigned int i
-        if not isinstance(fname, bytes):
-            raise TypeError('Expect string')
         fptr = new File(<const char*>fname, 'r', 1)
-        i = self.thisptr.read(deref(fptr))
+        self.thisptr.read(deref(fptr))
         del fptr
-        return i
 
-    def write(self, fname):
+    def write(self, const char *fname):
         cdef File *fptr
-        if not isinstance(fname, bytes):
-            raise TypeError('Expect string')
         fptr = new File(<const char*>fname, 'w', 1)
         self.thisptr.write(deref(fptr))
         del fptr
@@ -65,25 +44,25 @@ cdef class vocab:
         else:
             return (<bytes>s, index)
 
-    def __contains__(self, token):
-        return self.thisptr.getIndex(<VocabString>token) != Vocab_None
+    def __contains__(self, VocabString token):
+        return self.thisptr.getIndex(token) != Vocab_None
 
     def __getitem__(self, key):
         cdef VocabString word
-        cdef VocabIndex i
-        if isinstance(key, bytes):
-            i = self.thisptr.getIndex(<VocabString>key)
-            return None if i == Vocab_None else i
-        elif isinstance(key, int):
+        cdef VocabIndex index
+        if isinstance(key, basestring):
+            index = self.thisptr.getIndex(<VocabString>key)
+            return None if index == Vocab_None else index
+        elif isinstance(key, (int, long)):
             word = self.thisptr.getWord(key)
             return None if word == NULL else <bytes>word
         else:
             raise TypeError('Expect string or int')
 
     def __delitem__(self, key):
-        if isinstance(key, bytes):
-            self.thisptr.remove(<bytes>key)
-        elif isinstance(key, int):
+        if isinstance(key, basestring):
+            self.thisptr.remove(<VocabString>key)
+        elif isinstance(key, (int, long)):
             self.thisptr.remove(<VocabIndex>key)
         else:
             raise TypeError('Expect string or int')

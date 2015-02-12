@@ -9,14 +9,11 @@ class TestVocab(unittest.TestCase):
     def test_add_delete(self):
         self.assertEqual(len(self.vocab), 4)
         for i in range(1000):
-            self.vocab.addWord('word%d' % i)
+            self.vocab.add('word%d' % i)
         self.assertTrue('word15' in self.vocab)
         for i in range(500):
             w = 'word%i' % i
-            if i % 2 == 0:
-                del self.vocab[w]
-            else:
-                self.vocab.remove(w)
+            del self.vocab[w]
         self.assertIsNone(self.vocab['word45'])
         a = self.vocab['word500']
         self.assertEqual(self.vocab[a], 'word500')
