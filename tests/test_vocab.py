@@ -12,6 +12,7 @@ class TestVocab(unittest.TestCase):
     def test_add(self):
         self.vocab.add('xixi')
         self.assertIn('xixi', self.vocab)
+        self.assertRaises(TypeError, self.vocab.add, 123)
     
     def test_delete(self):
         del self.vocab['<s>']
@@ -21,6 +22,7 @@ class TestVocab(unittest.TestCase):
         self.vocab.add('xixi')
         a = self.vocab['xixi']
         self.assertEqual(self.vocab[a], 'xixi')
+        self.assertRaises(TypeError, self.vocab.__getitem__, [1,2,3])
 
     def test_iter(self):
         for i in range(1000):

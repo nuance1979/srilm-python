@@ -81,9 +81,9 @@ cdef class stats:
         PyMem_Free(self.keysptr)
         del self.thisptr
 
-    @property
-    def order(self):
-        return self.thisptr.getorder()
+    property order:
+        def __get__(self):
+            return self.thisptr.getorder()
 
     def get(self, words):
         return self.__getitem__(words)

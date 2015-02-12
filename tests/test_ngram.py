@@ -9,14 +9,22 @@ class TestNgramStats(unittest.TestCase):
         self.vocab = srilm.vocab.vocab()
         self.stats = srilm.ngram.stats(self.vocab, 3)
 
+    def test_order(self):
+        self.assertEqual(self.stats.order, 3)
+        with self.assertRaises(AttributeError) as cm:
+            self.stats.order = 4
+        self.assertEqual(type(cm.exception), AttributeError)
+
     def test_get(self):
         words = array.array('I', [1,2,3])
         self.assertEqual(self.stats[words], 0)
+        self.assertRaises(TypeError, self.stats.__getitem__, [1,2,3])
 
     def test_set(self):
         words = array.array('I', [1,2,3])
         self.stats[words] = 100
         self.assertEqual(self.stats[words], 100)
+        self.assertRaises(TypeError, self.stats.__setitem__, [1,2,3], 100)
     
     def test_remove(self):
         words = array.array('I', [1,2,3])
@@ -45,6 +53,7 @@ class TestNgramLM(unittest.TestCase):
         self.lm = srilm.ngram.lm(self.vocab, 3)
 
     def test_order(self):
+        self.assertEqual(self.lm.order, 3)
         self.lm.order = 4
         self.assertEqual(self.lm.order, 4)
 
