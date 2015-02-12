@@ -1,6 +1,3 @@
-import Cython.Compiler.Options
-Cython.Compiler.Options.annotate = True
-
 from cython.operator cimport dereference as deref
 from vocab cimport vocab
 from cpython cimport array
@@ -44,12 +41,14 @@ cdef class lm:
 
     @order.setter
     def order(self, unsigned neworder):
-        self.thisptr.setorder(neworder)
-        self.keysptr = <VocabIndex *>PyMem_Realloc(self.keysptr, (neworder+1) * sizeof(VocabIndex))
-        if self.keysptr == NULL:
+        cdef VocabIndex *p = <VocabIndex *>PyMem_Realloc(self.keysptr, (neworder+1) * sizeof(VocabIndex))
+        if p == NULL:
             raise MemoryError
+        self.keysptr = p
+        self.thisptr.setorder(neworder)
 
-    def wordProb(self, VocabIndex word, context):
+    def prob(self, VocabIndex word, context):
+        """Return log probability of p(word | context)"""
         if not context:
             return self.thisptr.wordProb(word, NULL)
         elif _iswords(context):
@@ -58,25 +57,16 @@ cdef class lm:
         else:
             raise TypeError('Expect array')
 
-    def read(self, fname, Boolean limitVocab = 0):
-        cdef File *fptr
-        cdef Boolean ok
-        if not isinstance(fname, bytes):
-            raise TypeError('Expect string')
-        fptr = new File(<const char*>fname, 'r', 1)
-        ok = self.thisptr.read(deref(fptr), limitVocab)
+    def read(self, const char *fname, Boolean limitVocab = 0):
+        cdef File *fptr = new File(fname, 'r', 1)
+        cdef bint ok = self.thisptr.read(deref(fptr), limitVocab)
         del fptr
         return ok
 
-    def write(self, fname):
-        cdef File *fptr
-        cdef Boolean ok
-        if not isinstance(fname, bytes):
-            raise TypeError('Expect string')
-        fptr = new File(<const char*>fname, 'w', 1)
-        ok = self.thisptr.write(deref(fptr))
+    def write(self, const char *fname):
+        cdef File *fptr = new File(<const char*>fname, 'w', 1)
+        self.thisptr.write(deref(fptr))
         del fptr
-        return ok
 
 cdef class stats:
 
@@ -96,31 +86,13 @@ cdef class stats:
     def order(self):
         return self.thisptr.getorder()
 
-    def findCount(self, words):
-        cdef NgramCount *p
-        if not words:
-            p = self.thisptr.findCount(NULL)
-            return 0 if p == NULL else deref(p)
-        elif _iswords(words):
-            _tocstring(self.order, self.keysptr, words)
-            p = self.thisptr.findCount(self.keysptr)
-            return 0 if p == NULL else deref(p)
-        else:
-            raise TypeError('Expect array')
+    def get(self, words):
+        return self.__getitem__(words)
 
-    def insertCount(self, words, count = 1):
-        cdef NgramCount *p
-        if not words:
-            p = self.thisptr.insertCount(NULL)
-            p[0] += count
-        elif _iswords(words):
-            _tocstring(self.order, self.keysptr, words)
-            p = self.thisptr.insertCount(self.keysptr)
-            p[0] += count
-        else:
-            raise TypeError('Expect array')
+    def set(self, words, count):
+        return self.__setitem__(words, count)
 
-    def removeCount(self, words):
+    def remove(self, words):
         cdef NgramCount count
         cdef Boolean b
         if not words:
@@ -133,35 +105,43 @@ cdef class stats:
         else:
             raise TypeError('Expect array')
 
-    def sumCounts(self):
-        return self.thisptr.sumCounts()
-
-    def read(self, fname):
-        cdef File *fptr
-        cdef Boolean b
-        if not isinstance(fname, bytes):
-            raise TypeError('Expect string')
-        fptr = new File(<const char*>fname, 'r', 1)
-        b = self.thisptr.read(deref(fptr))
+    def read(self, const char *fname):
+        cdef File *fptr = new File(<const char*>fname, 'r', 1)
+        cdef bint ok = self.thisptr.read(deref(fptr))
         del fptr
-        return b
+        return ok
 
-    def write(self, fname):
-        cdef File *fptr
-        if not isinstance(fname, bytes):
-            raise TypeError('Expect string')
-        fptr = new File(<const char*>fname, 'w', 1)
+    def write(self, const char *fname):
+        cdef File *fptr = new File(<const char*>fname, 'w', 1)
         self.thisptr.write(deref(fptr))
         del fptr
 
     def __getitem__(self, words):
-        return self.findCount(words)
+        cdef NgramCount *p
+        if not words:
+            p = self.thisptr.findCount(NULL)
+            return 0 if p == NULL else deref(p)
+        elif _iswords(words):
+            _tocstring(self.order, self.keysptr, words)
+            p = self.thisptr.findCount(self.keysptr)
+            return 0 if p == NULL else deref(p)
+        else:
+            raise TypeError('Expect array')
 
-    def __setitem__(self, words, count):
-        self.insertCount(words, count)
+    def __setitem__(self, words, NgramCount count):
+        cdef NgramCount *p
+        if not words:
+            p = self.thisptr.insertCount(NULL)
+            p[0] = count
+        elif _iswords(words):
+            _tocstring(self.order, self.keysptr, words)
+            p = self.thisptr.insertCount(self.keysptr)
+            p[0] = count
+        else:
+            raise TypeError('Expect array')
 
     def __delitem__(self, words):
-        self.removeCount(words)
+        self.remove(words)
 
     def __iter__(self):
         self.iterptr = new NgramsIter(deref(self.thisptr), self.keysptr, self.order, NULL)
@@ -170,11 +150,9 @@ cdef class stats:
     def __next__(self):
         cdef NgramCount *p = self.iterptr.next()
         cdef array.array keys
-        cdef NgramCount i
         if p == NULL:
             del self.iterptr
             raise StopIteration
         else:
             keys = _toarray(self.order, self.keysptr)
-            i = p[0]
-            return (keys, i)
+            return (keys, deref(p))
