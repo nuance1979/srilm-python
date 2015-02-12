@@ -1,6 +1,5 @@
 from cython.operator cimport dereference as deref
-from vocab cimport vocab
-from vocab import vocab_none
+from vocab cimport vocab, Vocab_None
 from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
@@ -13,7 +12,7 @@ cdef inline void _tocstring(unsigned int order, VocabIndex *buff, array.array wo
     cdef int i
     for i in range(n):
         buff[i] = words[i]
-    buff[n] = vocab_none
+    buff[n] = Vocab_None
 
 cdef inline array.array _toarray(unsigned int order, VocabIndex *buff):
     cdef array.array a = array('I', [])
