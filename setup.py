@@ -45,5 +45,5 @@ setup(
     author_email = 'nuance1979@hotmail.com',
     packages = ['srilm'],
     ext_package = 'srilm',
-    ext_modules = cythonize(modules)
+    ext_modules = cythonize(modules, annotate=True)
 )
