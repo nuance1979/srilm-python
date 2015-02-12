@@ -23,6 +23,8 @@ class TestVocab(unittest.TestCase):
         self.assertEqual(self.vocab[a], 'xixi')
 
     def test_iter(self):
+        for i in range(1000):
+            self.vocab.add('word%d' % i)
         for w, i in self.vocab:
             self.assertEqual(self.vocab[w], i)
             self.assertEqual(self.vocab[i], w)
@@ -31,4 +33,5 @@ class TestVocab(unittest.TestCase):
         del self.vocab
 
 if __name__ == '__main__':
-    unittest.main()
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestVocab)
+    unittest.TextTestRunner(verbosity=2).run(suite)
