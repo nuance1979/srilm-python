@@ -47,7 +47,14 @@ cdef class lm:
             self.thisptr.setorder(neworder)
 
     def prob(self, VocabIndex word, context):
-        """Return log probability of p(word | context)"""
+        """Return log probability of p(word | context)
+        
+           Note that the context is an ngram context in reverse order, i.e., if the text is 
+                      ... w_0 w_1 w_2 ...
+           then this function computes
+                      p(w_2 | w_1, w_0)
+           and 'context' should be (w_1, w_0), *not* (w_0, w_1).
+        """
         if not context:
             return self.thisptr.wordProb(word, NULL)
         elif _isindices(context):
@@ -68,7 +75,7 @@ cdef class lm:
         del fptr
 
 cdef class stats:
-
+    """Holds ngram counts as a trie"""
     def __cinit__(self, vocab v, unsigned int order):
         self.thisptr = new NgramStats(deref(<Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
