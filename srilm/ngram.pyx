@@ -64,13 +64,17 @@ cdef class lm:
             raise TypeError('Expect array')
 
     def read(self, const char *fname, Boolean limitVocab = 0):
-        cdef File *fptr = new File(fname, 'r', 1)
+        cdef File *fptr = new File(fname, 'r', 0)
+        if deref(fptr).error():
+            raise IOError
         cdef bint ok = self.thisptr.read(deref(fptr), limitVocab)
         del fptr
         return ok
 
     def write(self, const char *fname):
-        cdef File *fptr = new File(<const char*>fname, 'w', 1)
+        cdef File *fptr = new File(fname, 'w', 0)
+        if deref(fptr).error():
+            raise IOError
         self.thisptr.write(deref(fptr))
         del fptr
 
@@ -112,13 +116,17 @@ cdef class stats:
             raise TypeError('Expect array')
 
     def read(self, const char *fname):
-        cdef File *fptr = new File(<const char*>fname, 'r', 1)
+        cdef File *fptr = new File(fname, 'r', 0)
+        if deref(fptr).error():
+            raise IOError
         cdef bint ok = self.thisptr.read(deref(fptr))
         del fptr
         return ok
 
     def write(self, const char *fname):
-        cdef File *fptr = new File(<const char*>fname, 'w', 1)
+        cdef File *fptr = new File(fname, 'w', 0)
+        if deref(fptr).error():
+            raise IOError
         self.thisptr.write(deref(fptr))
         del fptr
 

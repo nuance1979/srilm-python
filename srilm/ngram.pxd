@@ -9,9 +9,9 @@ cdef extern from "NgramStats.h":
         NgramCount *findCount(const VocabIndex *words)
         NgramCount *insertCount(const VocabIndex *words)
         Boolean removeCount(const VocabIndex *words, NgramCount *removedData)
-        NgramCount sumCounts()
         Boolean read(File &file)
         void write(File &file)
+        unsigned int countFile(File &file)
     cdef cppclass NgramsIter:
         NgramsIter(NgramStats &ngrams, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
         NgramCount *next()

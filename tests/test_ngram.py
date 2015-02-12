@@ -2,6 +2,8 @@ import unittest
 import srilm
 import array
 import random
+import tempfile
+import os
 
 class TestNgramStats(unittest.TestCase):
 
@@ -41,6 +43,24 @@ class TestNgramStats(unittest.TestCase):
             self.stats[words] = random.randint(1,1000)
         for w, i in self.stats:
             self.assertEqual(self.stats[w], i)
+
+    def test_read_write(self):
+        words = array.array('I', [1,2,3])
+        self.stats[words] = 15
+        words = array.array('I', [1,2,0])
+        self.stats[words] = 2
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        self.stats.write(fname)
+        new_stats = srilm.ngram.stats(self.vocab, 3)
+        new_stats.read(fname)
+        for w, i in self.stats:
+            self.assertEqual(new_stats[w], i)
+        for w, i in new_stats:
+            self.assertEqual(self.stats[w], i)
+        os.remove(fname)
+        self.assertRaises(IOError, self.stats.read, '/path/to/foo')
+        self.assertRaises(IOError, self.stats.write, '/i/do/not/exist')
 
     def tearDown(self):
         del self.stats
