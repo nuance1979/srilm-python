@@ -4,10 +4,10 @@ from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 
-cdef inline bint _iswords(words):
+cdef inline bint _isindices(words):
     return isinstance(words, array) and words.typecode == 'I'
 
-cdef inline void _tocstring(unsigned int order, VocabIndex *buff, array.array words):
+cdef inline void _tobuffer(unsigned int order, VocabIndex *buff, array.array words):
     cdef int n = min(order, len(words))
     cdef int i
     for i in range(n):
@@ -50,8 +50,8 @@ cdef class lm:
         """Return log probability of p(word | context)"""
         if not context:
             return self.thisptr.wordProb(word, NULL)
-        elif _iswords(context):
-            _tocstring(self.order, self.keysptr, context)
+        elif _isindices(context):
+            _tobuffer(self.order, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
         else:
             raise TypeError('Expect array')
@@ -97,8 +97,8 @@ cdef class stats:
         if not words:
             b = self.thisptr.removeCount(NULL, &count)
             return count if b else 0
-        elif _iswords(words):
-            _tocstring(self.order, self.keysptr, words)
+        elif _isindices(words):
+            _tobuffer(self.order, self.keysptr, words)
             b = self.thisptr.removeCount(self.keysptr, &count)
             return count if b else 0
         else:
@@ -120,8 +120,8 @@ cdef class stats:
         if not words:
             p = self.thisptr.findCount(NULL)
             return 0 if p == NULL else deref(p)
-        elif _iswords(words):
-            _tocstring(self.order, self.keysptr, words)
+        elif _isindices(words):
+            _tobuffer(self.order, self.keysptr, words)
             p = self.thisptr.findCount(self.keysptr)
             return 0 if p == NULL else deref(p)
         else:
@@ -132,8 +132,8 @@ cdef class stats:
         if not words:
             p = self.thisptr.insertCount(NULL)
             p[0] = count
-        elif _iswords(words):
-            _tocstring(self.order, self.keysptr, words)
+        elif _isindices(words):
+            _tobuffer(self.order, self.keysptr, words)
             p = self.thisptr.insertCount(self.keysptr)
             p[0] = count
         else:
