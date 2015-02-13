@@ -142,16 +142,25 @@ class TestNgramLM(unittest.TestCase):
         self.assertEqual(len(self.lm), 0)
 
     def test_prob(self):
-        pass
+        self.assertEqual(self.lm.prob(self.vocab.index(['it', 'was', 'the'])), float('-Inf'))
 
     def test_train(self):
-        text = 'this is a test'
+        text = """
+It was the best of times,
+it was the worst of times,
+it was the age of wisdom,
+it was the age of foolishness,
+it was the epoch of belief,
+it was the epoch of incredulity, it was the season of Light,
+it was the season of Darkness, it was the spring of hope,
+it was the winter of despair,
+"""
         for w in text.split():
             self.vocab.add(w)
-        self.stats.countString('this is a test')
+        self.stats.countString(text)
         self.stats.sum()
-#        self.assertTrue(self.lm.train(self.stats, 'mkn'))
-#        self.lm.prob(self.vocab.index(['this', 'is', 'a']))
+        self.assertTrue(self.lm.train(self.stats, 'mkn'))
+        self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -1.556302547454834)
 
     def test_eval(self):
         pass

@@ -38,7 +38,7 @@ cdef extern from "Ngram.h":
         LogP countsProb(NgramStats &counts, TextStats &stats, unsigned order)
         NgramCount pplCountsFile(File &file, unsigned order, TextStats &stats, const char *escapeString, Boolean entropy)
         Boolean estimate(NgramStats &stats, Discount **discounts)
-        Boolean estimate(NgramStats &stats)
+        Boolean estimate(NgramStats &stats, NgramCount *mincounts, NgramCount *maxcounts)
         unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
         NgramCount numNgrams(unsigned int n) const
 

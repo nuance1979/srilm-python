@@ -3,7 +3,7 @@ from vocab cimport vocab, Vocab_None
 from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from common cimport ModKneserNey
+from common cimport ModKneserNey, KneserNey, GoodTuring, WittenBell
 
 cdef inline bint _isindices(words):
     return isinstance(words, array) and words.typecode == 'I'
@@ -224,9 +224,10 @@ cdef class lm:
            and 'context' should be (w_1, w_0), *not* (w_0, w_1).
         """
         if not context:
-            return self.thisptr.wordProb(word, NULL)
+            self.keysptr[0] = Vocab_None
+            return self.thisptr.wordProb(word, self.keysptr)
         elif _isindices(context):
-            _tobuffer(self.order, self.keysptr, context)
+            _tobuffer(self.order-1, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
         else:
             raise TypeError('Expect array')
@@ -275,13 +276,14 @@ cdef class lm:
         if discounts == NULL:
             raise MemoryError
         for i in range(self.order):
-            discounts[i] = <Discount *>new ModKneserNey()
+            discounts[i] = <Discount *>new KneserNey()
             if discounts[i] == NULL:
                 raise MemoryError
             discounts[i].interpolate = True
-            discounts[i].estimate(deref(ts.thisptr), i)
-#        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
-        b = self.thisptr.estimate(deref(ts.thisptr))
+            b = discounts[i].estimate(deref(ts.thisptr), i+1)
+            if not b:
+                raise RuntimeError('error in discount estimator for order %d' % (i+1))
+        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
         for i in range(self.order):
             del discounts[i]
         PyMem_Free(discounts)
