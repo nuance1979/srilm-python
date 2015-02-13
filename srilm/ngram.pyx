@@ -47,7 +47,7 @@ cdef class lm:
             self.keysptr = p
             self.thisptr.setorder(neworder)
 
-    def prob(self, VocabIndex word, context):
+    def _wordProb(self, VocabIndex word, context):
         """Return log probability of p(word | context)
         
            Note that the context is an ngram context in reverse order, i.e., if the text is 
@@ -64,12 +64,14 @@ cdef class lm:
         else:
             raise TypeError('Expect array')
 
-    def probNgram(self, ngram):
+    def prob(self, ngram):
         """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
 
-           Unlike prob(), this function takes ngram in its natural order.
+           Noe that this function takes ngram in its *natural* order.
         """
-        return self.prob(ngram[-1], reversed(ngram[:-1]))
+        cdef VocabIndex word = ngram[-1]
+        cdef array.array context = ngram[:-1].reverse()
+        return self._wordProb(word, context)
 
     def read(self, const char *fname, Boolean limitVocab = 0):
         cdef File *fptr = new File(fname, 'r', 0)
