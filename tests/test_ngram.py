@@ -87,7 +87,7 @@ class TestNgramStats(unittest.TestCase):
         text = 'this is a test\n'
         for w in text.split():
             self.vocab.add(w)
-        a = ['is', 'a', 'test']
+        a = ['a', 'test', '</s>']
         b = self.vocab.index(a)
         self.assertEqual(self.stats[b], 0)
         self.assertEqual(self.stats.count_string(text), 6)
@@ -162,7 +162,7 @@ it was the winter of despair,
         self.assertTrue(self.lm.train(self.stats, 'mkn'))
         self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -1.556302547454834)
 
-    def test_eval(self):
+    def test_test(self):
         text = """
 It was the best of times,
 it was the worst of times,
@@ -178,11 +178,21 @@ it was the winter of despair,
         self.stats.count_string(text)
         self.stats.sum()
         self.assertTrue(self.lm.train(self.stats, 'mkn'))
-        prob, denom, ppl = self.lm.eval(self.stats)
+        prob, denom, ppl = self.lm.test(self.stats)
         self.assertAlmostEqual(ppl, 5.01952818757)
         s = srilm.ngram.Stats(self.vocab, 2)
-        prob, denom, ppl = self.lm.eval(s)
+        prob, denom, ppl = self.lm.test(s)
         self.assertEqual(str(ppl), 'nan')
+
+    def test_make_test(self):
+        text = 'this is a test'
+        for w in text.split():
+            self.vocab.add(w)
+        self.stats.count_string(text)
+        b = self.vocab.index('is a'.split())
+        self.assertEqual(self.stats[b], 1)
+        s = self.stats.make_test()
+        self.assertEqual(s[b], 0)
 
     def test_read_write(self):
         pass

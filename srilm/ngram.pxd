@@ -1,5 +1,6 @@
 cimport c_vocab
 from c_vocab cimport VocabIndex, VocabString
+from vocab cimport Vocab
 from common cimport File, LogP, Boolean, TextStats, Discount, LogPtoPPL, LogP2, Prob
 
 cdef extern from "NgramStats.h":
@@ -13,11 +14,12 @@ cdef extern from "NgramStats.h":
         Boolean read(File &file)
         void write(File &file)
         unsigned int countFile(File &file)
-        unsigned int countString(char *sentence)
+        unsigned int countSentence(const VocabString *words) # only this one respects addSentSent and addSentEnd!!!
         NgramCount sumCounts()
         Boolean openVocab
         Boolean addSentStart
         Boolean addSentEnd
+        c_vocab.Vocab &vocab
 
     cdef cppclass NgramsIter:
         NgramsIter(NgramStats &ngrams, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
@@ -27,6 +29,7 @@ cdef class Stats:
     cdef NgramStats *thisptr
     cdef NgramsIter *iterptr
     cdef VocabIndex *keysptr
+    cdef Vocab _vocab
 
 cdef extern from "Ngram.h":
     cdef const unsigned defaultNgramOrder

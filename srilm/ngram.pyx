@@ -1,4 +1,5 @@
 from cython.operator cimport dereference as deref
+from libc.string cimport strcpy, strlen
 cimport c_vocab
 from c_vocab cimport Vocab_None
 from vocab cimport Vocab
@@ -25,7 +26,34 @@ cdef inline array.array _toarray(unsigned int order, VocabIndex *buff):
     return a
 
 cdef class Stats:
-    """Holds ngram counts as a trie"""
+    """Holds ngram counts in a trie
+
+    Note that Ngram LM training needs ngram counts of *all* orders but testing needs only as much as you need.
+    For example, to train a 3-gram LM from a sentence 'this is a test', you need the following counts:
+                             c('<s> this is') = 1
+                             c('this is a') = 1
+                             c('is a test') = 1
+                             c('a test </s>') = 1
+                             c('<s> this') = 1
+                             c('this is') = 1
+                             c('is a') = 1
+                             c('a test') = 1
+                             c('test </s>') = 1
+                             c('<s>') = 1
+                             c('this') = 1
+                             c('is') = 1
+                             c('a') = 1
+                             c('test') = 1
+                             c('</s>') = 1
+    You can get it by calling count_string('this is a test').
+    In contrast, if you need to testing on a sentence 'this is a test', you *only* need the following counts:
+                             c('<s> this') = 1     # this is a 2-gram!
+                             c('<s> this is') = 1
+                             c('this is a') = 1
+                             c('is a test') = 1
+                             c('a test </s>') = 1
+    No more no less. You can get it by calling make_test().
+    """
     def __cinit__(self, Vocab v, unsigned int order):
         self.thisptr = new NgramStats(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
@@ -36,6 +64,7 @@ cdef class Stats:
         self.thisptr.openVocab = False # very important and easy to miss!!!
         self.thisptr.addSentStart = True # turn it on explicitly
         self.thisptr.addSentEnd = True # ditto
+        self._vocab = v # keep a python reference to vocab
 
     def __dealloc__(self):
         PyMem_Free(self.keysptr)
@@ -98,8 +127,18 @@ cdef class Stats:
         else:
             raise TypeError('Expect array')
 
-    def count_string(self, const char *string):
-        return self.thisptr.countString(<char*>string)
+    def count_string(self, string):
+        words = string.split()
+        cdef int slen = len(words)
+        cdef VocabString *buff = <VocabString *>PyMem_Malloc((slen+1) * sizeof(VocabString))
+        if buff == NULL:
+            raise MemoryError
+        for i in range(slen):
+            buff[i] = words[i]
+        buff[slen] = NULL # another different ending convention!!!
+        cdef unsigned int c = self.thisptr.countSentence(buff)
+        PyMem_Free(buff)
+        return c
 
     def count_file(self, const char *fname):
         cdef File *fptr = new File(fname, 'r', 0)
@@ -110,35 +149,21 @@ cdef class Stats:
         return c
 
     def sum(self):
-        """Compute lowerer order ngram counts by summing higher order ngrams
-
-           Note that Ngram LM training needs ngram counts of *all* orders but evaluation needs only as much as you need.
-           For example, to train a 3-gram LM from a sentence 'this is a test', you need the following counts:
-                             c('<s> this is') = 1
-                             c('this is a') = 1
-                             c('is a test') = 1
-                             c('a test </s>') = 1
-                             c('<s> this') = 1
-                             c('this is') = 1
-                             c('is a') = 1
-                             c('a test') = 1
-                             c('test </s>') = 1
-                             c('<s>') = 1
-                             c('this') = 1
-                             c('is') = 1
-                             c('a') = 1
-                             c('test') = 1
-                             c('</s>') = 1
-           you can get is by first calling count_string('this is a test') then sum().
-           In contrast, if you need to evaluation on a sentence 'this is a test', you *only* need the following counts:
-                             c('<s> this') = 1     # this is a 2-gram!
-                             c('<s> this is') = 1
-                             c('this is a') = 1
-                             c('is a test') = 1
-                             c('a test </s>') = 1
-           No more no less.
-        """
+        """Recompute lowerer order counts by summing higher order counts"""
         return self.thisptr.sumCounts()
+
+    def make_test(self):
+        """Return a Stats() object for LM testing by stripping away unnecessary counts"""
+        cdef array.array w
+        cdef NgramCount c
+        cdef unsigned int i
+        cdef Stats s = Stats(self._vocab, self.order)
+        for w, c in self:
+            s[w] = c
+            if w[0] == self.thisptr.vocab.ssIndex():
+                for i in range(1, self.order):
+                    s[w[:i]] += c
+        return s
 
     def __getitem__(self, words):
         cdef NgramCount *p
@@ -168,7 +193,10 @@ cdef class Stats:
         self.remove(words)
 
     def __iter__(self):
-        self.iterptr = new NgramsIter(deref(self.thisptr), self.keysptr, self.order, NULL)
+        return self.iter(self.order)
+
+    def iter(self, unsigned int order):
+        self.iterptr = new NgramsIter(deref(self.thisptr), self.keysptr, order, NULL)
         return self
 
     def __next__(self):
@@ -258,7 +286,7 @@ cdef class Lm:
         self.thisptr.write(deref(fptr))
         del fptr
 
-    def eval(self, Stats ns):
+    def test(self, Stats ns):
         cdef TextStats *tsptr = new TextStats()
         cdef LogP p = self.thisptr.countsProb(deref(ns.thisptr), deref(tsptr), ns.order)
         cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
