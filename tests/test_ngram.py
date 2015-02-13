@@ -28,6 +28,12 @@ class TestNgramStats(unittest.TestCase):
         self.assertEqual(self.stats[words], 100)
         self.assertRaises(TypeError, self.stats.__setitem__, [1,2,3], 100)
     
+    def test_add(self):
+        words = array.array('I', [1,2,3])
+        self.assertEqual(self.stats[words], 0)
+        self.stats.add(words, 10)
+        self.assertEqual(self.stats[words], 10)
+
     def test_remove(self):
         words = array.array('I', [1,2,3])
         self.stats[words] = 100
@@ -61,6 +67,41 @@ class TestNgramStats(unittest.TestCase):
         os.remove(fname)
         self.assertRaises(IOError, self.stats.read, '/path/to/foo')
         self.assertRaises(IOError, self.stats.write, '/i/do/not/exist')
+
+    def test_countFile(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        text = 'this is a test\n'
+        with open(fname, 'w') as fout:
+            fout.write('this is a test\n')
+        for w in text.split():
+            self.vocab.add(w)
+        a = ['this', 'is', 'a']
+        b = self.vocab.index(a)
+        self.assertEqual(self.stats[b], 0)
+        self.assertEqual(self.stats.countFile(fname), 4)
+        self.assertEqual(self.stats[b], 1)
+        os.remove(fname)
+
+    def test_countString(self):
+        text = 'this is a test\n'
+        for w in text.split():
+            self.vocab.add(w)
+        a = ['is', 'a', 'test']
+        b = self.vocab.index(a)
+        self.assertEqual(self.stats[b], 0)
+        self.assertEqual(self.stats.countString(text), 4)
+        self.assertEqual(self.stats[b], 1)
+
+    def test_count(self):
+        text = 'this is a test\n'
+        words = text.split()
+        for w in words:
+            self.vocab.add(w)
+        b = self.vocab.index(words)
+        self.assertEqual(self.stats[b], 0)
+        self.assertEqual(self.stats.count(b), 4)
+        self.assertEqual(self.stats[b], 1)
 
     def tearDown(self):
         del self.stats

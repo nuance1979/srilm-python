@@ -12,6 +12,11 @@ cdef extern from "NgramStats.h":
         Boolean read(File &file)
         void write(File &file)
         unsigned int countFile(File &file)
+        unsigned int countString(char *sentence)
+        Boolean openVocab
+        Boolean addSentStart
+        Boolean addSentEnd
+        TextStats stats
     cdef cppclass NgramsIter:
         NgramsIter(NgramStats &ngrams, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
         NgramCount *next()

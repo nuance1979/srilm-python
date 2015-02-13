@@ -87,6 +87,9 @@ cdef class stats:
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
+        self.thisptr.openVocab = False # very important and easy to miss!!!
+        self.thisptr.addSentStart = False # turn it off because automatic insert is very confusing
+        self.thisptr.addSentEnd = False # ditto
 
     def __dealloc__(self):
         PyMem_Free(self.keysptr)
@@ -96,11 +99,17 @@ cdef class stats:
         def __get__(self):
             return self.thisptr.getorder()
 
-    def get(self, words):
-        return self.__getitem__(words)
-
-    def set(self, words, count):
-        return self.__setitem__(words, count)
+    def add(self, words, NgramCount inc):
+        cdef NgramCount *p
+        if not words:
+            p = self.thisptr.insertCount(NULL)
+            p[0] += inc
+        elif _isindices(words):
+            _tobuffer(self.order, self.keysptr, words)
+            p = self.thisptr.insertCount(self.keysptr)
+            p[0] += inc
+        else:
+            raise TypeError('Expect array')
 
     def remove(self, words):
         cdef NgramCount count
@@ -129,6 +138,30 @@ cdef class stats:
             raise IOError
         self.thisptr.write(deref(fptr))
         del fptr
+
+    def count(self, words):
+        cdef int i = 0
+        cdef int j = self.order
+        cdef int l = len(words)
+        if _isindices(words):
+            while j <= l:
+                self.add(words[i:j], 1)
+                i += 1
+                j += 1
+            return l
+        else:
+            raise TypeError('Expect array')
+
+    def countString(self, const char *string):
+        return self.thisptr.countString(<char*>string)
+
+    def countFile(self, const char *fname):
+        cdef File *fptr = new File(fname, 'r', 0)
+        if fptr.error():
+            raise IOError
+        cdef unsigned int c = self.thisptr.countFile(deref(fptr))
+        del fptr
+        return c
 
     def __getitem__(self, words):
         cdef NgramCount *p
