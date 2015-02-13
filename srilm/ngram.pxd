@@ -16,7 +16,7 @@ cdef extern from "NgramStats.h":
         Boolean openVocab
         Boolean addSentStart
         Boolean addSentEnd
-        TextStats stats
+
     cdef cppclass NgramsIter:
         NgramsIter(NgramStats &ngrams, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
         NgramCount *next()

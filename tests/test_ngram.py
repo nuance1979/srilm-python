@@ -103,6 +103,14 @@ class TestNgramStats(unittest.TestCase):
         self.assertEqual(self.stats.count(b), 4)
         self.assertEqual(self.stats[b], 1)
 
+    def test_len(self):
+        self.assertEqual(len(self.stats), 0)
+        a = array.array('I', [1,2,3])
+        self.stats[a] = 3
+        self.assertEqual(len(self.stats), 3)
+        self.stats.countString('this is a test')
+        self.assertEqual(len(self.stats), 5)
+
     def tearDown(self):
         del self.stats
         del self.vocab

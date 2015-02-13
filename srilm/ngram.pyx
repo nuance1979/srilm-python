@@ -203,3 +203,10 @@ cdef class stats:
         else:
             keys = _toarray(self.order, self.keysptr)
             return (keys, deref(p))
+
+    def __len__(self):
+        cdef NgramCount s = 0
+        cdef NgramCount i
+        for _, i in self:
+            s += i
+        return s
