@@ -63,6 +63,13 @@ cdef class lm:
         else:
             raise TypeError('Expect array')
 
+    def probNgram(self, ngram):
+        """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
+
+           Unlike prob(), this function takes ngram in its natural order.
+        """
+        return self.prob(ngram[-1], reversed(ngram[:-1]))
+
     def read(self, const char *fname, Boolean limitVocab = 0):
         cdef File *fptr = new File(fname, 'r', 0)
         if deref(fptr).error():
