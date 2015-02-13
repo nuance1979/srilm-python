@@ -8,8 +8,8 @@ import os
 class TestNgramStats(unittest.TestCase):
 
     def setUp(self):
-        self.vocab = srilm.vocab.vocab()
-        self.stats = srilm.ngram.stats(self.vocab, 3)
+        self.vocab = srilm.vocab.Vocab()
+        self.stats = srilm.ngram.Stats(self.vocab, 3)
 
     def test_order(self):
         self.assertEqual(self.stats.order, 3)
@@ -58,7 +58,7 @@ class TestNgramStats(unittest.TestCase):
         fd, fname = tempfile.mkstemp()
         os.close(fd)
         self.stats.write(fname)
-        new_stats = srilm.ngram.stats(self.vocab, 3)
+        new_stats = srilm.ngram.Stats(self.vocab, 3)
         new_stats.read(fname)
         for w, i in self.stats:
             self.assertEqual(new_stats[w], i)
@@ -126,9 +126,9 @@ class TestNgramStats(unittest.TestCase):
 class TestNgramLM(unittest.TestCase):
     
     def setUp(self):
-        self.vocab = srilm.vocab.vocab()
-        self.lm = srilm.ngram.lm(self.vocab, 3)
-        self.stats = srilm.ngram.stats(self.vocab, 3)
+        self.vocab = srilm.vocab.Vocab()
+        self.lm = srilm.ngram.Lm(self.vocab, 3)
+        self.stats = srilm.ngram.Stats(self.vocab, 3)
 
     def test_order(self):
         self.assertEqual(self.lm.order, 3)

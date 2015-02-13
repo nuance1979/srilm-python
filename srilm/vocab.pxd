@@ -1,28 +1,7 @@
 from common cimport File
+cimport c_vocab
+from c_vocab cimport VocabIndex, VocabString, VocabIter
 
-cdef extern from "Vocab.h":
-    ctypedef unsigned int VocabIndex
-    ctypedef const char* VocabString
-    cdef VocabIndex Vocab_None
-    cdef cppclass Vocab:
-        Vocab(VocabIndex start, VocabIndex end)
-        VocabIndex addWord(VocabString token)
-        VocabString getWord(VocabIndex index)
-        VocabIndex getIndex(VocabString token, VocabIndex unkIndex)
-        VocabIndex getIndex(VocabString token)
-        void remove(VocabString token)
-        void remove(VocabIndex index)
-        unsigned int read(File &file)
-        void write(File &file)
-        unsigned int numWords()
-        VocabIndex &unkIndex()
-
-    cdef cppclass VocabIter:
-        VocabIter(Vocab &vocab)
-        void init()
-        VocabString next()
-        VocabString next(VocabIndex &index)
-
-cdef class vocab:
-    cdef Vocab *thisptr
+cdef class Vocab:
+    cdef c_vocab.Vocab *thisptr
     cdef VocabIter *iterptr

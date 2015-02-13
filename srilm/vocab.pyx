@@ -2,10 +2,10 @@ from cython.operator cimport dereference as deref
 from cpython cimport array
 from array import array
 
-cdef class vocab:
+cdef class Vocab:
 
-    def __cinit__(self, VocabIndex start = 0, VocabIndex end = Vocab_None-1):
-        self.thisptr = new Vocab(start, end)
+    def __cinit__(self, VocabIndex start = 0, VocabIndex end = c_vocab.Vocab_None-1):
+        self.thisptr = new c_vocab.Vocab(start, end)
 
     def __dealloc__(self):
         del self.thisptr
@@ -55,7 +55,7 @@ cdef class vocab:
         return res
 
     def __iter__(self):
-        self.iterptr = new VocabIter(deref(self.thisptr))
+        self.iterptr = new c_vocab.VocabIter(deref(self.thisptr))
         return self
 
     def __next__(self):
@@ -68,14 +68,14 @@ cdef class vocab:
             return (<bytes>s, index)
 
     def __contains__(self, VocabString token):
-        return self.thisptr.getIndex(token) != Vocab_None
+        return self.thisptr.getIndex(token) != c_vocab.Vocab_None
 
     def __getitem__(self, key):
         cdef VocabString word
         cdef VocabIndex index
         if isinstance(key, basestring):
             index = self.thisptr.getIndex(<VocabString>key)
-            return None if index == Vocab_None else index
+            return None if index == c_vocab.Vocab_None else index
         elif isinstance(key, (int, long)):
             word = self.thisptr.getWord(key)
             return None if word == NULL else <bytes>word

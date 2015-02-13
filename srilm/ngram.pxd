@@ -1,10 +1,11 @@
-from vocab cimport Vocab, VocabIndex
+cimport c_vocab
+from c_vocab cimport VocabIndex, VocabString
 from common cimport File, LogP, Boolean, TextStats, Discount, LogPtoPPL, LogP2, Prob
 
 cdef extern from "NgramStats.h":
     ctypedef unsigned long NgramCount
     cdef cppclass NgramStats:
-        NgramStats(Vocab &vocab, unsigned int order)
+        NgramStats(c_vocab.Vocab &vocab, unsigned int order)
         unsigned getorder()
         NgramCount *findCount(const VocabIndex *words)
         NgramCount *insertCount(const VocabIndex *words)
@@ -22,7 +23,7 @@ cdef extern from "NgramStats.h":
         NgramsIter(NgramStats &ngrams, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
         NgramCount *next()
 
-cdef class stats:
+cdef class Stats:
     cdef NgramStats *thisptr
     cdef NgramsIter *iterptr
     cdef VocabIndex *keysptr
@@ -30,7 +31,7 @@ cdef class stats:
 cdef extern from "Ngram.h":
     cdef const unsigned defaultNgramOrder
     cdef cppclass Ngram:
-        Ngram(Vocab &vocab, unsigned order)
+        Ngram(c_vocab.Vocab &vocab, unsigned order)
         unsigned setorder(unsigned neworder)
         LogP wordProb(VocabIndex word, const VocabIndex *context)
         Boolean read(File &file, Boolean limitVocab)
@@ -42,6 +43,6 @@ cdef extern from "Ngram.h":
         unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
         NgramCount numNgrams(unsigned int n) const
 
-cdef class lm:
+cdef class Lm:
     cdef Ngram *thisptr
     cdef VocabIndex *keysptr

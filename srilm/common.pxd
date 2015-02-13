@@ -1,6 +1,6 @@
 from libcpp cimport bool
 from array import array
-from vocab cimport Vocab
+cimport c_vocab
 
 cdef extern from "Boolean.h":
     ctypedef bool Boolean
@@ -30,7 +30,7 @@ cdef extern from "TextStats.h":
 
 cdef extern from "NgramStats.h":
     cdef cppclass NgramStats:
-        NgramStats(Vocab &vocab, unsigned int order)
+        NgramStats(c_vocab.Vocab &vocab, unsigned int order)
 
 cdef extern from "Discount.h":
     cdef cppclass Discount:

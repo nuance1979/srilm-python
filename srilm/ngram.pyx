@@ -1,5 +1,7 @@
 from cython.operator cimport dereference as deref
-from vocab cimport vocab, Vocab_None
+cimport c_vocab
+from c_vocab cimport Vocab_None
+from vocab cimport Vocab
 from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
@@ -22,10 +24,10 @@ cdef inline array.array _toarray(unsigned int order, VocabIndex *buff):
         a.append(buff[i])
     return a
 
-cdef class stats:
+cdef class Stats:
     """Holds ngram counts as a trie"""
-    def __cinit__(self, vocab v, unsigned int order):
-        self.thisptr = new NgramStats(deref(<Vocab *>(v.thisptr)), order)
+    def __cinit__(self, Vocab v, unsigned int order):
+        self.thisptr = new NgramStats(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
             raise MemoryError
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
@@ -186,10 +188,10 @@ cdef class stats:
             s += i
         return s
 
-cdef class lm:
+cdef class Lm:
     """Ngram language model"""
-    def __cinit__(self, vocab v, unsigned order = defaultNgramOrder):
-        self.thisptr = new Ngram(deref(<Vocab *>(v.thisptr)), order)
+    def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
+        self.thisptr = new Ngram(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
             raise MemoryError
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
@@ -256,7 +258,7 @@ cdef class lm:
         self.thisptr.write(deref(fptr))
         del fptr
 
-    def eval(self, stats ns):
+    def eval(self, Stats ns):
         cdef TextStats *tsptr = new TextStats()
         cdef LogP p = self.thisptr.countsProb(deref(ns.thisptr), deref(tsptr), ns.order)
         cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
@@ -269,7 +271,7 @@ cdef class lm:
         else:
             return (prob, denom, None)
 
-    def train(self, stats ts, smooth):
+    def train(self, Stats ts, smooth):
         cdef bint b
         cdef int i
         cdef Discount **discounts = <Discount **>PyMem_Malloc(self.order * sizeof(Discount *))

@@ -5,7 +5,7 @@ import array
 class TestVocab(unittest.TestCase):
 
     def setUp(self):
-        self.vocab = srilm.vocab.vocab()
+        self.vocab = srilm.vocab.Vocab()
 
     def test_in(self):
         self.assertIn('<unk>', self.vocab)
