@@ -78,6 +78,19 @@ cdef class lm:
         self.thisptr.write(deref(fptr))
         del fptr
 
+    def eval(self, stats ns):
+        cdef TextStats *tsptr = new TextStats()
+        cdef LogP p = self.thisptr.countsProb(deref(ns.thisptr), deref(tsptr), ns.order)
+        cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
+        cdef LogP2 prob = tsptr.prob
+        del tsptr
+        cdef Prob ppl
+        if denom > 0:
+            ppl = LogPtoPPL(prob / denom)
+            return (prob, denom, ppl)
+        else:
+            return (prob, denom, None)
+
 cdef class stats:
     """Holds ngram counts as a trie"""
     def __cinit__(self, vocab v, unsigned int order):

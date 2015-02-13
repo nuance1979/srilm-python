@@ -1,5 +1,5 @@
 from vocab cimport Vocab, VocabIndex
-from common cimport File, LogP, Boolean, TextStats, Discount
+from common cimport File, LogP, Boolean, TextStats, Discount, LogPtoPPL, LogP2, Prob
 
 cdef extern from "NgramStats.h":
     ctypedef unsigned long NgramCount
@@ -34,6 +34,7 @@ cdef extern from "Ngram.h":
         LogP wordProb(VocabIndex word, const VocabIndex *context)
         Boolean read(File &file, Boolean limitVocab)
         Boolean write(File &file)
+        LogP countsProb(NgramStats &counts, TextStats &stats, unsigned order)
         NgramCount pplCountsFile(File &file, unsigned order, TextStats &stats, const char *escapeString, Boolean entropy)
         Boolean estimate(NgramStats &stats, Discount **discounts)
         unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
