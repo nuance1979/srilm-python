@@ -3,6 +3,7 @@ from vocab cimport vocab, Vocab_None
 from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
+from common cimport ModKneserNey
 
 cdef inline bint _isindices(words):
     return isinstance(words, array) and words.typecode == 'I'
@@ -97,6 +98,24 @@ cdef class lm:
             return (prob, denom, ppl)
         else:
             return (prob, denom, None)
+
+    def train(self, stats ts, smooth):
+        cdef bint b
+        cdef int i
+        cdef Discount **discounts = <Discount **>PyMem_Malloc(self.order * sizeof(Discount *))
+        if discounts == NULL:
+            raise MemoryError
+        for i in range(self.order):
+            discounts[i] = <Discount *>new ModKneserNey()
+            if discounts[i] == NULL:
+                raise MemoryError
+            discounts[i].interpolate = True
+            discounts[i].estimate(deref(ts.thisptr), i)
+        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
+        for i in range(self.order):
+            del discounts[i]
+        PyMem_Free(discounts)
+        return b
 
 cdef class stats:
     """Holds ngram counts as a trie"""

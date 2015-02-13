@@ -1,5 +1,6 @@
 from libcpp cimport bool
 from array import array
+from vocab cimport Vocab
 
 cdef extern from "Boolean.h":
     ctypedef bool Boolean
@@ -27,8 +28,28 @@ cdef extern from "TextStats.h":
         FloatCount numWords
         FloatCount numOOVs
 
+cdef extern from "NgramStats.h":
+    cdef cppclass NgramStats:
+        NgramStats(Vocab &vocab, unsigned int order)
+
 cdef extern from "Discount.h":
     cdef cppclass Discount:
         Discount()
+        Boolean estimate(NgramStats &counts, unsigned order)
+        Boolean interpolate
+
+    cdef cppclass ModKneserNey:
+        ModKneserNey()
+
+    cdef cppclass KneserNey:
+        KneserNey()
+
+    cdef cppclass GoodTuring:
+        GoodTuring()
+
+    cdef cppclass WittenBell:
+        WittenBell()
+
+
 
 
