@@ -22,106 +22,6 @@ cdef inline array.array _toarray(unsigned int order, VocabIndex *buff):
         a.append(buff[i])
     return a
 
-cdef class lm:
-    """Ngram language model"""
-    def __cinit__(self, vocab v, unsigned order = defaultNgramOrder):
-        self.thisptr = new Ngram(deref(<Vocab *>(v.thisptr)), order)
-        if self.thisptr == NULL:
-            raise MemoryError
-        self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
-        if self.keysptr == NULL:
-            raise MemoryError
-
-    def __dealloc__(self):
-        PyMem_Free(self.keysptr)
-        del self.thisptr
-
-    property order:
-        def __get__(self):
-            return self.thisptr.setorder(0)
-
-        def __set__(self, unsigned neworder):
-            cdef VocabIndex *p = <VocabIndex *>PyMem_Realloc(self.keysptr, (neworder+1) * sizeof(VocabIndex))
-            if p == NULL:
-                raise MemoryError
-            self.keysptr = p
-            self.thisptr.setorder(neworder)
-
-    def __len__(self):
-        return self.thisptr.numNgrams(self.order)
-
-    def _wordProb(self, VocabIndex word, context):
-        """Return log probability of p(word | context)
-        
-           Note that the context is an ngram context in reverse order, i.e., if the text is 
-                      ... w_0 w_1 w_2 ...
-           then this function computes
-                      p(w_2 | w_1, w_0)
-           and 'context' should be (w_1, w_0), *not* (w_0, w_1).
-        """
-        if not context:
-            return self.thisptr.wordProb(word, NULL)
-        elif _isindices(context):
-            _tobuffer(self.order, self.keysptr, context)
-            return self.thisptr.wordProb(word, self.keysptr)
-        else:
-            raise TypeError('Expect array')
-
-    def prob(self, ngram):
-        """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
-
-           Noe that this function takes ngram in its *natural* order.
-        """
-        cdef VocabIndex word = ngram[-1]
-        cdef array.array context = ngram[:-1].reverse()
-        return self._wordProb(word, context)
-
-    def read(self, const char *fname, Boolean limitVocab = 0):
-        cdef File *fptr = new File(fname, 'r', 0)
-        if deref(fptr).error():
-            raise IOError
-        cdef bint ok = self.thisptr.read(deref(fptr), limitVocab)
-        del fptr
-        return ok
-
-    def write(self, const char *fname):
-        cdef File *fptr = new File(fname, 'w', 0)
-        if deref(fptr).error():
-            raise IOError
-        self.thisptr.write(deref(fptr))
-        del fptr
-
-    def eval(self, stats ns):
-        cdef TextStats *tsptr = new TextStats()
-        cdef LogP p = self.thisptr.countsProb(deref(ns.thisptr), deref(tsptr), ns.order)
-        cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
-        cdef LogP2 prob = tsptr.prob
-        del tsptr
-        cdef Prob ppl
-        if denom > 0:
-            ppl = LogPtoPPL(prob / denom)
-            return (prob, denom, ppl)
-        else:
-            return (prob, denom, None)
-
-    def train(self, stats ts, smooth):
-        cdef bint b
-        cdef int i
-        cdef Discount **discounts = <Discount **>PyMem_Malloc(self.order * sizeof(Discount *))
-        if discounts == NULL:
-            raise MemoryError
-        for i in range(self.order):
-            discounts[i] = <Discount *>new ModKneserNey()
-            if discounts[i] == NULL:
-                raise MemoryError
-            discounts[i].interpolate = True
-            discounts[i].estimate(deref(ts.thisptr), i)
-        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
-        for i in range(self.order):
-            del discounts[i]
-        PyMem_Free(discounts)
-        return b
-
 cdef class stats:
     """Holds ngram counts as a trie"""
     def __cinit__(self, vocab v, unsigned int order):
@@ -254,3 +154,103 @@ cdef class stats:
         for _, i in self:
             s += i
         return s
+
+cdef class lm:
+    """Ngram language model"""
+    def __cinit__(self, vocab v, unsigned order = defaultNgramOrder):
+        self.thisptr = new Ngram(deref(<Vocab *>(v.thisptr)), order)
+        if self.thisptr == NULL:
+            raise MemoryError
+        self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
+        if self.keysptr == NULL:
+            raise MemoryError
+
+    def __dealloc__(self):
+        PyMem_Free(self.keysptr)
+        del self.thisptr
+
+    property order:
+        def __get__(self):
+            return self.thisptr.setorder(0)
+
+        def __set__(self, unsigned neworder):
+            cdef VocabIndex *p = <VocabIndex *>PyMem_Realloc(self.keysptr, (neworder+1) * sizeof(VocabIndex))
+            if p == NULL:
+                raise MemoryError
+            self.keysptr = p
+            self.thisptr.setorder(neworder)
+
+    def __len__(self):
+        return self.thisptr.numNgrams(self.order)
+
+    def _wordProb(self, VocabIndex word, context):
+        """Return log probability of p(word | context)
+
+           Note that the context is an ngram context in reverse order, i.e., if the text is
+                      ... w_0 w_1 w_2 ...
+           then this function computes
+                      p(w_2 | w_1, w_0)
+           and 'context' should be (w_1, w_0), *not* (w_0, w_1).
+        """
+        if not context:
+            return self.thisptr.wordProb(word, NULL)
+        elif _isindices(context):
+            _tobuffer(self.order, self.keysptr, context)
+            return self.thisptr.wordProb(word, self.keysptr)
+        else:
+            raise TypeError('Expect array')
+
+    def prob(self, ngram):
+        """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
+
+           Noe that this function takes ngram in its *natural* order.
+        """
+        cdef VocabIndex word = ngram[-1]
+        cdef array.array context = ngram[:-1].reverse()
+        return self._wordProb(word, context)
+
+    def read(self, const char *fname, Boolean limitVocab = 0):
+        cdef File *fptr = new File(fname, 'r', 0)
+        if deref(fptr).error():
+            raise IOError
+        cdef bint ok = self.thisptr.read(deref(fptr), limitVocab)
+        del fptr
+        return ok
+
+    def write(self, const char *fname):
+        cdef File *fptr = new File(fname, 'w', 0)
+        if deref(fptr).error():
+            raise IOError
+        self.thisptr.write(deref(fptr))
+        del fptr
+
+    def eval(self, stats ns):
+        cdef TextStats *tsptr = new TextStats()
+        cdef LogP p = self.thisptr.countsProb(deref(ns.thisptr), deref(tsptr), ns.order)
+        cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
+        cdef LogP2 prob = tsptr.prob
+        del tsptr
+        cdef Prob ppl
+        if denom > 0:
+            ppl = LogPtoPPL(prob / denom)
+            return (prob, denom, ppl)
+        else:
+            return (prob, denom, None)
+
+    def train(self, stats ts, smooth):
+        cdef bint b
+        cdef int i
+        cdef Discount **discounts = <Discount **>PyMem_Malloc(self.order * sizeof(Discount *))
+        if discounts == NULL:
+            raise MemoryError
+        for i in range(self.order):
+            discounts[i] = <Discount *>new ModKneserNey()
+            if discounts[i] == NULL:
+                raise MemoryError
+            discounts[i].interpolate = True
+            discounts[i].estimate(deref(ts.thisptr), i)
+        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
+        for i in range(self.order):
+            del discounts[i]
+        PyMem_Free(discounts)
+        return b
