@@ -13,6 +13,7 @@ cdef extern from "NgramStats.h":
         void write(File &file)
         unsigned int countFile(File &file)
         unsigned int countString(char *sentence)
+        NgramCount sumCounts()
         Boolean openVocab
         Boolean addSentStart
         Boolean addSentEnd
@@ -37,6 +38,7 @@ cdef extern from "Ngram.h":
         LogP countsProb(NgramStats &counts, TextStats &stats, unsigned order)
         NgramCount pplCountsFile(File &file, unsigned order, TextStats &stats, const char *escapeString, Boolean entropy)
         Boolean estimate(NgramStats &stats, Discount **discounts)
+        Boolean estimate(NgramStats &stats)
         unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
         NgramCount numNgrams(unsigned int n) const
 

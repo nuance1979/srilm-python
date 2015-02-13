@@ -111,6 +111,14 @@ class TestNgramStats(unittest.TestCase):
         self.stats.countString('this is a test')
         self.assertEqual(len(self.stats), 7)
 
+    def test_sum(self):
+        text = 'this is a test'
+        for w in text.split():
+            self.vocab.add(w)
+        self.stats.countString('this is a test')
+        self.stats.sum()
+        self.assertEqual(self.stats[self.vocab.index(['is','a'])], 1)
+
     def tearDown(self):
         del self.stats
         del self.vocab
@@ -120,6 +128,7 @@ class TestNgramLM(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.vocab()
         self.lm = srilm.ngram.lm(self.vocab, 3)
+        self.stats = srilm.ngram.stats(self.vocab, 3)
 
     def test_order(self):
         self.assertEqual(self.lm.order, 3)
@@ -136,7 +145,13 @@ class TestNgramLM(unittest.TestCase):
         pass
 
     def test_train(self):
-        pass
+        text = 'this is a test'
+        for w in text.split():
+            self.vocab.add(w)
+        self.stats.countString('this is a test')
+        self.stats.sum()
+#        self.assertTrue(self.lm.train(self.stats, 'mkn'))
+#        self.lm.prob(self.vocab.index(['this', 'is', 'a']))
 
     def test_eval(self):
         pass
@@ -145,9 +160,9 @@ class TestNgramLM(unittest.TestCase):
         pass
 
     def tearDown(self):
+        del self.stats
         del self.lm
         del self.vocab
-
 
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)

@@ -107,6 +107,37 @@ cdef class stats:
         del fptr
         return c
 
+    def sum(self):
+        """Compute lowerer order ngram counts by summing higher order ngrams
+
+           Note that Ngram LM training needs ngram counts of *all* orders but evaluation needs only as much as you need.
+           For example, to train a 3-gram LM from a sentence 'this is a test', you need the following counts:
+                             c('<s> this is') = 1
+                             c('this is a') = 1
+                             c('is a test') = 1
+                             c('a test </s>') = 1
+                             c('<s> this') = 1
+                             c('this is') = 1
+                             c('is a') = 1
+                             c('a test') = 1
+                             c('test </s>') = 1
+                             c('<s>') = 1
+                             c('this') = 1
+                             c('is') = 1
+                             c('a') = 1
+                             c('test') = 1
+                             c('</s>') = 1
+           you can get is by first calling countString('this is a test') then sum().
+           In contrast, if you need to evaluation on a sentence 'this is a test', you *only* need the following counts:
+                             c('<s> this') = 1     # this is a 2-gram!
+                             c('<s> this is') = 1
+                             c('this is a') = 1
+                             c('is a test') = 1
+                             c('a test </s>') = 1
+           No more no less.
+        """
+        return self.thisptr.sumCounts()
+
     def __getitem__(self, words):
         cdef NgramCount *p
         if not words:
@@ -249,7 +280,8 @@ cdef class lm:
                 raise MemoryError
             discounts[i].interpolate = True
             discounts[i].estimate(deref(ts.thisptr), i)
-        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
+#        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
+        b = self.thisptr.estimate(deref(ts.thisptr))
         for i in range(self.order):
             del discounts[i]
         PyMem_Free(discounts)
