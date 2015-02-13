@@ -98,10 +98,10 @@ cdef class Stats:
         else:
             raise TypeError('Expect array')
 
-    def countString(self, const char *string):
+    def count_string(self, const char *string):
         return self.thisptr.countString(<char*>string)
 
-    def countFile(self, const char *fname):
+    def count_file(self, const char *fname):
         cdef File *fptr = new File(fname, 'r', 0)
         if fptr.error():
             raise IOError
@@ -129,7 +129,7 @@ cdef class Stats:
                              c('a') = 1
                              c('test') = 1
                              c('</s>') = 1
-           you can get is by first calling countString('this is a test') then sum().
+           you can get is by first calling count_string('this is a test') then sum().
            In contrast, if you need to evaluation on a sentence 'this is a test', you *only* need the following counts:
                              c('<s> this') = 1     # this is a 2-gram!
                              c('<s> this is') = 1

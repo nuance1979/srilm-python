@@ -68,7 +68,7 @@ class TestNgramStats(unittest.TestCase):
         self.assertRaises(IOError, self.stats.read, '/path/to/foo')
         self.assertRaises(IOError, self.stats.write, '/i/do/not/exist')
 
-    def test_countFile(self):
+    def test_count_file(self):
         fd, fname = tempfile.mkstemp()
         os.close(fd)
         text = 'this is a test\n'
@@ -79,18 +79,18 @@ class TestNgramStats(unittest.TestCase):
         a = ['this', 'is', 'a']
         b = self.vocab.index(a)
         self.assertEqual(self.stats[b], 0)
-        self.assertEqual(self.stats.countFile(fname), 6)
+        self.assertEqual(self.stats.count_file(fname), 6)
         self.assertEqual(self.stats[b], 1)
         os.remove(fname)
 
-    def test_countString(self):
+    def test_count_string(self):
         text = 'this is a test\n'
         for w in text.split():
             self.vocab.add(w)
         a = ['is', 'a', 'test']
         b = self.vocab.index(a)
         self.assertEqual(self.stats[b], 0)
-        self.assertEqual(self.stats.countString(text), 6)
+        self.assertEqual(self.stats.count_string(text), 6)
         self.assertEqual(self.stats[b], 1)
 
     def test_count(self):
@@ -108,14 +108,14 @@ class TestNgramStats(unittest.TestCase):
         a = array.array('I', [1,2,3])
         self.stats[a] = 3
         self.assertEqual(len(self.stats), 3)
-        self.stats.countString('this is a test')
+        self.stats.count_string('this is a test')
         self.assertEqual(len(self.stats), 7)
 
     def test_sum(self):
         text = 'this is a test'
         for w in text.split():
             self.vocab.add(w)
-        self.stats.countString('this is a test')
+        self.stats.count_string('this is a test')
         self.stats.sum()
         self.assertEqual(self.stats[self.vocab.index(['is','a'])], 1)
 
@@ -157,7 +157,7 @@ it was the winter of despair,
 """
         for w in text.split():
             self.vocab.add(w)
-        self.stats.countString(text)
+        self.stats.count_string(text)
         self.stats.sum()
         self.assertTrue(self.lm.train(self.stats, 'mkn'))
         self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -1.556302547454834)
