@@ -7,6 +7,12 @@ class TestVocab(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
 
+    def test_property(self):
+        self.assertEqual(self.vocab.unk, 0)
+        self.assertEqual(self.vocab.bos, 1)
+        self.assertEqual(self.vocab.eos, 2)
+        self.assertEqual(self.vocab.pau, 3)
+    
     def test_in(self):
         self.assertIn('<unk>', self.vocab)
 

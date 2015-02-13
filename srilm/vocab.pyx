@@ -14,6 +14,18 @@ cdef class Vocab:
         def __get__(self):
             return self.thisptr.unkIndex()
 
+    property bos:
+        def __get__(self):
+            return self.thisptr.ssIndex()
+
+    property eos:
+        def __get__(self):
+            return self.thisptr.seIndex()
+
+    property pau:
+        def __get__(self):
+            return self.thisptr.pauseIndex()
+
     def add(self, VocabString token):
         return self.thisptr.addWord(token)
 
