@@ -23,7 +23,7 @@ cdef inline array.array _toarray(unsigned int order, VocabIndex *buff):
     return a
 
 cdef class lm:
-
+    """Ngram language model"""
     def __cinit__(self, vocab v, unsigned order = defaultNgramOrder):
         self.thisptr = new Ngram(deref(<Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
@@ -46,6 +46,9 @@ cdef class lm:
                 raise MemoryError
             self.keysptr = p
             self.thisptr.setorder(neworder)
+
+    def __len__(self):
+        return self.thisptr.numNgrams(self.order)
 
     def _wordProb(self, VocabIndex word, context):
         """Return log probability of p(word | context)

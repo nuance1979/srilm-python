@@ -38,8 +38,8 @@ cdef extern from "Ngram.h":
         NgramCount pplCountsFile(File &file, unsigned order, TextStats &stats, const char *escapeString, Boolean entropy)
         Boolean estimate(NgramStats &stats, Discount **discounts)
         unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
+        NgramCount numNgrams(unsigned int n) const
 
 cdef class lm:
     cdef Ngram *thisptr
     cdef VocabIndex *keysptr
-

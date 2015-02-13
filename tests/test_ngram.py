@@ -129,6 +129,9 @@ class TestNgramLM(unittest.TestCase):
             self.lm.order = -1
         self.assertEqual(type(cm.exception), OverflowError)
 
+    def test_len(self):
+        self.assertEqual(len(self.lm), 0)
+
     def test_prob(self):
         pass
 
