@@ -163,7 +163,26 @@ it was the winter of despair,
         self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -1.556302547454834)
 
     def test_eval(self):
-        pass
+        text = """
+It was the best of times,
+it was the worst of times,
+it was the age of wisdom,
+it was the age of foolishness,
+it was the epoch of belief,
+it was the epoch of incredulity, it was the season of Light,
+it was the season of Darkness, it was the spring of hope,
+it was the winter of despair,
+"""
+        for w in text.split():
+            self.vocab.add(w)
+        self.stats.count_string(text)
+        self.stats.sum()
+        self.assertTrue(self.lm.train(self.stats, 'mkn'))
+        prob, denom, ppl = self.lm.eval(self.stats)
+        self.assertAlmostEqual(ppl, 5.01952818757)
+        s = srilm.ngram.Stats(self.vocab, 2)
+        prob, denom, ppl = self.lm.eval(s)
+        self.assertEqual(str(ppl), 'nan')
 
     def test_read_write(self):
         pass

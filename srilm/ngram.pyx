@@ -269,7 +269,7 @@ cdef class Lm:
             ppl = LogPtoPPL(prob / denom)
             return (prob, denom, ppl)
         else:
-            return (prob, denom, None)
+            return (prob, denom, float('NaN'))
 
     def train(self, Stats ts, smooth):
         cdef bint b
