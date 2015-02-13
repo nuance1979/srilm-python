@@ -88,8 +88,8 @@ cdef class stats:
         if self.keysptr == NULL:
             raise MemoryError
         self.thisptr.openVocab = False # very important and easy to miss!!!
-        self.thisptr.addSentStart = False # turn it off because automatic insert is very confusing
-        self.thisptr.addSentEnd = False # ditto
+        self.thisptr.addSentStart = True # turn it on explicitly
+        self.thisptr.addSentEnd = True # ditto
 
     def __dealloc__(self):
         PyMem_Free(self.keysptr)

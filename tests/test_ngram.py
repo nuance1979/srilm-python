@@ -79,7 +79,7 @@ class TestNgramStats(unittest.TestCase):
         a = ['this', 'is', 'a']
         b = self.vocab.index(a)
         self.assertEqual(self.stats[b], 0)
-        self.assertEqual(self.stats.countFile(fname), 4)
+        self.assertEqual(self.stats.countFile(fname), 6)
         self.assertEqual(self.stats[b], 1)
         os.remove(fname)
 
@@ -90,7 +90,7 @@ class TestNgramStats(unittest.TestCase):
         a = ['is', 'a', 'test']
         b = self.vocab.index(a)
         self.assertEqual(self.stats[b], 0)
-        self.assertEqual(self.stats.countString(text), 4)
+        self.assertEqual(self.stats.countString(text), 6)
         self.assertEqual(self.stats[b], 1)
 
     def test_count(self):
@@ -109,7 +109,7 @@ class TestNgramStats(unittest.TestCase):
         self.stats[a] = 3
         self.assertEqual(len(self.stats), 3)
         self.stats.countString('this is a test')
-        self.assertEqual(len(self.stats), 5)
+        self.assertEqual(len(self.stats), 7)
 
     def tearDown(self):
         del self.stats
