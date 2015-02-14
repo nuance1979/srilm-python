@@ -1,9 +1,11 @@
-o Add countFile() to ngram.stats; note limitVocab
-o Add estimate() to ngram.lm
-o Add pplFile() and pplCounts() to ngram.lm
+o Improve estimate() with more smoothing methods
+o Add test() to ngram.lm
 o Add maxent.lm module
 o Add a Doxygen setup with doxy.py
 o Improve Makefile to run tests with 'make test'
-o Add docstring docs
+x Add docstring docs
 x Debug ngram.stats iterator [Use Vocab_None as end-of-seq symbol!!!]
 x Add more tests; need class TestNgramLM
+x Add countFile() to ngram.stats; note limitVocab
+x Add make_test() helper function
+x Add a class to hold discount params

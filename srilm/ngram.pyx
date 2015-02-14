@@ -7,6 +7,7 @@ from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from common cimport ModKneserNey, KneserNey, GoodTuring, WittenBell
+from discount import Discount
 
 cdef inline bint _isindices(words):
     return isinstance(words, array) and words.typecode == 'I'
@@ -302,11 +303,11 @@ cdef class Lm:
     def train(self, Stats ts, smooth):
         cdef bint b
         cdef int i
-        cdef Discount **discounts = <Discount **>PyMem_Malloc(self.order * sizeof(Discount *))
+        cdef common.Discount **discounts = <common.Discount **>PyMem_Malloc(self.order * sizeof(common.Discount *))
         if discounts == NULL:
             raise MemoryError
         for i in range(self.order):
-            discounts[i] = <Discount *>new KneserNey()
+            discounts[i] = <common.Discount *>new KneserNey()
             if discounts[i] == NULL:
                 raise MemoryError
             discounts[i].interpolate = True

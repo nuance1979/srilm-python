@@ -202,7 +202,18 @@ it was the winter of despair,
         del self.lm
         del self.vocab
 
+class TestNgramDiscount(unittest.TestCase):
+
+    def test_init(self):
+        d = srilm.ngram.Discount('kneser-ney')
+        self.assertEqual(d.method, 'kneser-ney')
+        self.assertRaises(ValueError, srilm.ngram.Discount, 'xixi-haha')
+        d = srilm.ngram.Discount(method='good-turing', min_counts=[1,1,1], max_counts=[2,2,2])
+        self.assertEqual(d.min_counts, [1,1,1])
+        self.assertEqual(d.discounts, [])
+
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
     suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)
-    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2]))
+    suite3 = unittest.TestLoader().loadTestsFromTestCase(TestNgramDiscount)
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2, suite3]))
