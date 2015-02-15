@@ -11,18 +11,39 @@ class Discount(object):
         if method is not None and method not in ['kneser-ney', 'good-turing', 'witten-bell', 'chen-goodman']:
             raise ValueError('Unknown smoothing method: '+ method)
         self.method = method
-        if discount is not None and not isinstance(discount, (int, long, float)):
-            raise ValueError('Expect a number for discount')
-        self.discount = discount
-        if interpolate is not None and not isinstance(interpolate, bool):
-            raise ValueError('Expect a bool for interpolate')
-        self.interpolate = interpolate
-        if min_count is not None and not isinstance(min_count, (int, long)):
-            raise ValueError('Expect a number for min_count')
-        self.min_count = min_count
-        if max_count is not None and not isinstance(max_count, (int, long)):
-            raise ValueError('Expect a number for max_count')
-        self.max_count = max_count
+        self._set_default()
+        if discount is not None:
+            if self.method == 'good-turing':
+                try:
+                    self.discount = []
+                    for i in range(len(discount)):
+                        assert isinstance(discount[i], (int, long, float))
+                        self.discount.append(discount[i])
+                except:
+                    raise ValueError('Expect list of numbers for Good-Turing discount')
+            elif not isinstance(discount, (int, long, float)):
+                raise ValueError('Expect a number for discount')
+            self.discount = discount
+        if interpolate is not None:
+            if not isinstance(interpolate, bool):
+                raise ValueError('Expect a bool for interpolate')
+            self.interpolate = interpolate
+        if min_count is not None:
+            if not isinstance(min_count, (int, long)):
+                raise ValueError('Expect a number for min_count')
+            self.min_count = min_count
+        if max_count is not None:
+            if not isinstance(max_count, (int, long)):
+                raise ValueError('Expect a number for max_count')
+            self.max_count = max_count
+
+    def _set_default(self):
+        self.interpolate = False
+        self.min_count = 0
+        self.max_count = float('Inf')
+        if self.method == 'good-turing':
+            self.min_count = 1
+            self.max_count = 5
 
     def read(self, fname):
         with open(fname, 'rb') as f:
