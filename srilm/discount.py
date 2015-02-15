@@ -19,9 +19,10 @@ class Discount(object):
             raise ValueError('Expect a number')
 
     def read(self, fname):
-        with open(fname, 'r') as f:
-            self = pickle.load(f)
+        with open(fname, 'rb') as f:
+            temp_dict = pickle.load(f)
+        self.__dict__.update(temp_dict)
 
     def write(self, fname):
-        with open(fname, 'w') as fout:
-            pickle.dump(self, fout)
+        with open(fname, 'wb') as fout:
+            pickle.dump(self.__dict__, fout, 2)

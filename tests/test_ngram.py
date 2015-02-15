@@ -214,6 +214,16 @@ class TestNgramDiscount(unittest.TestCase):
             d = srilm.ngram.Discount(method='kneser-ney', discount='haha')
         self.assertEqual(type(cm.exception), ValueError)
 
+    def test_read_write(self):
+        self.discount.discount = 0.1
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        self.discount.write(fname)
+        d = srilm.ngram.Discount()
+        d.read(fname)
+        self.assertEqual(d.discount, 0.1)
+        os.remove(fname)
+
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
     suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)
