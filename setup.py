@@ -16,6 +16,7 @@ elif machine_type == 'macosx':
 module_dict = {
     'vocab' : 'srilm/vocab.pyx',
     'ngram' : 'srilm/ngram.pyx',
+    'discount' : 'srilm/discount.pyx',
     }
 
 modules = []

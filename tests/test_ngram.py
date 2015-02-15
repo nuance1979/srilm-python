@@ -176,8 +176,9 @@ it was the winter of despair,
         for w in text.split():
             self.vocab.add(w)
         self.stats.count_string(text)
-        dist_params = [srilm.ngram.Discount(method='kneser-ney') for i in range(3)]
-        self.assertTrue(self.lm.train(self.stats, dist_params))
+        for i in range(1,4):
+            self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
+        self.assertTrue(self.lm.train(self.stats))
         self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -1.556302547454834)
 
     def test_test(self):
@@ -194,8 +195,9 @@ it was the winter of despair,
         for w in text.split():
             self.vocab.add(w)
         self.stats.count_string(text)
-        dist_params = [srilm.ngram.Discount(method='kneser-ney') for i in range(3)]
-        self.assertTrue(self.lm.train(self.stats, dist_params))
+        for i in range(1,4):
+            self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
+        self.assertTrue(self.lm.train(self.stats))
         prob, denom, ppl = self.lm.test(self.stats)
         self.assertAlmostEqual(ppl, 7.30475431369828)
         s = srilm.ngram.Stats(self.vocab, 2)
@@ -226,8 +228,9 @@ it was the winter of despair,
         for w in text.split():
             self.vocab.add(w)
         self.stats.count_string(text)
-        dist_params = [srilm.ngram.Discount(method='kneser-ney') for i in range(3)]
-        self.assertTrue(self.lm.train(self.stats, dist_params))
+        for i in range(1,4):
+            self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
+        self.assertTrue(self.lm.train(self.stats))
         fd, fname = tempfile.mkstemp()
         os.close(fd)
         self.lm.write(fname)
@@ -242,32 +245,7 @@ it was the winter of despair,
         del self.lm
         del self.vocab
 
-class TestNgramDiscount(unittest.TestCase):
-
-    def setUp(self):
-        self.discount = srilm.ngram.Discount(method='kneser-ney', interpolate=True)
-
-    def test_init(self):
-        self.assertEqual(self.discount.method, 'kneser-ney')
-        self.assertTrue(self.discount.interpolate)
-        self.assertRaises(ValueError, srilm.ngram.Discount, 'xixi-haha')
-        with self.assertRaises(ValueError) as cm:
-            d = srilm.ngram.Discount(method='kneser-ney', discount='haha')
-        self.assertEqual(type(cm.exception), ValueError)
-
-    def test_read_write(self):
-        self.discount.discount = 0.1
-        fd, fname = tempfile.mkstemp()
-        os.close(fd)
-        self.discount.write(fname)
-        d = srilm.ngram.Discount()
-        d.read(fname)
-        self.assertEqual(d.discount, 0.1)
-        self.assertEqual(d.method, 'kneser-ney')
-        os.remove(fname)
-
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
     suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)
-    suite3 = unittest.TestLoader().loadTestsFromTestCase(TestNgramDiscount)
-    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2, suite3]))
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2]))

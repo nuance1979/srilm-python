@@ -6,8 +6,7 @@ from vocab cimport Vocab
 from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from common cimport ModKneserNey, KneserNey, GoodTuring, WittenBell
-from discount import Discount
+from discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
 
 cdef inline bint _isindices(words):
     return isinstance(words, array) and words.typecode == 'I'
@@ -231,8 +230,17 @@ cdef class Lm:
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
+        self.dlistptr = <c_discount.Discount **>PyMem_Malloc(order * sizeof(c_discount.Discount *))
+        if self.dlistptr == NULL:
+            raise MemoryError
+        cdef unsigned int i
+        for i in range(order):
+            self.dlistptr[i] = NULL
+        self._vocab = v # keep a python reference to vocab
+        self._dlist = []
 
     def __dealloc__(self):
+        PyMem_Free(self.dlistptr)
         PyMem_Free(self.keysptr)
         del self.thisptr
 
@@ -305,48 +313,22 @@ cdef class Lm:
         else:
             return (prob, denom, float('NaN'))
 
-    def train(self, Stats ts, dist_params):
+    def set_discount(self, unsigned int order, Discount d):
+        if order > self.order or order < 1:
+            raise ValueError('Invalid order')
+        if d.thisptr == NULL:
+            raise ValueError('Corrupted Discount object')
+        self.dlistptr[order - 1] = d.thisptr
+        self._dlist.append(d) # keep a python reference to d
+
+    def train(self, Stats ts):
         cdef bint b
         cdef int i
-        try:
-            for i in range(self.order):
-                if not isinstance(dist_params[i], Discount):
-                    raise
-        except:
-            raise ValueError('Expect list of ngram.Discount objects')
-        cdef common.Discount **discounts = <common.Discount **>PyMem_Malloc(self.order * sizeof(common.Discount *))
-        if discounts == NULL:
-            raise MemoryError
         for i in range(self.order):
-            if dist_params[i].method == 'kneser-ney':
-                discounts[i] = <common.Discount *>new KneserNey(dist_params[i].min_count)
-            elif dist_params[i].method == 'good-turing':
-                discounts[i] = <common.Discount *>new GoodTuring(dist_params[i].min_count, dist_params[i].max_count)
-            elif dist_params[i].method == 'witten-bell':
-                discounts[i] = <common.Discount *>new WittenBell(dist_params[i].min_count)
-            elif dist_params[i].method == 'chen-goodman':
-                discounts[i] = <common.Discount *>new ModKneserNey(dist_params[i].min_count)
-            else:
-                discounts[i] = new common.Discount()
-            if discounts[i] == NULL:
-                raise MemoryError
-            discounts[i].interpolate = dist_params[i].interpolate
-            b = discounts[i].estimate(deref(ts.thisptr), i+1)
-            if not b:
-                raise RuntimeError('error in discount estimator for order %d' % (i+1))
-            # get estimated discount through 'reverse-engineering'
-            if dist_params[i].method == 'kneser-ney':
-                dist_params[i].discount = (<KneserNey *>discounts[i]).lowerOrderWeight(1, 1, 0, 0)
-            elif dist_params[i].method == 'good-turing':
-                dist_params[i].discount = []
-                for i in range(self.min_count, self.max_count+1):
-                    dist_params[i].append((<GoodTuring *>discounts[i]).discount(i, 0, 0))
-            elif dist_params[i].method == 'witten-bell':
-                dist_params[i].discount = None
-            elif dist_params[i].method == 'chen-goodman':
-                dist_params[i].discount = [(<ModKneserNey *>discounts[i]).lowerOrderWeight(1, 1, 0, 0), (<ModKneserNey *>discounts[i]).lowerOrderWeight(1, 1, 1, 0), (<ModKneserNey *>discounts[i]).lowerOrderWeight(1, 1, 1, 1)]
-        b = self.thisptr.estimate(deref(ts.thisptr), discounts)
+            if self.dlistptr[i] == NULL:
+                raise RuntimeError('Discount for order %d is not set yet; use set_discount()' % i+1)
         for i in range(self.order):
-            del discounts[i]
-        PyMem_Free(discounts)
+            if self._dlist[i].discount is None: 
+                self._dlist[i].estimate(ts, i+1)
+        b = self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
         return b

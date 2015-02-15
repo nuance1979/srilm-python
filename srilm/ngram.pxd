@@ -2,7 +2,7 @@ cimport c_vocab
 from c_vocab cimport VocabIndex, VocabString
 from vocab cimport Vocab
 from common cimport File, LogP, Boolean, TextStats, LogPtoPPL, LogP2, Prob
-cimport common
+cimport c_discount
 
 cdef extern from "NgramStats.h":
     ctypedef unsigned long NgramCount
@@ -44,7 +44,7 @@ cdef extern from "Ngram.h":
         Boolean write(File &file)
         LogP countsProb(NgramStats &counts, TextStats &stats, unsigned order)
         NgramCount pplCountsFile(File &file, unsigned order, TextStats &stats, const char *escapeString, Boolean entropy)
-        Boolean estimate(NgramStats &stats, common.Discount **discounts)
+        Boolean estimate(NgramStats &stats, c_discount.Discount **discounts)
         Boolean estimate(NgramStats &stats, NgramCount *mincounts, NgramCount *maxcounts)
         unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
         NgramCount numNgrams(unsigned int n) const
@@ -52,3 +52,6 @@ cdef extern from "Ngram.h":
 cdef class Lm:
     cdef Ngram *thisptr
     cdef VocabIndex *keysptr
+    cdef c_discount.Discount **dlistptr
+    cdef Vocab _vocab
+    cdef list _dlist
