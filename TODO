@@ -1,11 +1,14 @@
-o Improve estimate() with more smoothing methods
-o Add test() to ngram.lm
+o Test Lm.read() and Lm.write() arpabo format
+o Compare results with directly invoke srilm
+o Make sure numpy.array can be used in place of array.array
 o Add maxent.lm module
-o Add a Doxygen setup with doxy.py
-o Improve Makefile to run tests with 'make test'
+x Improve Makefile to run tests with 'make test'
 x Add docstring docs
 x Debug ngram.stats iterator [Use Vocab_None as end-of-seq symbol!!!]
 x Add more tests; need class TestNgramLM
 x Add countFile() to ngram.stats; note limitVocab
 x Add make_test() helper function
 x Add a class to hold discount params
+x Improve estimate() with more smoothing methods
+x Add a Sphinx set up
+x Add test() to ngram.lm
