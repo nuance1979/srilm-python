@@ -195,7 +195,29 @@ it was the winter of despair,
         self.assertEqual(s[b], 0)
 
     def test_read_write(self):
-        pass
+        text = """
+It was the best of times,
+it was the worst of times,
+it was the age of wisdom,
+it was the age of foolishness,
+it was the epoch of belief,
+it was the epoch of incredulity, it was the season of Light,
+it was the season of Darkness, it was the spring of hope,
+it was the winter of despair,
+"""
+        for w in text.split():
+            self.vocab.add(w)
+        self.stats.count_string(text)
+        dist_params = [srilm.ngram.Discount(method='kneser-ney') for i in range(3)]
+        self.assertTrue(self.lm.train(self.stats, dist_params))
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        self.lm.write(fname)
+        lm = srilm.ngram.Lm(self.vocab, 3)
+        lm.read(fname)
+        b = self.vocab.index('it was the'.split())
+        self.assertAlmostEqual(self.lm.prob(b), lm.prob(b), 5)
+        os.remove(fname)
 
     def tearDown(self):
         del self.stats
