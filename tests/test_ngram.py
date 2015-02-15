@@ -204,13 +204,15 @@ it was the winter of despair,
 
 class TestNgramDiscount(unittest.TestCase):
 
+    def setUp(self):
+        self.discount = srilm.ngram.Discount(method='kneser-ney')
+
     def test_init(self):
-        d = srilm.ngram.Discount('kneser-ney')
-        self.assertEqual(d.method, 'kneser-ney')
+        self.assertEqual(self.discount.method, 'kneser-ney')
         self.assertRaises(ValueError, srilm.ngram.Discount, 'xixi-haha')
-        d = srilm.ngram.Discount(method='good-turing', min_counts=[1,1,1], max_counts=[2,2,2])
-        self.assertEqual(d.min_counts, [1,1,1])
-        self.assertEqual(d.discounts, [])
+        with self.assertRaises(ValueError) as cm:
+            d = srilm.ngram.Discount(method='kneser-ney', discount='haha')
+        self.assertEqual(type(cm.exception), ValueError)
 
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
