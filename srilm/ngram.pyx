@@ -300,20 +300,46 @@ cdef class Lm:
         else:
             return (prob, denom, float('NaN'))
 
-    def train(self, Stats ts, smooth):
+    def train(self, Stats ts, dist_params):
         cdef bint b
         cdef int i
+        try:
+            for i in range(self.order):
+                if not isinstance(dist_params[i], Discount):
+                    raise
+        except:
+            raise ValueError('Expect list of ngram.Discount objects')
         cdef common.Discount **discounts = <common.Discount **>PyMem_Malloc(self.order * sizeof(common.Discount *))
         if discounts == NULL:
             raise MemoryError
         for i in range(self.order):
-            discounts[i] = <common.Discount *>new KneserNey()
+            if dist_params[i].method == 'kneser-ney':
+                discounts[i] = <common.Discount *>new KneserNey(dist_params[i].min_count)
+            elif dist_params[i].method == 'good-turing':
+                discounts[i] = <common.Discount *>new GoodTuring(dist_params[i].min_count, dist_params[i].max_count)
+            elif dist_params[i].method == 'witten-bell':
+                discounts[i] = <common.Discount *>new WittenBell(dist_params[i].min_count)
+            elif dist_params[i].method == 'chen-goodman':
+                discounts[i] = <common.Discount *>new ModKneserNey(dist_params[i].min_count)
+            else:
+                discounts[i] = new common.Discount()
             if discounts[i] == NULL:
                 raise MemoryError
-            discounts[i].interpolate = True
+            discounts[i].interpolate = dist_params[i].interpolate
             b = discounts[i].estimate(deref(ts.thisptr), i+1)
             if not b:
                 raise RuntimeError('error in discount estimator for order %d' % (i+1))
+            # get estimated discount through 'reverse-engineering'
+            if dist_params[i].method == 'kneser-ney':
+                dist_params[i].discount = (<KneserNey *>discounts[i]).lowerOrderWeight(1, 1, 0, 0)
+            elif dist_params[i].method == 'good-turing':
+                dist_params[i].discount = []
+                for i in range(self.min_count, self.max_count+1):
+                    dist_params[i].append((<GoodTuring *>discounts[i]).discount(i, 0, 0))
+            elif dist_params[i].method == 'witten-bell':
+                dist_params[i].discount = None
+            elif dist_params[i].method == 'chen-goodman':
+                dist_params[i].discount = [(<ModKneserNey *>discounts[i]).lowerOrderWeight(1, 1, 0, 0), (<ModKneserNey *>discounts[i]).lowerOrderWeight(1, 1, 1, 0), (<ModKneserNey *>discounts[i]).lowerOrderWeight(1, 1, 1, 1)]
         b = self.thisptr.estimate(deref(ts.thisptr), discounts)
         for i in range(self.order):
             del discounts[i]

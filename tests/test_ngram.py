@@ -158,8 +158,8 @@ it was the winter of despair,
         for w in text.split():
             self.vocab.add(w)
         self.stats.count_string(text)
-        self.stats.sum()
-        self.assertTrue(self.lm.train(self.stats, 'mkn'))
+        dist_params = [srilm.ngram.Discount(method='kneser-ney') for i in range(3)]
+        self.assertTrue(self.lm.train(self.stats, dist_params))
         self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -1.556302547454834)
 
     def test_test(self):
@@ -176,10 +176,10 @@ it was the winter of despair,
         for w in text.split():
             self.vocab.add(w)
         self.stats.count_string(text)
-        self.stats.sum()
-        self.assertTrue(self.lm.train(self.stats, 'mkn'))
+        dist_params = [srilm.ngram.Discount(method='kneser-ney') for i in range(3)]
+        self.assertTrue(self.lm.train(self.stats, dist_params))
         prob, denom, ppl = self.lm.test(self.stats)
-        self.assertAlmostEqual(ppl, 5.01952818757)
+        self.assertAlmostEqual(ppl, 7.30475431369828)
         s = srilm.ngram.Stats(self.vocab, 2)
         prob, denom, ppl = self.lm.test(s)
         self.assertEqual(str(ppl), 'nan')

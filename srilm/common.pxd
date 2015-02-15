@@ -29,6 +29,7 @@ cdef extern from "TextStats.h":
         FloatCount numOOVs
 
 cdef extern from "NgramStats.h":
+    ctypedef unsigned long NgramCount
     cdef cppclass NgramStats:
         NgramStats(c_vocab.Vocab &vocab, unsigned int order)
 
@@ -37,18 +38,23 @@ cdef extern from "Discount.h":
         Discount()
         Boolean estimate(NgramStats &counts, unsigned order)
         Boolean interpolate
+        double discount(NgramCount count, NgramCount totalCount, NgramCount observedVocab)
+        double lowerOrderWeight(NgramCount totalCount, NgramCount observedVocab, NgramCount min2Vocab, NgramCount min3Vocab)
 
     cdef cppclass ModKneserNey:
-        ModKneserNey()
+        ModKneserNey(unsigned mincount)
+        double lowerOrderWeight(NgramCount totalCount, NgramCount observedVocab, NgramCount min2Vocab, NgramCount min3Vocab)
 
     cdef cppclass KneserNey:
-        KneserNey()
+        KneserNey(unsigned mincount)
+        double lowerOrderWeight(NgramCount totalCount, NgramCount observedVocab, NgramCount min2Vocab, NgramCount min3Vocab)
 
     cdef cppclass GoodTuring:
-        GoodTuring()
+        GoodTuring(unsigned mincount, unsigned maxcount)
+        double discount(NgramCount count, NgramCount totalCount, NgramCount observedVocab)
 
     cdef cppclass WittenBell:
-        WittenBell()
+        WittenBell(double mincount)
 
 
 
