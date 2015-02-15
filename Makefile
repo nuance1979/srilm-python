@@ -1,6 +1,6 @@
 all: build
 
-build:
+build: srilm/*.pyx srilm/*.pxd
 	python2.7 setup.py build_ext --inplace
 
 doc: doc/index.rst doc/conf.py
