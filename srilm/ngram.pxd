@@ -13,7 +13,9 @@ cdef extern from "NgramStats.h":
         NgramCount *insertCount(const VocabIndex *words)
         Boolean removeCount(const VocabIndex *words, NgramCount *removedData)
         Boolean read(File &file)
+        Boolean readBinary(File &file)
         void write(File &file)
+        void writeBinary(File &file)
         unsigned int countFile(File &file)
         unsigned int countSentence(const VocabString *words) # only this one respects addSentSent and addSentEnd!!!
         NgramCount sumCounts()

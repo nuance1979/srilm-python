@@ -100,19 +100,24 @@ cdef class Stats:
         else:
             raise TypeError('Expect array')
 
-    def read(self, const char *fname):
-        cdef File *fptr = new File(fname, 'r', 0)
-        if deref(fptr).error():
+    def read(self, const char *fname, binary = False):
+        mode = 'rb' if binary else 'r'
+        cdef File *fptr = new File(fname, mode, 0)
+        if fptr.error():
             raise IOError
-        cdef bint ok = self.thisptr.read(deref(fptr))
+        ok = self.thisptr.read(deref(fptr))
         del fptr
         return ok
 
-    def write(self, const char *fname):
-        cdef File *fptr = new File(fname, 'w', 0)
-        if deref(fptr).error():
+    def write(self, const char *fname, binary = False):
+        mode = 'wb' if binary else 'w'
+        cdef File *fptr = new File(fname, mode, 0)
+        if fptr.error():
             raise IOError
-        self.thisptr.write(deref(fptr))
+        if binary:
+            self.thisptr.writeBinary(deref(fptr))
+        else:
+            self.thisptr.write(deref(fptr))
         del fptr
 
     def count(self, words):
@@ -272,17 +277,17 @@ cdef class Lm:
         cdef array.array context = ngram[:-1].reverse()
         return self._wordProb(word, context)
 
-    def read(self, const char *fname, Boolean limitVocab = 0):
+    def read(self, const char *fname, Boolean limitVocab = False):
         cdef File *fptr = new File(fname, 'r', 0)
-        if deref(fptr).error():
+        if fptr.error():
             raise IOError
-        cdef bint ok = self.thisptr.read(deref(fptr), limitVocab)
+        ok = self.thisptr.read(deref(fptr), limitVocab)
         del fptr
         return ok
 
     def write(self, const char *fname):
         cdef File *fptr = new File(fname, 'w', 0)
-        if deref(fptr).error():
+        if fptr.error():
             raise IOError
         self.thisptr.write(deref(fptr))
         del fptr
