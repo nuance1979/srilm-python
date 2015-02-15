@@ -205,10 +205,11 @@ it was the winter of despair,
 class TestNgramDiscount(unittest.TestCase):
 
     def setUp(self):
-        self.discount = srilm.ngram.Discount(method='kneser-ney')
+        self.discount = srilm.ngram.Discount(method='kneser-ney', interpolate=True)
 
     def test_init(self):
         self.assertEqual(self.discount.method, 'kneser-ney')
+        self.assertTrue(self.discount.interpolate)
         self.assertRaises(ValueError, srilm.ngram.Discount, 'xixi-haha')
         with self.assertRaises(ValueError) as cm:
             d = srilm.ngram.Discount(method='kneser-ney', discount='haha')
@@ -222,6 +223,7 @@ class TestNgramDiscount(unittest.TestCase):
         d = srilm.ngram.Discount()
         d.read(fname)
         self.assertEqual(d.discount, 0.1)
+        self.assertEqual(d.method, 'kneser-ney')
         os.remove(fname)
 
 if __name__ == '__main__':
