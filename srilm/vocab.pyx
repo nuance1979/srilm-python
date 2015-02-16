@@ -70,6 +70,8 @@ cdef class Vocab:
 
     def __iter__(self):
         self.iterptr = new c_vocab.VocabIter(deref(self.thisptr))
+        if self.iterptr == NULL:
+            raise MemoryError
         return self
 
     def __next__(self):

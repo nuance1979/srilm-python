@@ -8,17 +8,17 @@ from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
 
-cdef inline bint _isindices(words):
+cdef inline bint _is_indices(words):
     return isinstance(words, array) and words.typecode == 'I'
 
-cdef inline void _tobuffer(unsigned int order, VocabIndex *buff, array.array words):
+cdef inline void _fill_buffer_with_array(unsigned int order, VocabIndex *buff, array.array words):
     cdef int n = min(order, len(words))
     cdef int i
     for i in range(n):
         buff[i] = words[i]
     buff[n] = Vocab_None
 
-cdef inline array.array _toarray(unsigned int order, VocabIndex *buff):
+cdef inline array.array _create_array_from_buffer(unsigned int order, VocabIndex *buff):
     cdef array.array a = array('I', [])
     cdef int i
     for i in range(order):
@@ -79,8 +79,8 @@ cdef class Stats:
         if not words:
             p = self.thisptr.insertCount(NULL)
             p[0] += inc
-        elif _isindices(words):
-            _tobuffer(self.order, self.keysptr, words)
+        elif _is_indices(words):
+            _fill_buffer_with_array(self.order, self.keysptr, words)
             p = self.thisptr.insertCount(self.keysptr)
             p[0] += inc
         else:
@@ -92,8 +92,8 @@ cdef class Stats:
         if not words:
             b = self.thisptr.removeCount(NULL, &count)
             return count if b else 0
-        elif _isindices(words):
-            _tobuffer(self.order, self.keysptr, words)
+        elif _is_indices(words):
+            _fill_buffer_with_array(self.order, self.keysptr, words)
             b = self.thisptr.removeCount(self.keysptr, &count)
             return count if b else 0
         else:
@@ -123,7 +123,7 @@ cdef class Stats:
         cdef int i = 0
         cdef int j = self.order
         cdef int l = len(words)
-        if _isindices(words):
+        if _is_indices(words):
             while j <= l:
                 self.add(words[i:j], 1)
                 i += 1
@@ -175,8 +175,8 @@ cdef class Stats:
         if not words:
             p = self.thisptr.findCount(NULL)
             return 0 if p == NULL else deref(p)
-        elif _isindices(words):
-            _tobuffer(self.order, self.keysptr, words)
+        elif _is_indices(words):
+            _fill_buffer_with_array(self.order, self.keysptr, words)
             p = self.thisptr.findCount(self.keysptr)
             return 0 if p == NULL else deref(p)
         else:
@@ -187,8 +187,8 @@ cdef class Stats:
         if not words:
             p = self.thisptr.insertCount(NULL)
             p[0] = count
-        elif _isindices(words):
-            _tobuffer(self.order, self.keysptr, words)
+        elif _is_indices(words):
+            _fill_buffer_with_array(self.order, self.keysptr, words)
             p = self.thisptr.insertCount(self.keysptr)
             p[0] = count
         else:
@@ -197,23 +197,6 @@ cdef class Stats:
     def __delitem__(self, words):
         self.remove(words)
 
-    def __iter__(self):
-        return self.iter(self.order)
-
-    def iter(self, unsigned int order):
-        self.iterptr = new NgramsIter(deref(self.thisptr), self.keysptr, order, NULL)
-        return self
-
-    def __next__(self):
-        cdef NgramCount *p = self.iterptr.next()
-        cdef array.array keys
-        if p == NULL:
-            del self.iterptr
-            raise StopIteration
-        else:
-            keys = _toarray(self.order, self.keysptr)
-            return (keys, deref(p))
-
     def __len__(self):
         cdef NgramCount s = 0
         cdef NgramCount i
@@ -221,9 +204,47 @@ cdef class Stats:
             s += i
         return s
 
+    def __iter__(self):
+        return self.iter(self.order)
+
+    def iter(self, unsigned int order):
+        if order < 1 or order > self.order:
+            raise ValueError('Invalid order')        
+        return _create_stats_iter(self.thisptr, order)
+
+cdef StatsIter _create_stats_iter(NgramStats *statsptr, unsigned int order):
+    it = StatsIter()
+    it.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex)) # iterator should manage its own buffer
+    if it.keysptr == NULL:
+        raise MemoryError
+    it.iterptr = new NgramsIter(deref(statsptr), it.keysptr, order, NULL)
+    if it.iterptr == NULL:
+        raise MemoryError
+    it._iter_order = order
+    return it
+ 
+cdef class StatsIter:
+    """Ngram stats iterator"""
+    def __dealloc__(self):
+        PyMem_Free(self.keysptr)
+        del self.iterptr
+    
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        cdef NgramCount *p = self.iterptr.next()
+        if p == NULL:
+            raise StopIteration
+        else:
+            keys = _create_array_from_buffer(self._iter_order, self.keysptr)
+            return (keys, deref(p))
+
 cdef class Lm:
     """Ngram language model"""
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
+        if order < 1:
+            raise ValueError('Invalid order')
         self.thisptr = new Ngram(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
             raise MemoryError
@@ -258,32 +279,32 @@ cdef class Lm:
     def __len__(self):
         return self.thisptr.numNgrams(self.order)
 
-    def _wordProb(self, VocabIndex word, context):
+    def prob(self, VocabIndex word, context):
         """Return log probability of p(word | context)
 
-           Note that the context is an ngram context in reverse order, i.e., if the text is
+        Note that the context is an ngram context in reverse order, i.e., if the text is
                       ... w_0 w_1 w_2 ...
-           then this function computes
+        then this function computes
                       p(w_2 | w_1, w_0)
-           and 'context' should be (w_1, w_0), *not* (w_0, w_1).
+        and 'context' should be (w_1, w_0), *not* (w_0, w_1).
         """
         if not context:
             self.keysptr[0] = Vocab_None
             return self.thisptr.wordProb(word, self.keysptr)
-        elif _isindices(context):
-            _tobuffer(self.order-1, self.keysptr, context)
+        elif _is_indices(context):
+            _fill_buffer_with_array(self.order-1, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
         else:
             raise TypeError('Expect array')
 
-    def prob(self, ngram):
+    def prob_ngram(self, ngram):
         """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
 
            Noe that this function takes ngram in its *natural* order.
         """
         cdef VocabIndex word = ngram[-1]
         cdef array.array context = ngram[:-1].reverse()
-        return self._wordProb(word, context)
+        return self.prob(word, context)
 
     def read(self, const char *fname, Boolean limitVocab = False):
         cdef File *fptr = new File(fname, 'r', 0)
@@ -332,3 +353,64 @@ cdef class Lm:
                 self._dlist[i].estimate(ts, i+1)
         b = self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
         return b
+
+    def iter(self, unsigned int length):
+        if length > self.order - 1:
+            raise ValueError('Invalid context length')
+        return _create_iter_context(self.thisptr, length)
+
+    def __iter__(self):
+        return self.iter(self.order - 1)
+
+cdef LmIterContext _create_iter_context(Ngram *lmptr, unsigned int order):
+    it = LmIterContext()
+    it.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex)) # iterator should manage its own buffer
+    if it.keysptr == NULL:
+        raise MemoryError
+    it.iterptr = new NgramBOsIter(deref(lmptr), it.keysptr, order, NULL)
+    if it.iterptr == NULL:
+        raise MemoryError
+    it._iter_order = order
+    return it
+
+cdef class LmIterContext:
+    """LM context iterator"""
+    def __dealloc__(self):
+        del self.iterptr
+        PyMem_Free(self.keysptr)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        cdef BOnode *p = self.iterptr.next();
+        cdef array.array keys
+        if p == NULL:
+            raise StopIteration
+        else:
+            keys = _create_array_from_buffer(self._iter_order, self.keysptr)
+            h = _create_iter_prob(p)
+            return (keys, h)
+
+cdef LmIterProb _create_iter_prob(BOnode *p):
+    it = LmIterProb()
+    it.iterptr = new NgramProbsIter(deref(p), NULL)
+    if it.iterptr == NULL:
+        raise MemoryError
+    return it
+
+cdef class LmIterProb:
+    """LM probability iterator"""
+    def __dealloc__(self):
+        del self.iterptr
+
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        cdef VocabIndex word
+        cdef LogP *p = self.iterptr.next(word)
+        if p == NULL:
+            raise StopIteration
+        else:
+            return (word, deref(p))

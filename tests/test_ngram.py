@@ -47,7 +47,8 @@ class TestNgramStats(unittest.TestCase):
         for i in range(1000):
             words[random.randint(0,2)] = random.randint(0,100) 
             self.stats[words] = random.randint(1,1000)
-        for w, i in self.stats:
+        for w, i in self.stats.iter(2):
+            self.assertEqual(len(w), 2)
             self.assertEqual(self.stats[w], i)
 
     def test_read_write(self):
@@ -137,6 +138,16 @@ class TestNgramStats(unittest.TestCase):
         self.stats.sum()
         self.assertEqual(self.stats[self.vocab.index(['is','a'])], 1)
 
+    def test_make_test(self):
+        text = 'this is a test'
+        for w in text.split():
+            self.vocab.add(w)
+        self.stats.count_string(text)
+        b = self.vocab.index('is a'.split())
+        self.assertEqual(self.stats[b], 1)
+        s = self.stats.make_test()
+        self.assertEqual(s[b], 0)
+
     def tearDown(self):
         del self.stats
         del self.vocab
@@ -160,85 +171,7 @@ class TestNgramLM(unittest.TestCase):
         self.assertEqual(len(self.lm), 0)
 
     def test_prob(self):
-        self.assertEqual(self.lm.prob(self.vocab.index(['it', 'was', 'the'])), float('-Inf'))
-
-    def test_train(self):
-        text = """
-It was the best of times,
-it was the worst of times,
-it was the age of wisdom,
-it was the age of foolishness,
-it was the epoch of belief,
-it was the epoch of incredulity, it was the season of Light,
-it was the season of Darkness, it was the spring of hope,
-it was the winter of despair,
-"""
-        for w in text.split():
-            self.vocab.add(w)
-        self.stats.count_string(text)
-        for i in range(1,4):
-            self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
-        self.assertTrue(self.lm.train(self.stats))
-        self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -2.5774917602539062)
-
-    def test_test(self):
-        text = """
-It was the best of times,
-it was the worst of times,
-it was the age of wisdom,
-it was the age of foolishness,
-it was the epoch of belief,
-it was the epoch of incredulity, it was the season of Light,
-it was the season of Darkness, it was the spring of hope,
-it was the winter of despair,
-"""
-        for w in text.split():
-            self.vocab.add(w)
-        self.stats.count_string(text)
-        for i in range(1,4):
-            self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
-        self.assertTrue(self.lm.train(self.stats))
-        prob, denom, ppl = self.lm.test(self.stats)
-        self.assertAlmostEqual(ppl, 10.253298042321083)
-        s = srilm.ngram.Stats(self.vocab, 2)
-        prob, denom, ppl = self.lm.test(s)
-        self.assertEqual(str(ppl), 'nan')
-
-    def test_make_test(self):
-        text = 'this is a test'
-        for w in text.split():
-            self.vocab.add(w)
-        self.stats.count_string(text)
-        b = self.vocab.index('is a'.split())
-        self.assertEqual(self.stats[b], 1)
-        s = self.stats.make_test()
-        self.assertEqual(s[b], 0)
-
-    def test_read_write(self):
-        text = """
-It was the best of times,
-it was the worst of times,
-it was the age of wisdom,
-it was the age of foolishness,
-it was the epoch of belief,
-it was the epoch of incredulity, it was the season of Light,
-it was the season of Darkness, it was the spring of hope,
-it was the winter of despair,
-"""
-        for w in text.split():
-            self.vocab.add(w)
-        self.stats.count_string(text)
-        for i in range(1,4):
-            self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
-        self.assertTrue(self.lm.train(self.stats))
-        fd, fname = tempfile.mkstemp()
-        os.close(fd)
-        self.lm.write(fname)
-        lm = srilm.ngram.Lm(self.vocab, 3)
-        lm.read(fname)
-        b = self.vocab.index('it was the'.split())
-        self.assertAlmostEqual(self.lm.prob(b), lm.prob(b), 5)
-        os.remove(fname)
+        self.assertEqual(self.lm.prob_ngram(self.vocab.index(['it', 'was', 'the'])), float('-Inf'))
 
     def test_compare_with_command_line(self):
         # reference was created with this command line
@@ -263,7 +196,64 @@ it was the winter of despair,
         del self.lm
         del self.vocab
 
+class TestNgramLMInDepth(unittest.TestCase):
+
+    def setUp(self):
+        self.vocab = srilm.vocab.Vocab()
+        self.lm = srilm.ngram.Lm(self.vocab, 3)
+        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        text = """
+It was the best of times,
+it was the worst of times,
+it was the age of wisdom,
+it was the age of foolishness,
+it was the epoch of belief,
+it was the epoch of incredulity, it was the season of Light,
+it was the season of Darkness, it was the spring of hope,
+it was the winter of despair,
+"""
+        for w in text.split():
+            self.vocab.add(w)
+        self.stats.count_string(text)
+        for i in range(1,4):
+            self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
+        self.assertTrue(self.lm.train(self.stats))
+
+    def test_train(self):
+        self.assertAlmostEqual(self.lm.prob_ngram(self.vocab.index(['it','was','the'])), -2.5774917602539062)
+
+    def test_test(self):
+        prob, denom, ppl = self.lm.test(self.stats)
+        self.assertAlmostEqual(ppl, 10.253298042321083)
+        s = srilm.ngram.Stats(self.vocab, 2)
+        prob, denom, ppl = self.lm.test(s)
+        self.assertEqual(str(ppl), 'nan')
+
+    def test_read_write(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        self.lm.write(fname)
+        lm = srilm.ngram.Lm(self.vocab, 3)
+        lm.read(fname)
+        b = self.vocab.index('it was the'.split())
+        self.assertAlmostEqual(self.lm.prob_ngram(b), lm.prob_ngram(b), 5)
+        os.remove(fname)
+
+    def test_iter(self):
+        for c, i in self.lm:
+            self.assertEqual(len(c), 2)
+            for w, p in i:
+                self.assertEqual(self.lm.prob(w, c), p)
+        for c, i in self.lm.iter(1):
+            self.assertEqual(len(c), 1)
+                
+    def tearDown(self):
+        del self.stats
+        del self.lm
+        del self.vocab
+
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
     suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)
-    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2]))
+    suite3 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLMInDepth)
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2, suite3]))

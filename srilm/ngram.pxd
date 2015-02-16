@@ -30,12 +30,19 @@ cdef extern from "NgramStats.h":
 
 cdef class Stats:
     cdef NgramStats *thisptr
-    cdef NgramsIter *iterptr
     cdef VocabIndex *keysptr
     cdef Vocab _vocab
 
+cdef class StatsIter:
+    cdef NgramsIter *iterptr
+    cdef VocabIndex *keysptr
+    cdef unsigned int _iter_order
+
 cdef extern from "Ngram.h":
     cdef const unsigned defaultNgramOrder
+    cdef cppclass BOnode:
+        BOnode()
+
     cdef cppclass Ngram:
         Ngram(c_vocab.Vocab &vocab, unsigned order)
         unsigned setorder(unsigned neworder)
@@ -49,9 +56,25 @@ cdef extern from "Ngram.h":
         unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
         NgramCount numNgrams(unsigned int n) const
 
+    cdef cppclass NgramBOsIter:
+        NgramBOsIter(const Ngram &lm, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
+        BOnode *next()
+
+    cdef cppclass NgramProbsIter:
+        NgramProbsIter(const BOnode &bonode, int(*sort)(VocabIndex, VocabIndex))
+        LogP *next(VocabIndex &word)
+
 cdef class Lm:
     cdef Ngram *thisptr
     cdef VocabIndex *keysptr
     cdef c_discount.Discount **dlistptr
     cdef Vocab _vocab
     cdef list _dlist
+
+cdef class LmIterContext:
+    cdef NgramBOsIter *iterptr
+    cdef VocabIndex *keysptr
+    cdef unsigned int _iter_order
+
+cdef class LmIterProb:
+    cdef NgramProbsIter *iterptr
