@@ -1,4 +1,8 @@
+from libcpp cimport bool
 from common cimport File
+
+cdef extern from "Boolean.h":
+    ctypedef bool Boolean
 
 cdef extern from "Vocab.h":
     ctypedef unsigned int VocabIndex
@@ -19,6 +23,7 @@ cdef extern from "Vocab.h":
         VocabIndex &ssIndex()
         VocabIndex &seIndex()
         VocabIndex &pauseIndex()
+        Boolean &unkIsWord()
 
     cdef cppclass VocabIter:
         VocabIter(Vocab &vocab)

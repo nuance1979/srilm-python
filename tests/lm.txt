@@ -1,0 +1,1110 @@
+
+\data\
+ngram 1=109
+ngram 2=372
+ngram 3=616
+
+\1-grams:
+-1.123385	</s>
+-99	<s>	-0.6512302
+-0.7852131	<unk>	-0.6747482
+-2.570543	Cock-lane	-0.1552235
+-2.269513	Farmer,	-0.4562536
+-2.269513	In	-0.3313148
+-2.269513	It	-0.1552235
+-2.269513	London	-0.1552235
+-2.269513	Lord	-0.1552235
+-2.269513	Woodman	-0.4562535
+-1.491362	a	-0.5142455
+-2.269513	about	-0.1552235
+-2.570543	after	-0.1552235
+-2.570543	age	-0.1552235
+-2.269513	all	-0.1552235
+-2.269513	already	-0.4562536
+-2.269513	among	-0.1552235
+-2.269513	an	-0.4562536
+-1.52915	and	-0.4104961
+-2.093422	any	-0.2801623
+-2.269513	as	-0.1552235
+-2.093422	at	-0.2344048
+-2.269513	be	-0.3313148
+-2.570543	been	-0.1552235
+-2.570543	before	-0.1552235
+-2.269513	being	-0.4562536
+-2.269513	burning	-0.4562536
+-2.093422	by	-0.2801623
+-2.269513	come	-0.1552235
+-2.570543	direct	-0.1552235
+-2.269513	down	-0.1552235
+-2.570543	enough	-0.1552235
+-2.570543	epoch	-0.1552235
+-2.269513	ever	-0.4562536
+-2.269513	face,	-0.4562535
+-2.269513	fair	-0.1552235
+-2.269513	favoured	-0.1552235
+-2.093422	fired	-0.3313148
+-1.968483	for	-0.2801623
+-2.269513	from	-0.1552235
+-2.570543	going	-0.1552235
+-1.968483	had	-0.2801623
+-2.269513	have	-0.1552235
+-2.269513	he	-0.1552235
+-2.093422	her	-0.3313148
+-1.667453	his	-1.058314
+-2.570543	hundred	-0.1552235
+-1.792392	in	-0.3982616
+-2.269513	into	-0.1552235
+-2.570543	is	-0.1552235
+-2.269513	it	-0.4562535
+-2.093422	its	-0.1552235
+-2.570543	jaw	-0.1552235
+-2.570543	king	-0.1552235
+-2.269513	large	-0.1552235
+-2.269513	like	-0.1552235
+-2.570543	likely	-0.1552235
+-2.269513	lords	-0.1552235
+-2.269513	made	-0.1552235
+-2.269513	mail	-0.4562535
+-2.269513	much	-0.1552235
+-2.269513	musketeers	-0.1552235
+-2.269513	not	-0.1552235
+-2.570543	now,	-0.1552235
+-1.424415	of	-0.4018959
+-1.968483	on	-0.3313148
+-1.968483	one	-0.4562535
+-2.570543	or	-0.1552235
+-2.269513	order	-0.1552235
+-2.269513	other	-0.1552235
+-2.269513	out	-0.2521335
+-2.269513	period,	-0.1552235
+-2.269513	plain	-0.1552235
+-2.570543	queen	-0.1552235
+-2.269513	robbed	-0.1552235
+-2.570543	season	-0.1552235
+-2.269513	seven	-0.1552235
+-2.570543	seventy-five.	-0.1552235
+-2.269513	shot	-0.1552235
+-2.269513	some	-0.1552235
+-2.269513	than	-0.2801623
+-1.792392	that	-0.206376
+-1.269513	the	-0.5531635
+-2.093422	their	-0.6323448
+-1.968483	them,	-0.4562536
+-2.570543	there	-0.1552235
+-2.269513	these	-0.4562536
+-2.093422	they	-0.1552235
+-2.570543	this	-0.1552235
+-2.269513	those	-0.1552235
+-2.269513	thousand	-0.1552235
+-2.269513	throne	-0.4562536
+-2.570543	through	-0.1552235
+-2.570543	times,	-0.1552235
+-1.667453	to	-0.4562535
+-2.269513	two	-0.4562536
+-2.269513	up	-0.1552235
+-2.570543	us,	-0.1552235
+-2.269513	very	-0.1552235
+-1.871573	was	-0.3515182
+-2.570543	we	-0.1552235
+-2.269513	went	-0.1552235
+-1.968483	were	-0.4562535
+-2.093422	which	-0.1552236
+-2.570543	who	-0.1552235
+-2.269513	whom	-0.1552235
+-1.871573	with	-0.5531635
+-2.269513	work	-0.1552235
+-2.093422	year	-0.2801623
+
+\2-grams:
+-0.2942316	<s> <unk>	-0.4505892
+-2.356823	<s> In	-0.1397994
+-1.822882	<s> It	-0.4408294
+-1.983039	<s> a	-0.1397994
+-2.356823	<s> already	-0.1397994
+-1.379728	<s> and	-0.4408294
+-2.356823	<s> as	-0.1397994
+-2.356823	<s> fair	-0.1397994
+-2.301263	<s> fired	-0.1397994
+-2.252012	<s> for	-0.1397994
+-2.356823	<s> from	-0.1397994
+-1.758555	<s> in	-0.1397994
+-1.048159	<s> it	-1.094042
+-2.301263	<s> its	-0.1397994
+-2.356823	<s> made	-0.1397994
+-2.356823	<s> mail	-0.1397994
+-2.356823	<s> much	-0.1397994
+-2.356823	<s> musketeers	-0.1397994
+-1.935599	<s> of	-0.1397994
+-2.356823	<s> than	-0.1397994
+-1.551692	<s> that	-0.3158906
+-1.587751	<s> the	-0.1397994
+-2.301263	<s> their	-0.1397994
+-2.356823	<s> those	-0.1397994
+-2.356823	<s> throne	-0.1397994
+-2.097027	<s> to	-0.1397994
+-2.356823	<s> up	-0.1397994
+-1.447186	<s> we	-0.4408294
+-2.301263	<s> which	-0.1397994
+-1.773766	<s> with	-0.1397994
+-1.015992	<unk> </s>
+-0.6914007	<unk> <unk>	-0.6871207
+-2.143521	<unk> In	-0.1397994
+-2.143521	<unk> It	-0.4408294
+-2.596073	<unk> Lord	-0.1397994
+-1.654178	<unk> a	-0.7418594
+-2.596073	<unk> about	-0.1397994
+-2.179313	<unk> after	-0.1397994
+-2.596073	<unk> among	-0.1397994
+-2.596073	<unk> an	-0.1397994
+-1.197466	<unk> and	-0.7418596
+-2.110456	<unk> any	-0.1397994
+-1.926757	<unk> as	-0.2367094
+-1.768106	<unk> at	-0.1397994
+-2.179313	<unk> before	-0.3158907
+-2.596073	<unk> being	-0.1397994
+-2.596073	<unk> burning	-0.1397994
+-1.663384	<unk> by	-0.3158907
+-2.596073	<unk> come	-0.1397994
+-2.143521	<unk> down	-0.1397994
+-2.596073	<unk> ever	-0.1397994
+-2.596073	<unk> favoured	-0.1397994
+-2.508194	<unk> fired	-0.1397994
+-1.886927	<unk> for	-0.6169207
+-2.143521	<unk> from	-0.4408294
+-1.753868	<unk> had	-0.2367094
+-2.596073	<unk> have	-0.1397994
+-2.596073	<unk> he	-0.1397994
+-2.508194	<unk> her	-0.1397994
+-2.22581	<unk> his	-0.4408294
+-1.376566	<unk> in	-0.4919819
+-2.596073	<unk> into	-0.1397994
+-2.596073	<unk> it	-0.1397994
+-2.596073	<unk> like	-0.1397994
+-2.596073	<unk> lords	-0.1397994
+-2.596073	<unk> much	-0.1397994
+-2.596073	<unk> musketeers	-0.1397994
+-2.596073	<unk> not	-0.1397994
+-2.179313	<unk> now,	-0.3158906
+-1.252837	<unk> of	-0.5077761
+-1.753868	<unk> on	-0.2647381
+-2.435139	<unk> one	-0.1397994
+-2.179313	<unk> or	-0.1397994
+-2.596073	<unk> order	-0.1397994
+-1.782827	<unk> out	-0.1397994
+-2.596073	<unk> period,	-0.1397994
+-2.143521	<unk> shot	-0.6169207
+-2.143521	<unk> than	-0.1397994
+-1.726719	<unk> that	-0.3616482
+-1.390681	<unk> the	-0.5077761
+-2.110456	<unk> their	-0.4408294
+-1.798065	<unk> there	-0.4408294
+-2.596073	<unk> these	-0.1397994
+-2.508194	<unk> they	-0.1397994
+-2.179313	<unk> through	-0.1397994
+-1.320518	<unk> to	-0.4707927
+-2.596073	<unk> up	-0.1397994
+-1.641213	<unk> was	-0.2189806
+-1.753868	<unk> were	-0.3616481
+-2.508194	<unk> which	-0.1397994
+-1.948132	<unk> who	-0.3158907
+-2.596073	<unk> whom	-0.1397994
+-2.051036	<unk> with	-0.3828375
+-2.596073	<unk> work	-0.1397994
+-2.508194	<unk> year	-0.1397994
+-0.4520195	Cock-lane </s>
+-0.1502066	Farmer, <unk>	-0.1397994
+-0.2924531	In <unk>	-0.1397994
+-0.9022439	In the	-0.1397994
+-0.8177583	It is	-0.4408294
+-0.796802	It was	-0.4408294
+-0.6927003	London </s>
+-0.7671495	London and	-0.1397994
+-0.5768213	Lord <unk>	-0.1397994
+-0.801947	Lord one	-0.1397994
+-0.1800609	Woodman and	-0.1397994
+-0.1996517	a <unk>	-0.5077762
+-1.689781	a fair	-0.1397994
+-1.707633	a king	-0.4408294
+-1.689781	a large	-0.4408294
+-1.689781	a plain	-0.1397994
+-1.707633	a queen	-0.4408294
+-1.689781	a thousand	-0.1397994
+-0.6927003	about </s>
+-0.8071538	about by	-0.1397994
+-0.5768213	after <unk>	-0.1397994
+-0.8071538	after which	-0.1397994
+-0.4856612	age of	-0.4408294
+-0.8177583	all going	-0.4408294
+-0.7817227	all his	-0.1397994
+-0.1502066	already <unk>	-0.1397994
+-0.7261527	among the	-0.1397994
+-0.801947	among them,	-0.1397994
+-0.1502066	an <unk>	-0.1397994
+-1.337762	and </s>
+-0.4458799	and <unk>	-0.4643105
+-1.071673	and a	-0.2647381
+-1.726196	and be	-0.1397994
+-1.726196	and ever	-0.1397994
+-1.60115	and his	-0.1397994
+-1.751045	and seventy-five.	-0.4408294
+-1.638967	and that	-0.1397994
+-0.8276917	and the	-0.6169207
+-1.726196	and those	-0.1397994
+-0.9407532	any </s>
+-0.7927575	any <unk>	-0.1397994
+-0.4623408	any of	-0.1397994
+-0.7574496	as <unk>	-0.1397994
+-1.18214	as at	-0.1397994
+-1.01006	as the	-0.1397994
+-1.18214	as they	-0.1397994
+-1.124093	as to	-0.4408294
+-1.027054	at </s>
+-0.5053775	at <unk>	-0.1397994
+-1.161846	at a	-0.1397994
+-1.225571	at that	-0.1397994
+-1.089241	at the	-0.1397994
+-0.2924531	be <unk>	-0.1397994
+-0.957814	be his	-0.1397994
+-0.3817237	been <unk>	-0.1397994
+-0.5768213	before <unk>	-0.1397994
+-0.8177583	before us,	-0.4408294
+-0.1502066	being <unk>	-0.1397994
+-0.1502066	burning <unk>	-0.1397994
+-0.427605	by <unk>	-0.1397994
+-1.311164	by his	-0.1397994
+-1.364458	by one	-0.1397994
+-1.393777	by seven	-0.1397994
+-1.181974	by the	-0.3158907
+-1.364458	by them,	-0.1397994
+-0.8124236	come down	-0.1397994
+-0.7817227	come to	-0.1397994
+-0.7261527	direct the	-0.1397994
+-0.7817227	direct to	-0.1397994
+-0.8158144	down </s>
+-0.9177306	down and	-0.1397994
+-0.9529017	down in	-0.1397994
+-0.5768213	enough <unk>	-0.1397994
+-0.7917172	enough that	-0.1397994
+-0.4856612	epoch of	-0.4408294
+-0.1502066	ever <unk>	-0.1397994
+-0.1844092	face, on	-0.4408295
+-0.5768213	fair <unk>	-0.1397994
+-0.8124236	fair face,	-0.1397994
+-0.801947	favoured on	-0.1397994
+-0.8124236	favoured period,	-0.1397994
+-0.7529125	fired <unk>	-0.1397994
+-0.3580104	fired on	-0.4408295
+-0.9407532	for </s>
+-0.3859949	for <unk>	-0.1397994
+-0.9857548	for the	-0.1397994
+-0.7623985	from a	-0.1397994
+-0.7261527	from the	-0.4408294
+-0.5194204	going direct	-0.1397994
+-1.113218	had </s>
+-0.6045168	had <unk>	-0.2647381
+-1.393777	had already	-0.1397994
+-0.7852224	had been	-0.4408294
+-1.393777	had not	-0.1397994
+-1.393777	had robbed	-0.1397994
+-0.5768213	have <unk>	-0.1397994
+-0.7817227	have his	-0.1397994
+-0.5768213	he <unk>	-0.1397994
+-0.801947	he had	-0.1397994
+-0.3291926	her </s>
+-0.7529125	her <unk>	-0.1397994
+-0.03296605	his <unk>	-0.3158907
+-0.6927003	hundred </s>
+-0.7671495	hundred and	-0.4408294
+-1.287764	in </s>
+-0.5210093	in <unk>	-0.2647381
+-1.626821	in London	-0.1397994
+-1.626821	in among	-0.1397994
+-1.477754	in and	-0.1397994
+-1.607497	in by	-0.1397994
+-1.521991	in his	-0.1397994
+-0.5896602	in the	-0.8387693
+-0.6927003	into </s>
+-0.5768213	into <unk>	-0.1397994
+-0.5194204	is likely	-0.4408294
+-0.1837853	it was	-0.8387694
+-0.8158144	its </s>
+-0.6678188	its <unk>	-0.1397994
+-0.983245	its being	-0.1397994
+-0.4932221	jaw and	-0.4408294
+-0.5087507	king with	-0.4408294
+-0.5768213	large <unk>	-0.1397994
+-0.8177583	large jaw	-0.4408294
+-0.7261527	like the	-0.1397994
+-0.801947	like them,	-0.1397994
+-0.5194204	likely enough	-0.1397994
+-0.8071538	lords at	-0.1397994
+-0.7530495	lords of	-0.1397994
+-0.801947	made for	-0.1397994
+-0.7817227	made to	-0.1397994
+-0.1837853	mail was	-0.1397994
+-0.5768213	much <unk>	-0.1397994
+-0.8124236	much out	-0.1397994
+-0.8071538	musketeers fired	-0.1397994
+-0.8124236	musketeers went	-0.1397994
+-0.6927003	not </s>
+-0.7817227	not to	-0.1397994
+-0.5768213	now, <unk>	-0.1397994
+-0.8124236	now, burning	-0.1397994
+-1.135577	of </s>
+-0.5109599	of <unk>	-0.5015272
+-1.915484	of London	-0.1397994
+-1.641999	of a	-0.1397994
+-1.915484	of all	-0.1397994
+-1.915484	of an	-0.1397994
+-1.878971	of her	-0.1397994
+-1.731857	of his	-0.1397994
+-1.915484	of order	-0.1397994
+-1.915484	of shot	-0.1397994
+-1.342164	of some	-0.4408294
+-0.7834093	of the	-0.4408294
+-1.845292	of them,	-0.1397994
+-1.915484	of these	-0.1397994
+-1.955351	of this	-0.1397994
+-1.955351	of times,	-0.4408294
+-1.915484	of whom	-0.1397994
+-1.069633	on </s>
+-0.8977275	on <unk>	-0.1397994
+-1.268838	on its	-0.1397994
+-0.3888178	on the	-0.3616481
+-0.4173918	one <unk>	-0.1397994
+-0.4854392	one thousand	-0.6169207
+-0.5768213	or <unk>	-0.1397994
+-0.801947	or for	-0.1397994
+-0.7671495	order and	-0.1397994
+-0.7530495	order of	-0.1397994
+-0.5768213	other <unk>	-0.1397994
+-0.8124236	other two	-0.1397994
+-0.8185463	out <unk>	-0.1397994
+-1.189657	out its	-0.1397994
+-0.5510414	out of	-0.1397994
+-1.169893	out with	-0.1397994
+-0.6927003	period, </s>
+-0.7917172	period, that	-0.1397994
+-0.7671495	plain and	-0.1397994
+-0.8124236	plain face,	-0.1397994
+-0.5087507	queen with	-0.1397994
+-0.7623985	robbed a	-0.1397994
+-0.7917172	robbed in	-0.1397994
+-0.4856612	season of	-0.4408294
+-0.5768213	seven <unk>	-0.1397994
+-0.8177583	seven hundred	-0.3158907
+-0.4520195	seventy-five. </s>
+-0.5768213	shot <unk>	-0.3158906
+-0.7671495	shot and	-0.1397994
+-0.5768213	some <unk>	-0.1397994
+-0.7530495	some of	-0.1397994
+-0.3859949	than <unk>	-0.1397994
+-1.100397	than any	-0.1397994
+-1.100397	than her	-0.1397994
+-0.6082579	that <unk>	-0.1397994
+-1.434935	that Farmer,	-0.1397994
+-1.434935	that Woodman	-0.1397994
+-1.434935	that favoured	-0.1397994
+-1.362317	that in	-0.1397994
+-1.434935	that some	-0.1397994
+-1.415611	that they	-0.1397994
+-1.434935	that very	-0.1397994
+-0.8908515	the </s>
+-0.3202152	the <unk>	-0.6657693
+-1.478011	the Cock-lane	-0.4408294
+-2.044928	the Farmer,	-0.1397994
+-2.044928	the Lord	-0.1397994
+-2.044928	the Woodman	-0.1397994
+-2.082753	the age	-0.4408294
+-2.082753	the epoch	-0.4408294
+-2.044928	the large	-0.1397994
+-2.044928	the lords	-0.1397994
+-2.044928	the mail	-0.1397994
+-1.468301	the other	-0.4408294
+-2.044928	the plain	-0.1397994
+-2.082753	the season	-0.4408294
+-2.044928	the throne	-0.1397994
+-1.458803	the year	-0.1397994
+-0.0941649	their <unk>	-0.2647381
+-0.1989535	them, <unk>	-0.1397994
+-1.027183	them, the	-0.1397994
+-0.796802	there was	-0.1397994
+-0.801947	there were	-0.1397994
+-0.1502066	these <unk>	-0.1397994
+-0.983245	they went	-0.1397994
+-0.9678084	they were	-0.1397994
+-0.983245	they work	-0.1397994
+-0.5768213	this <unk>	-0.1397994
+-0.8124236	this very	-0.1397994
+-0.8124236	those other	-0.1397994
+-0.8124236	those two	-0.1397994
+-0.8124236	thousand like	-0.1397994
+-0.8124236	thousand seven	-0.6169207
+-0.1782105	throne of	-0.4408294
+-0.8071538	through any	-0.1397994
+-0.7261527	through the	-0.1397994
+-0.4520195	times, </s>
+-1.320661	to </s>
+-0.3605549	to <unk>	-0.3316849
+-1.484821	to a	-0.1397994
+-1.023309	to be	-0.1397994
+-1.631789	to come	-0.1397994
+-1.631789	to have	-0.1397994
+-0.9519568	to the	-0.3158907
+-0.1782105	two of	-0.4408294
+-0.5768213	up <unk>	-0.1397994
+-0.7530495	up of	-0.1397994
+-0.4520195	us, </s>
+-0.5768213	very <unk>	-0.1397994
+-0.8071538	very year	-0.1397994
+-0.4282469	was <unk>	-0.1397994
+-1.380086	was a	-0.1397994
+-1.46219	was in	-0.1397994
+-1.527054	was made	-0.1397994
+-1.527054	was robbed	-0.1397994
+-0.8472215	was the	-0.4822221
+-1.433063	was to	-0.1397994
+-0.801947	we had	-0.4408294
+-0.801947	we were	-0.4408294
+-0.8124236	went about	-0.1397994
+-0.8124236	went into	-0.1397994
+-0.7237926	were </s>
+-0.4622882	were <unk>	-0.2367094
+-0.7598335	were a	-0.4408294
+-1.404007	were all	-0.4408294
+-0.8158144	which </s>
+-0.6678188	which <unk>	-0.1397994
+-0.8608161	which the	-0.1397994
+-0.5768213	who <unk>	-0.1397994
+-0.801947	who had	-0.1397994
+-0.7623985	whom a	-0.1397994
+-0.8124236	whom he	-0.1397994
+-0.8207026	with </s>
+-0.5591983	with <unk>	-0.4408294
+-0.4697012	with a	-0.3616481
+-1.490687	with their	-0.1397994
+-0.6927003	work </s>
+-0.5768213	work <unk>	-0.1397994
+-0.7927575	year <unk>	-0.1397994
+-1.022857	year of	-0.1397994
+-0.4804732	year one	-0.4408294
+
+\3-grams:
+-1.204185	<s> <unk> </s>
+-0.3627263	<s> <unk> <unk>
+-2.062362	<s> <unk> It
+-1.48768	<s> <unk> as
+-1.915069	<s> <unk> at
+-1.443333	<s> <unk> by
+-2.062362	<s> <unk> down
+-2.062362	<s> <unk> from
+-1.907934	<s> <unk> had
+-1.364248	<s> <unk> in
+-2.154014	<s> <unk> much
+-1.317546	<s> <unk> of
+-2.154014	<s> <unk> order
+-1.922323	<s> <unk> out
+-1.894006	<s> <unk> that
+-1.369058	<s> <unk> the
+-1.929701	<s> <unk> there
+-2.154014	<s> <unk> these
+-1.637227	<s> <unk> to
+-1.46113	<s> <unk> were
+-1.995291	<s> <unk> who
+-2.154014	<s> <unk> work
+-1.050472	<unk> <unk> </s>
+-0.4654783	<unk> <unk> <unk>
+-2.452118	<unk> <unk> In
+-2.17972	<unk> <unk> a
+-2.589237	<unk> <unk> about
+-1.280574	<unk> <unk> and
+-2.437979	<unk> <unk> any
+-1.922649	<unk> <unk> as
+-2.589237	<unk> <unk> being
+-1.539047	<unk> <unk> by
+-2.452118	<unk> <unk> down
+-2.589237	<unk> <unk> favoured
+-2.32601	<unk> <unk> for
+-2.452118	<unk> <unk> from
+-1.881432	<unk> <unk> had
+-2.589237	<unk> <unk> he
+-2.569965	<unk> <unk> her
+-1.969051	<unk> <unk> his
+-1.15248	<unk> <unk> in
+-2.589237	<unk> <unk> it
+-2.589237	<unk> <unk> like
+-2.589237	<unk> <unk> musketeers
+-2.589237	<unk> <unk> not
+-1.963502	<unk> <unk> now,
+-1.135263	<unk> <unk> of
+-2.245921	<unk> <unk> on
+-2.264178	<unk> <unk> out
+-1.958862	<unk> <unk> shot
+-1.958862	<unk> <unk> than
+-1.873776	<unk> <unk> that
+-1.25814	<unk> <unk> the
+-2.437979	<unk> <unk> their
+-2.466732	<unk> <unk> through
+-1.308096	<unk> <unk> to
+-2.245921	<unk> <unk> were
+-2.359519	<unk> <unk> who
+-1.385157	<unk> <unk> with
+-2.569965	<unk> <unk> year
+-0.8227844	Farmer, <unk> had
+-0.8542948	Farmer, <unk> they
+-0.5449764	In <unk> <unk>
+-0.8263685	In <unk> there
+-0.5006968	Lord <unk> of
+-0.2344248	a <unk> <unk>
+-1.404808	a <unk> and
+-1.485311	a <unk> in
+-0.9648053	a <unk> of
+-1.59974	a <unk> on
+-1.462073	a <unk> to
+-0.5418466	after <unk> out
+-0.5449764	already <unk> <unk>
+-0.8143222	already <unk> by
+-0.5449764	an <unk> <unk>
+-0.7493211	an <unk> of
+-0.5882084	and <unk> </s>
+-0.4590285	and <unk> <unk>
+-1.813723	and <unk> burning
+-1.538937	and <unk> in
+-1.064002	and <unk> of
+-1.68747	and <unk> on
+-1.802822	and <unk> one
+-1.765789	and <unk> their
+-1.510068	and <unk> to
+-0.4620724	any <unk> </s>
+-0.5356601	as <unk> a
+-0.5449764	at <unk> <unk>
+-0.8143222	at <unk> by
+-0.7360985	be <unk> and
+-0.855576	be <unk> into
+-0.5449764	been <unk> <unk>
+-0.8227844	been <unk> on
+-0.4620724	before <unk> </s>
+-0.7360985	being <unk> and
+-0.83263	being <unk> for
+-0.8239758	burning <unk> at
+-0.774515	burning <unk> in
+-0.6649234	by <unk> <unk>
+-0.9400399	by <unk> and
+-1.084044	by <unk> that
+-1.148397	by <unk> which
+-0.3739348	enough <unk> <unk>
+-0.6830416	ever <unk> </s>
+-0.8452025	ever <unk> than
+-0.3739348	fair <unk> <unk>
+-0.5147291	fired <unk> in
+-0.8580358	for <unk> </s>
+-0.6649234	for <unk> <unk>
+-1.133102	for <unk> or
+-1.007505	for <unk> the
+-0.7460944	had <unk> <unk>
+-0.491599	had <unk> before
+-1.153755	had <unk> come
+-0.3739348	have <unk> <unk>
+-0.5147291	he <unk> in
+-0.4620724	her <unk> </s>
+-1.112651	his <unk> </s>
+-0.4545217	his <unk> <unk>
+-1.47136	his <unk> after
+-1.410917	his <unk> at
+-0.7729198	his <unk> of
+-1.497494	his <unk> whom
+-1.061499	in <unk> </s>
+-0.4033692	in <unk> <unk>
+-1.416691	in <unk> It
+-1.188611	in <unk> of
+-1.24785	in <unk> the
+-1.356702	in <unk> were
+-0.3739348	into <unk> <unk>
+-0.3739348	its <unk> <unk>
+-0.4931882	large <unk> and
+-0.3739348	much <unk> <unk>
+-0.6830416	now, <unk> </s>
+-0.8133687	now, <unk> a
+-0.3628673	of <unk> </s>
+-0.6850108	of <unk> <unk>
+-1.846768	of <unk> In
+-1.893972	of <unk> Lord
+-1.85227	of <unk> after
+-1.122377	of <unk> and
+-1.756454	of <unk> had
+-1.893972	of <unk> lords
+-1.769984	of <unk> there
+-1.717485	of <unk> was
+-0.5449764	on <unk> <unk>
+-0.8464572	on <unk> now,
+-0.5449764	one <unk> <unk>
+-0.8362967	one <unk> who
+-0.4620724	or <unk> </s>
+-0.6830416	other <unk> </s>
+-0.5449764	other <unk> <unk>
+-0.3739348	out <unk> <unk>
+-0.4931882	seven <unk> and
+-0.2811567	shot <unk> <unk>
+-1.022548	shot <unk> through
+-0.7493211	some <unk> of
+-0.8464572	some <unk> or
+-0.7638078	than <unk> to
+-0.8119948	than <unk> was
+-0.6934709	that <unk> <unk>
+-1.222994	that <unk> before
+-1.068038	that <unk> in
+-1.145068	that <unk> was
+-1.168642	that <unk> were
+-1.319293	the <unk> </s>
+-0.4330421	the <unk> <unk>
+-0.9802039	the <unk> and
+-2.07513	the <unk> as
+-2.193606	the <unk> ever
+-2.185361	the <unk> fired
+-0.5634615	the <unk> of
+-2.193606	the <unk> period,
+-2.13034	the <unk> shot
+-2.004081	the <unk> that
+-1.834546	the <unk> the
+-1.791109	the <unk> to
+-2.193606	the <unk> up
+-1.493976	the <unk> was
+-0.7460944	their <unk> <unk>
+-0.4518497	their <unk> and
+-1.023221	their <unk> to
+-0.9164166	them, <unk> the
+-0.8982821	them, <unk> to
+-1.007945	them, <unk> with
+-0.6830416	these <unk> </s>
+-0.7360985	these <unk> and
+-0.5574161	this <unk> among
+-0.5546248	to <unk> </s>
+-0.5894935	to <unk> <unk>
+-1.523022	to <unk> a
+-1.633163	to <unk> any
+-1.558991	to <unk> at
+-1.681098	to <unk> have
+-1.406311	to <unk> in
+-1.563178	to <unk> out
+-1.567406	to <unk> there
+-0.3739348	up <unk> <unk>
+-0.3739348	very <unk> <unk>
+-0.9034282	was <unk> </s>
+-0.6934709	was <unk> <unk>
+-1.245018	was <unk> an
+-1.150095	was <unk> by
+-1.047235	was <unk> to
+-0.4282353	were <unk> <unk>
+-1.203645	were <unk> for
+-1.082155	were <unk> to
+-1.165632	were <unk> was
+-0.3739348	which <unk> <unk>
+-0.516115	who <unk> the
+-0.2078725	with <unk> <unk>
+-1.161968	with <unk> and
+-1.179685	with <unk> of
+-0.4931882	work <unk> and
+-0.3739348	year <unk> <unk>
+-0.1159996	the Cock-lane </s>
+-0.1034277	that Farmer, <unk>
+-0.1034277	the Farmer, <unk>
+-0.1905463	<s> In <unk>
+-0.2947969	<unk> In <unk>
+-0.6413273	<unk> In the
+-0.1577195	<s> It was
+-0.1594249	<unk> It is
+-0.3743879	in London </s>
+-0.3988926	of London and
+-0.4093989	<unk> Lord one
+-0.3304378	the Lord <unk>
+-0.1226209	that Woodman and
+-0.1226209	the Woodman and
+-0.53755	<s> a fair
+-0.03001414	<unk> a <unk>
+-0.3850426	and a <unk>
+-0.4821918	and a queen
+-1.097391	and a thousand
+-0.1349578	at a <unk>
+-0.1349578	from a <unk>
+-0.1349578	of a <unk>
+-0.1349578	robbed a <unk>
+-0.1349578	to a <unk>
+-0.1349578	was a <unk>
+-0.1906294	were a king
+-0.1349578	whom a <unk>
+-0.2760146	with a <unk>
+-0.5785127	with a large
+-1.194301	with a plain
+-0.4109208	<unk> about by
+-0.3743879	went about </s>
+-0.481948	<unk> after <unk>
+-0.6010078	<unk> after which
+-0.1214451	the age of
+-0.4033642	of all his
+-0.1594249	were all going
+-0.1034277	<s> already <unk>
+-0.1034277	had already <unk>
+-0.3857475	<unk> among the
+-0.4093989	in among them,
+-0.1034277	<unk> an <unk>
+-0.1034277	of an <unk>
+-0.1557639	<s> and <unk>
+-1.121394	<s> and ever
+-0.8392531	<unk> and </s>
+-0.2718869	<unk> and <unk>
+-1.164327	<unk> and a
+-1.795684	<unk> and his
+-0.7867185	<unk> and the
+-1.827644	<unk> and those
+-0.271777	London and <unk>
+-0.811753	Woodman and that
+-0.6101477	Woodman and the
+-0.5393367	down and be
+-0.1910848	hundred and seventy-five.
+-0.271777	in and <unk>
+-0.1750025	jaw and a
+-0.271777	order and <unk>
+-0.4167989	plain and the
+-0.271777	shot and <unk>
+-0.5944577	<unk> any <unk>
+-0.4116516	<unk> any of
+-0.4457532	than any </s>
+-0.2796892	through any of
+-0.49096	<s> as at
+-0.8057635	<unk> as <unk>
+-0.9519475	<unk> as the
+-1.030744	<unk> as they
+-0.5248856	<unk> as to
+-0.5299137	<unk> at <unk>
+-0.9254157	<unk> at a
+-0.9510826	<unk> at that
+-0.8933947	<unk> at the
+-0.2996411	as at <unk>
+-0.4642892	lords at </s>
+-0.1905463	and be <unk>
+-0.2947969	to be <unk>
+-0.6625702	to be his
+-0.1034277	had been <unk>
+-0.6580392	<unk> before <unk>
+-0.3022588	<unk> before us,
+-0.1034277	<unk> being <unk>
+-0.1034277	its being <unk>
+-0.1034277	<unk> burning <unk>
+-0.1034277	now, burning <unk>
+-0.4918699	<unk> by <unk>
+-1.266138	<unk> by his
+-1.288554	<unk> by one
+-1.300211	<unk> by seven
+-0.5457928	<unk> by the
+-1.288554	<unk> by them,
+-0.2628103	about by <unk>
+-0.2628103	in by <unk>
+-0.4033642	<unk> come to
+-0.412448	to come down
+-0.5626075	going direct the
+-0.5893569	going direct to
+-0.6048912	<unk> down </s>
+-0.6607598	<unk> down in
+-0.4403058	come down and
+-0.481948	likely enough <unk>
+-0.5939798	likely enough that
+-0.1214451	the epoch of
+-0.1034277	<unk> ever <unk>
+-0.1034277	and ever <unk>
+-0.1253769	fair face, on
+-0.1253769	plain face, on
+-0.3304378	<s> fair <unk>
+-0.412448	a fair face,
+-0.4093989	<unk> favoured on
+-0.412448	that favoured period,
+-0.3944231	<s> fired <unk>
+-0.2269043	<unk> fired on
+-0.2269043	musketeers fired on
+-0.2416771	<s> for <unk>
+-0.06664398	<unk> for <unk>
+-0.4557792	made for the
+-0.4457532	or for </s>
+-0.3974122	<s> from a
+-0.1513833	<unk> from the
+-0.1265635	all going direct
+-1.00121	<unk> had </s>
+-0.3988287	<unk> had <unk>
+-1.105341	<unk> had already
+-0.8235577	<unk> had been
+-0.5164136	he had not
+-0.1380477	we had <unk>
+-0.5909821	who had been
+-0.7775834	who had robbed
+-0.3304378	<unk> have <unk>
+-0.4033642	to have his
+-0.4093989	<unk> he had
+-0.3304378	whom he <unk>
+-0.3944231	<unk> her <unk>
+-0.2112232	of her </s>
+-0.2112232	than her </s>
+-0.01165938	<unk> his <unk>
+-0.02364043	all his <unk>
+-0.02364043	and his <unk>
+-0.02364043	be his <unk>
+-0.02364043	by his <unk>
+-0.02364043	have his <unk>
+-0.02364043	in his <unk>
+-0.02364043	of his <unk>
+-0.7217395	seven hundred </s>
+-0.2944163	seven hundred and
+-0.4485697	<s> in <unk>
+-0.489381	<s> in the
+-1.496263	<unk> in </s>
+-0.4755186	<unk> in <unk>
+-1.640217	<unk> in London
+-1.640217	<unk> in among
+-1.584823	<unk> in and
+-1.633701	<unk> in by
+-1.602514	<unk> in his
+-0.365033	<unk> in the
+-0.3356684	down in the
+-0.3066262	robbed in <unk>
+-0.3356684	that in the
+-0.3066262	was in <unk>
+-0.3743879	<unk> into </s>
+-0.3304378	went into <unk>
+-0.1265635	It is likely
+-0.01223818	<s> it was
+-0.1249821	<unk> it was
+-0.3655602	<s> its <unk>
+-0.4552411	on its being
+-0.4134237	out its </s>
+-0.1226209	large jaw and
+-0.1249821	a king with
+-0.1594249	a large jaw
+-0.3304378	the large <unk>
+-0.3857475	<unk> like the
+-0.4093989	thousand like them,
+-0.1265635	is likely enough
+-0.4109208	<unk> lords at
+-0.3944665	the lords of
+-0.4093989	<s> made for
+-0.4033642	was made to
+-0.1249821	<s> mail was
+-0.1249821	the mail was
+-0.412448	<s> much out
+-0.3304378	<unk> much <unk>
+-0.4109208	<s> musketeers fired
+-0.412448	<unk> musketeers went
+-0.4033642	<unk> not to
+-0.3743879	had not </s>
+-0.2571968	<unk> now, <unk>
+-0.7794672	<unk> now, burning
+-0.5111771	<s> of some
+-0.9343812	<unk> of </s>
+-0.3788996	<unk> of <unk>
+-1.825451	<unk> of a
+-1.934153	<unk> of all
+-1.934153	<unk> of an
+-1.921974	<unk> of her
+-1.865729	<unk> of his
+-1.934153	<unk> of order
+-1.934153	<unk> of shot
+-1.657755	<unk> of some
+-0.7612121	<unk> of the
+-1.910127	<unk> of them,
+-1.399271	<unk> of this
+-1.399271	<unk> of times,
+-1.934153	<unk> of whom
+-0.1253123	age of <unk>
+-0.590141	any of the
+-0.8344013	any of these
+-0.1253123	epoch of <unk>
+-0.4038751	lords of the
+-0.3021516	order of <unk>
+-0.4423777	out of <unk>
+-0.590141	out of the
+-0.1253123	season of <unk>
+-0.4837664	some of </s>
+-0.1253123	throne of <unk>
+-0.1565894	two of the
+-0.5466295	up of London
+-0.3021516	year of <unk>
+-0.9388776	<unk> on </s>
+-0.4116176	<unk> on <unk>
+-1.008431	<unk> on its
+-0.1047732	face, on the
+-0.2431423	favoured on the
+-0.1047732	fired on the
+-0.2577154	<unk> one <unk>
+-0.2905295	Lord one thousand
+-0.2577154	by one <unk>
+-0.1214103	year one thousand
+-0.481948	<unk> or <unk>
+-0.5986524	<unk> or for
+-0.3944665	<unk> order of
+-0.3988926	of order and
+-0.1345218	the other <unk>
+-0.412448	those other two
+-0.7474537	<unk> out <unk>
+-0.9368941	<unk> out its
+-0.564496	<unk> out of
+-0.9287813	<unk> out with
+-0.319657	much out of
+-0.4063711	<unk> period, that
+-0.3743879	favoured period, </s>
+-0.412448	a plain face,
+-0.3988926	the plain and
+-0.1249821	a queen with
+-0.3974122	had robbed a
+-0.4063711	was robbed in
+-0.1214451	the season of
+-0.3304378	by seven <unk>
+-0.09954265	thousand seven hundred
+-0.1159996	and seventy-five. </s>
+-0.08490565	<unk> shot <unk>
+-0.3988926	of shot and
+-0.1345218	of some <unk>
+-0.3944665	that some of
+-0.2416771	<s> than <unk>
+-0.4092297	<unk> than <unk>
+-0.8260533	<unk> than any
+-0.8260533	<unk> than her
+-0.2642735	<s> that <unk>
+-0.9574256	<s> that they
+-0.250093	<unk> that <unk>
+-1.148619	<unk> that Woodman
+-1.148619	<unk> that very
+-0.5202047	and that Farmer,
+-0.5202047	at that favoured
+-0.5132885	enough that in
+-0.5202047	period, that some
+-0.3148498	<s> the <unk>
+-0.8411851	<s> the Farmer,
+-0.6936756	<unk> the </s>
+-0.2241514	<unk> the <unk>
+-1.522996	<unk> the Cock-lane
+-1.648588	<unk> the Lord
+-1.648588	<unk> the Woodman
+-1.516282	<unk> the year
+-0.2062414	In the <unk>
+-0.2062414	among the <unk>
+-0.6133225	and the </s>
+-0.1795052	and the <unk>
+-0.2062414	as the <unk>
+-0.2062414	at the <unk>
+-0.1829462	by the <unk>
+-0.9658548	by the other
+-0.5230467	direct the other
+-0.2062414	for the <unk>
+-0.09099132	from the <unk>
+-0.8351713	in the </s>
+-0.09861363	in the <unk>
+-0.2062414	like the <unk>
+-1.130089	of the </s>
+-0.1543529	of the <unk>
+-1.402549	of the Cock-lane
+-1.511581	of the large
+-1.511581	of the plain
+-0.9548442	on the </s>
+-0.1784334	on the <unk>
+-1.22939	on the throne
+-0.2062414	them, the <unk>
+-0.2062414	through the <unk>
+-0.1829462	to the <unk>
+-1.017276	to the lords
+-0.3416542	was the <unk>
+-0.925722	was the age
+-0.925722	was the epoch
+-0.925722	was the season
+-1.438001	was the year
+-0.5501133	which the mail
+-0.0661472	<s> their <unk>
+-0.03181546	<unk> their <unk>
+-0.0661472	with their <unk>
+-0.1345218	among them, <unk>
+-0.1345218	by them, <unk>
+-0.1345218	like them, <unk>
+-0.4643147	of them, the
+-0.8973398	<unk> there was
+-0.2034363	<unk> there were
+-0.1034277	<unk> these <unk>
+-0.1034277	of these <unk>
+-0.4552411	<unk> they work
+-0.4552411	as they went
+-0.4518775	that they were
+-0.481948	of this <unk>
+-0.6033759	of this very
+-0.412448	<s> those two
+-0.412448	and those other
+-0.412448	a thousand like
+-0.09929461	one thousand seven
+-0.1214451	<s> throne of
+-0.1214451	the throne of
+-0.6010078	<unk> through any
+-0.5626075	<unk> through the
+-0.1159996	of times, </s>
+-0.2282661	<s> to <unk>
+-1.462023	<unk> to </s>
+-0.1989615	<unk> to <unk>
+-1.531288	<unk> to a
+-1.297536	<unk> to be
+-1.580956	<unk> to come
+-1.580956	<unk> to have
+-0.9108218	<unk> to the
+-0.09930544	as to <unk>
+-0.4483251	come to the
+-0.2282661	direct to <unk>
+-0.2282661	made to <unk>
+-0.2282661	not to <unk>
+-0.4635437	was to be
+-0.1214451	other two of
+-0.1214451	those two of
+-0.3304378	<s> up <unk>
+-0.3944665	<unk> up of
+-0.1159996	before us, </s>
+-0.3304378	that very <unk>
+-0.4109208	this very year
+-0.3586805	<unk> was <unk>
+-1.14847	<unk> was a
+-1.17582	<unk> was in
+-1.19506	<unk> was made
+-1.166511	<unk> was to
+-0.1616979	It was the
+-1.088329	it was <unk>
+-0.07153775	it was the
+-0.3893594	mail was <unk>
+-0.798194	mail was robbed
+-0.2631285	there was <unk>
+-0.4248299	<s> we had
+-0.4248299	<s> we were
+-0.412448	musketeers went into
+-0.412448	they went about
+-0.8626879	<unk> were </s>
+-0.2182186	<unk> were <unk>
+-0.8839063	<unk> were a
+-0.6408391	there were </s>
+-0.4663205	there were <unk>
+-0.6620575	there were a
+-0.2796642	they were <unk>
+-0.185813	we were all
+-0.3655602	<s> which <unk>
+-0.4134237	<unk> which </s>
+-0.4258671	after which the
+-0.6580392	<unk> who <unk>
+-0.2998912	<unk> who had
+-0.412448	<unk> whom he
+-0.3974122	of whom a
+-0.4715951	<s> with <unk>
+-0.4163841	<s> with a
+-0.9918173	<unk> with </s>
+-0.2349514	<unk> with <unk>
+-0.7453336	<unk> with a
+-1.278197	<unk> with their
+-0.1189057	king with a
+-0.3231084	out with <unk>
+-0.6070642	queen with </s>
+-0.4163841	queen with a
+-0.3304378	<unk> work <unk>
+-0.3743879	they work </s>
+-0.2882247	<unk> year one
+-0.6853412	the year of
+-0.4232586	the year one
+-0.4066813	very year <unk>
+
+\end\

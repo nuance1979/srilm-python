@@ -179,7 +179,7 @@ it was the winter of despair,
         for i in range(1,4):
             self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
         self.assertTrue(self.lm.train(self.stats))
-        self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -1.556302547454834)
+        self.assertAlmostEqual(self.lm.prob(self.vocab.index(['it','was','the'])), -2.5774917602539062)
 
     def test_test(self):
         text = """
@@ -199,7 +199,7 @@ it was the winter of despair,
             self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
         self.assertTrue(self.lm.train(self.stats))
         prob, denom, ppl = self.lm.test(self.stats)
-        self.assertAlmostEqual(ppl, 7.30475431369828)
+        self.assertAlmostEqual(ppl, 10.253298042321083)
         s = srilm.ngram.Stats(self.vocab, 2)
         prob, denom, ppl = self.lm.test(s)
         self.assertEqual(str(ppl), 'nan')
@@ -238,6 +238,24 @@ it was the winter of despair,
         lm.read(fname)
         b = self.vocab.index('it was the'.split())
         self.assertAlmostEqual(self.lm.prob(b), lm.prob(b), 5)
+        os.remove(fname)
+
+    def test_compare_with_command_line(self):
+        # reference was created with this command line
+        cmd = '../bin/i686-m64/ngram-count -order 3 -vocab tests/98c1v.txt -unk -ukndiscount -interpolate -lm tests/lm.txt -text tests/98c1.txt -gt3min 1'
+        self.vocab.read('tests/98c1v.txt')
+        self.stats.count_file('tests/98c1.txt')
+        for i in range(3):
+            self.lm.set_discount(i+1, srilm.discount.Discount(method='kneser-ney', interpolate=True))
+        self.lm.train(self.stats)
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        self.lm.write(fname)
+        with open(fname) as f:
+            out_text_lm = f.read()
+        with open('tests/lm.txt') as f:
+            ref_text_lm = f.read()
+        self.assertEqual(out_text_lm, ref_text_lm)
         os.remove(fname)
 
     def tearDown(self):

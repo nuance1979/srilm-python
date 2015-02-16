@@ -4,8 +4,10 @@ from array import array
 
 cdef class Vocab:
 
-    def __cinit__(self, VocabIndex start = 0, VocabIndex end = c_vocab.Vocab_None-1):
+    def __cinit__(self, VocabIndex start = 0, VocabIndex end = c_vocab.Vocab_None-1, bint unk_is_word = True):
         self.thisptr = new c_vocab.Vocab(start, end)
+        cdef Boolean *b = &self.thisptr.unkIsWord()
+        b[0] = unk_is_word # very important
 
     def __dealloc__(self):
         del self.thisptr
