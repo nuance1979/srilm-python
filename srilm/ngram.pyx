@@ -166,7 +166,7 @@ cdef class Stats:
         for w, c in self:
             s[w] = c
             if w[0] == self.thisptr.vocab.ssIndex():
-                for i in range(1, self.order):
+                for i in range(2, self.order):
                     s[w[:i]] += c
         return s
 
