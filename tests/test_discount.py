@@ -48,6 +48,18 @@ it was the winter of despair,
         self.assertTrue(self.discount.estimate(ts, 3))
         self.assertAlmostEqual(self.discount.discount, 0.6862745098039216)
 
+    def test_read_write(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        self.discount.discount = 0.02
+        self.discount.write(fname)
+        d = srilm.discount.Discount()
+        d.read(fname)
+        self.assertEqual(self.discount.method, d.method)
+        self.assertEqual(self.discount.interpolate, d.interpolate)
+        self.assertEqual(self.discount.discount, d.discount)
+        os.remove(fname)
+
     def tearDown(self):
         del self.discount
 

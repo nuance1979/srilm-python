@@ -1,4 +1,8 @@
 from cython.operator cimport dereference as deref
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 cdef class Discount:
     """Hold parameters for Ngram discount/smoothing method
@@ -87,7 +91,21 @@ cdef class Discount:
             self.discount = [(<ModKneserNey *>self.thisptr).lowerOrderWeight(1, 1, 0, 0), (<ModKneserNey *>self.thisptr).lowerOrderWeight(1, 1, 1, 0), (<ModKneserNey *>self.thisptr).lowerOrderWeight(1, 1, 1, 1)]
 
     def read(self, fname):
-        pass
+        with open(fname, 'rb') as f:
+            data = pickle.load(f)
+        self.method = data['method']
+        self.discount = data['discount']
+        self.interpolate = data['interpolate']
+        self.min_count = data['min_count']
+        self.max_count = data['max_count']
 
     def write(self, fname):
-        pass
+        data = {'method': self.method,
+                'discount': self.discount,
+                'interpolate': self.interpolate,
+                'min_count': self.min_count,
+                'max_count': self.max_count
+        }
+        with open(fname, 'wb') as fout:
+            pickle.dump(data, fout, 0)
+
