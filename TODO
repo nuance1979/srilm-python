@@ -1,4 +1,4 @@
-o Compare results with directly invoke srilm
+o Add iterator for Lm
 o Make sure numpy.array can be used in place of array.array
 o Add maxent.lm module
 x Improve Makefile to run tests with 'make test'
@@ -13,3 +13,5 @@ x Add a Sphinx set up
 x Add test() to ngram.lm
 x Refactorize Discount
 x Test Lm.read() and Lm.write() arpabo format
+x Add read() and write() for Discount
+x Compare results with directly invoke srilm
