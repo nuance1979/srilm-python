@@ -1,0 +1,4 @@
+o Typing Pyton object is useless
+o deref(ptr) is not assignable while ptr[0] is
+o Use global factory function as a fake constructor to bridge the gap from C type to Python object
+o Mixing object and its iterator is not a good idea; doesn't worth it
