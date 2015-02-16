@@ -69,9 +69,9 @@ cdef class Discount:
 
     def estimate(self, Stats ts, unsigned int order):
         cdef bint b = self.thisptr.estimate(deref(ts.thisptr), order)
-        if not b:
-            raise RuntimeError('error in discount estimator for order %d' % order)
-        self._get_discount()
+        if b:
+            self._get_discount()
+        return b
 
     cdef void _get_discount(self):
         """get estimated discount through 'reverse-engineering'"""

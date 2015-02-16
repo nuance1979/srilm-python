@@ -30,7 +30,23 @@ class TestNgramDiscount(unittest.TestCase):
         os.remove(fname)
 
     def test_estimate(self):
-        pass
+        text = """
+It was the best of times,
+it was the worst of times,
+it was the age of wisdom,
+it was the age of foolishness,
+it was the epoch of belief,
+it was the epoch of incredulity, it was the season of Light,
+it was the season of Darkness, it was the spring of hope,
+it was the winter of despair,
+"""
+        v = srilm.vocab.Vocab()
+        ts = srilm.ngram.Stats(v, 3)
+        for w in text.split():
+            v.add(w)
+        ts.count_string(text)
+        self.assertTrue(self.discount.estimate(ts, 3))
+        self.assertAlmostEqual(self.discount.discount, 0.6862745098039216)
 
     def tearDown(self):
         del self.discount
