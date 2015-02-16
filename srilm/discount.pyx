@@ -107,5 +107,5 @@ cdef class Discount:
                 'max_count': self.max_count
         }
         with open(fname, 'wb') as fout:
-            pickle.dump(data, fout, 0)
+            pickle.dump(data, fout, 2)
 
