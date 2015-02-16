@@ -44,6 +44,7 @@ setup(
     description = 'Python binding for SRI Language Modeling Toolkit implemented in Cython',
     author = 'Yi Su',
     author_email = 'nuance1979@hotmail.com',
+    license = 'MIT',
     packages = ['srilm'],
     ext_package = 'srilm',
     ext_modules = cythonize(modules, annotate=True)
