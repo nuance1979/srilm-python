@@ -17,6 +17,7 @@ module_dict = {
     'vocab' : 'srilm/vocab.pyx',
     'ngram' : 'srilm/ngram.pyx',
     'discount' : 'srilm/discount.pyx',
+    'maxent' : 'srilm/maxent.pyx',
     }
 
 modules = []
