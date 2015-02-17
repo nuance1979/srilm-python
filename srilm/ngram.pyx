@@ -1,5 +1,4 @@
 from cython.operator cimport dereference as deref
-from libc.string cimport strcpy, strlen
 cimport c_vocab
 from c_vocab cimport Vocab_None
 from vocab cimport Vocab
