@@ -375,3 +375,53 @@ cdef class LmIterProb:
             raise StopIteration
         else:
             return (word, deref(p))
+
+cdef class CountLm(abstract.Lm):
+    """Ngram language model with deleted interpolation, a.k.a. Jelinek-Mercer, smoothing"""
+    def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
+        if order < 1:
+            raise ValueError('Invalid order')
+        self.thisptr = new NgramCountLM(deref(v.thisptr), order)
+        if self.thisptr == NULL:
+            raise MemoryError
+        self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
+        if self.keysptr == NULL:
+            raise MemoryError
+        self._vocab = v
+        self._order = order
+
+    def __dealloc__(self):
+        PyMem_Free(self.keysptr)
+        del self.thisptr
+
+    property order:
+        def __get__(self):
+            return self._order
+
+    def prob(self, VocabIndex word, context):
+        if not context:
+            self.keysptr[0] = Vocab_None
+            return self.thisptr.wordProb(word, self.keysptr)
+        else:
+            _fill_buffer_with_array(self.order-1, self.keysptr, context)
+            return self.thisptr.wordProb(word, self.keysptr)
+
+    def read(self, const char *fname, Boolean limitVocab = False):
+        cdef File *fptr = new File(fname, 'r', 0)
+        if fptr.error():
+            raise IOError
+        ok = self.thisptr.read(deref(fptr), limitVocab)
+        del fptr
+        return ok
+
+    def write(self, const char *fname):
+        cdef File *fptr = new File(fname, 'w', 0)
+        if fptr.error():
+            raise IOError
+        self.thisptr.write(deref(fptr))
+        del fptr
+        
+    def train(self, Stats ts, max_iter = 100, min_delta = 0.001):
+        self.thisptr.maxEMiters = max_iter
+        self.thisptr.minEMdelta = min_delta
+        return self.thisptr.estimate(deref(ts.thisptr))

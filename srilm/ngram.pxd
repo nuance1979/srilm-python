@@ -79,3 +79,19 @@ cdef class LmIterContext:
 
 cdef class LmIterProb:
     cdef NgramProbsIter *iterptr
+
+cdef extern from "NgramCountLM.h":
+    cdef cppclass NgramCountLM:
+        NgramCountLM(c_vocab.Vocab &vocab, unsigned order)
+        LogP wordProb(VocabIndex word, const VocabIndex *context)
+        Boolean read(File &file, Boolean limitVocab)
+        Boolean write(File &file)
+        Boolean estimate(NgramStats &stats)
+        unsigned maxEMiters
+        double minEMdelta
+
+cdef class CountLm(abstract.Lm):
+    cdef NgramCountLM *thisptr
+    cdef VocabIndex *keysptr
+    cdef Vocab _vocab
+    cdef unsigned int _order
