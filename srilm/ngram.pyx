@@ -212,7 +212,7 @@ cdef class StatsIter:
             keys = _create_array_from_buffer(self._iter_order, self.keysptr)
             return (keys, deref(p))
 
-cdef class Lm:
+cdef class Lm(abstract.Lm):
     """Ngram language model"""
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
         if order < 1:
@@ -266,15 +266,6 @@ cdef class Lm:
         else:
             _fill_buffer_with_array(self.order-1, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
-
-    def prob_ngram(self, ngram):
-        """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
-
-           Noe that this function takes ngram in its *natural* order.
-        """
-        cdef VocabIndex word = ngram[-1]
-        cdef array.array context = ngram[:-1].reverse()
-        return self.prob(word, context)
 
     def read(self, const char *fname, Boolean limitVocab = False):
         cdef File *fptr = new File(fname, 'r', 0)

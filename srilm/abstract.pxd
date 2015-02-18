@@ -1,0 +1,2 @@
+cdef class Lm:
+    pass

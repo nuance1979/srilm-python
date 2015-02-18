@@ -7,7 +7,7 @@ cimport ngram
 cimport c_vocab
 from common cimport _fill_buffer_with_array, _create_array_from_buffer
 
-cdef class Lm:
+cdef class Lm(abstract.Lm):
     """Maximum Entropy Language Model"""
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
         if order < 1:
@@ -36,11 +36,6 @@ cdef class Lm:
         else:
             _fill_buffer_with_array(self._order, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
-
-    def prob_ngram(self, ngram):
-        cdef VocabIndex word = ngram[-1]
-        cdef array.array context = ngram[:-1].reverse()
-        return self.prob(word, context)
 
     def read(self, const char *fname, Boolean limitVocab = False):
         cdef File *fptr = new File(fname, 'r', 0)

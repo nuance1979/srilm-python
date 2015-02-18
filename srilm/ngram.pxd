@@ -3,6 +3,7 @@ from c_vocab cimport VocabIndex, VocabString
 from vocab cimport Vocab
 from common cimport File, LogP, Boolean, TextStats, LogPtoPPL, LogP2, Prob
 cimport c_discount
+cimport abstract
 
 cdef extern from "NgramStats.h":
     ctypedef unsigned long NgramCount
@@ -64,7 +65,7 @@ cdef extern from "Ngram.h":
         NgramProbsIter(const BOnode &bonode, int(*sort)(VocabIndex, VocabIndex))
         LogP *next(VocabIndex &word)
 
-cdef class Lm:
+cdef class Lm(abstract.Lm):
     cdef Ngram *thisptr
     cdef VocabIndex *keysptr
     cdef c_discount.Discount **dlistptr
