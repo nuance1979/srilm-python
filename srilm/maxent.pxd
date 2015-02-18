@@ -10,7 +10,7 @@ cdef extern from "MEModel.h":
         LogP wordProb(VocabIndex word, const VocabIndex *context)
         Boolean read(File &file, Boolean limitVocab)
         Boolean write(File &file)
-        Ngram *getNgamLM()
+        Ngram *getNgramLM()
         Boolean estimate(NgramStats &stats, double alpha, double sigma2)
         Boolean adapt(NgramStats &stats, double alpha, double sigma2)
         void setMaxIterations(unsigned max)
