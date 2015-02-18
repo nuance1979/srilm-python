@@ -6,23 +6,7 @@ from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
-
-cdef inline bint _is_indices(words):
-    return isinstance(words, array) and words.typecode == 'I'
-
-cdef inline void _fill_buffer_with_array(unsigned int order, VocabIndex *buff, array.array words):
-    cdef int n = min(order, len(words))
-    cdef int i
-    for i in range(n):
-        buff[i] = words[i]
-    buff[n] = Vocab_None
-
-cdef inline array.array _create_array_from_buffer(unsigned int order, VocabIndex *buff):
-    cdef array.array a = array('I', [])
-    cdef int i
-    for i in range(order):
-        a.append(buff[i])
-    return a
+from common cimport _is_indices, _fill_buffer_with_array, _create_array_from_buffer
 
 cdef class Stats:
     """Holds ngram counts in a trie

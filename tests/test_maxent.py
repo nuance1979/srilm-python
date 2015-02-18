@@ -15,6 +15,15 @@ class TestMaxentLm(unittest.TestCase):
     def test_order(self):
         self.assertEqual(self.lm.order, 3)
 
+    def test_prob(self):
+        pass
+
+    def test_read_write(self):
+        pass
+
+    def test_train(self):
+        pass
+
     def tearDown(self):
         del self.lm
         del self.stats

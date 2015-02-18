@@ -1,8 +1,10 @@
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
+from cpython cimport array
 from vocab cimport Vocab
 from ngram cimport defaultNgramOrder, Stats
 cimport c_vocab
+from common cimport _is_indices, _fill_buffer_with_array, _create_array_from_buffer
 
 cdef class Lm:
     """Maximum Entropy Language Model"""
@@ -27,10 +29,19 @@ cdef class Lm:
             return self._order
 
     def prob(self, VocabIndex word, context):
-        pass
+        if not context:
+            self.keysptr[0] = Vocab_None
+            return self.thisptr.wordProb(word, self.keysptr)
+        elif _is_indices(context):
+            _fill_buffer_with_array(self._order, self.keysptr, context)
+            return self.thisptr.wordProb(word, self.keysptr)
+        else:
+            raise TypeError('Expect array')
 
     def prob_ngram(self, ngram):
-        pass
+        cdef VocabIndex word = ngram[-1]
+        cdef array.array context = ngram[:-1].reverse()
+        return self.prob(word, context)
 
     def read(self, const char *fname, Boolean limitVocab = False):
         cdef File *fptr = new File(fname, 'r', 0)

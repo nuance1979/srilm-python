@@ -1,5 +1,5 @@
 from common cimport Boolean, LogP, File
-from c_vocab cimport VocabIndex
+from c_vocab cimport VocabIndex, Vocab_None
 cimport c_vocab
 from ngram cimport NgramStats, Ngram
 from vocab cimport Vocab
