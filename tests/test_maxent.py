@@ -12,6 +12,9 @@ class TestMaxentLm(unittest.TestCase):
         self.stats = srilm.ngram.Stats(self.vocab, 3)
         self.lm = srilm.maxent.Lm(self.vocab, 3)
 
+    def test_order(self):
+        self.assertEqual(self.lm.order, 3)
+
     def tearDown(self):
         del self.lm
         del self.stats

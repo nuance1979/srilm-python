@@ -1,0 +1,11 @@
+--- /tmp/srilm/lm/src/MEModel.cc	2014-04-08 12:46:00.000000000 -0400
++++ lm/src/MEModel.cc	2015-02-17 21:02:28.000000000 -0500
+@@ -59,7 +59,7 @@
+  */
+ MEModel::MEModel(Vocab & vocab, unsigned order)
+     : LM(vocab), order(order), _skipOOVs(false), reverseContextIndex(), contextIndex(), vocabMap(),
+-      maxIterations(1000)
++      maxIterations(1000), m(0)
+ {
+     if (order < 1) {
+ 	order = 1;
