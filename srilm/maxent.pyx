@@ -4,7 +4,7 @@ from cpython cimport array
 from vocab cimport Vocab
 from ngram cimport defaultNgramOrder, Stats
 cimport c_vocab
-from common cimport _is_indices, _fill_buffer_with_array, _create_array_from_buffer
+from common cimport _fill_buffer_with_array, _create_array_from_buffer
 
 cdef class Lm:
     """Maximum Entropy Language Model"""
@@ -32,11 +32,9 @@ cdef class Lm:
         if not context:
             self.keysptr[0] = Vocab_None
             return self.thisptr.wordProb(word, self.keysptr)
-        elif _is_indices(context):
+        else:
             _fill_buffer_with_array(self._order, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
-        else:
-            raise TypeError('Expect array')
 
     def prob_ngram(self, ngram):
         cdef VocabIndex word = ngram[-1]

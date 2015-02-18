@@ -38,9 +38,6 @@ cdef extern from "NgramStats.h":
     cdef cppclass NgramStats:
         NgramStats(c_vocab.Vocab &vocab, unsigned int order)
 
-cdef inline bint _is_indices(words):
-    return isinstance(words, array) and words.typecode == 'I'
-
 cdef inline void _fill_buffer_with_array(unsigned int order, VocabIndex *buff, array.array words):
     cdef int n = min(order, len(words))
     cdef int i

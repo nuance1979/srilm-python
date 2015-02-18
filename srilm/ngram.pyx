@@ -6,7 +6,7 @@ from cpython cimport array
 from array import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
-from common cimport _is_indices, _fill_buffer_with_array, _create_array_from_buffer
+from common cimport _fill_buffer_with_array, _create_array_from_buffer
 
 cdef class Stats:
     """Holds ngram counts in a trie
@@ -62,12 +62,10 @@ cdef class Stats:
         if not words:
             p = self.thisptr.insertCount(NULL)
             p[0] += inc
-        elif _is_indices(words):
+        else:
             _fill_buffer_with_array(self.order, self.keysptr, words)
             p = self.thisptr.insertCount(self.keysptr)
             p[0] += inc
-        else:
-            raise TypeError('Expect array')
 
     def remove(self, words):
         cdef NgramCount count
@@ -75,12 +73,10 @@ cdef class Stats:
         if not words:
             b = self.thisptr.removeCount(NULL, &count)
             return count if b else 0
-        elif _is_indices(words):
+        else:
             _fill_buffer_with_array(self.order, self.keysptr, words)
             b = self.thisptr.removeCount(self.keysptr, &count)
             return count if b else 0
-        else:
-            raise TypeError('Expect array')
 
     def read(self, const char *fname, binary = False):
         mode = 'rb' if binary else 'r'
@@ -106,14 +102,11 @@ cdef class Stats:
         cdef int i = 0
         cdef int j = self.order
         cdef int l = len(words)
-        if _is_indices(words):
-            while j <= l:
-                self.add(words[i:j], 1)
-                i += 1
-                j += 1
-            return l
-        else:
-            raise TypeError('Expect array')
+        while j <= l:
+            self.add(words[i:j], 1)
+            i += 1
+            j += 1
+        return l
 
     def count_string(self, string):
         words = string.split()
@@ -158,24 +151,20 @@ cdef class Stats:
         if not words:
             p = self.thisptr.findCount(NULL)
             return 0 if p == NULL else deref(p)
-        elif _is_indices(words):
+        else:
             _fill_buffer_with_array(self.order, self.keysptr, words)
             p = self.thisptr.findCount(self.keysptr)
             return 0 if p == NULL else deref(p)
-        else:
-            raise TypeError('Expect array')
 
     def __setitem__(self, words, NgramCount count):
         cdef NgramCount *p
         if not words:
             p = self.thisptr.insertCount(NULL)
             p[0] = count
-        elif _is_indices(words):
+        else:
             _fill_buffer_with_array(self.order, self.keysptr, words)
             p = self.thisptr.insertCount(self.keysptr)
             p[0] = count
-        else:
-            raise TypeError('Expect array')
 
     def __delitem__(self, words):
         self.remove(words)
@@ -274,11 +263,9 @@ cdef class Lm:
         if not context:
             self.keysptr[0] = Vocab_None
             return self.thisptr.wordProb(word, self.keysptr)
-        elif _is_indices(context):
+        else:
             _fill_buffer_with_array(self.order-1, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
-        else:
-            raise TypeError('Expect array')
 
     def prob_ngram(self, ngram):
         """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
@@ -366,7 +353,7 @@ cdef class LmIterContext:
         return self
 
     def __next__(self):
-        cdef BOnode *p = self.iterptr.next();
+        cdef BOnode *p = self.iterptr.next()
         cdef array.array keys
         if p == NULL:
             raise StopIteration
