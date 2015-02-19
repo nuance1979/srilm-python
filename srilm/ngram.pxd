@@ -1,7 +1,7 @@
 cimport c_vocab
 from c_vocab cimport VocabIndex, VocabString
 from vocab cimport Vocab
-from common cimport File, LogP, Boolean, TextStats, LogPtoPPL, LogP2, Prob
+from common cimport File, LogP, Boolean, TextStats
 cimport c_discount
 cimport abstract
 

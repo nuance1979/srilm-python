@@ -4,10 +4,12 @@ from common cimport Boolean, TextStats, File, LogP
 
 cdef extern from "NgramStats.h":
     ctypedef unsigned long NgramCount
+    cdef cppclass NgramStats
 
 cdef extern from "LM.h":
     cdef cppclass LM:
         LM(c_vocab.Vocab &vocab)
+        LogP countsProb(NgramStats &counts, TextStats &stats, unsigned order, Boolean entropy)
         NgramCount pplCountsFile(File &file, unsigned order, TextStats &stats)
         unsigned pplFile(File &file, TextStats &stats)
         VocabIndex generateWord(const VocabIndex *context)

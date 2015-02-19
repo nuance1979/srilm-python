@@ -272,19 +272,6 @@ cdef class Lm(abstract.Lm):
             _fill_buffer_with_array(self.order-1, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
 
-    def test(self, Stats ns):
-        cdef TextStats *tsptr = new TextStats()
-        cdef LogP p = self.thisptr.countsProb(deref(ns.thisptr), deref(tsptr), ns.order)
-        cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
-        cdef LogP2 prob = tsptr.prob
-        del tsptr
-        cdef Prob ppl
-        if denom > 0:
-            ppl = LogPtoPPL(prob / denom)
-            return (prob, denom, ppl)
-        else:
-            return (prob, denom, float('NaN'))
-
     def set_discount(self, unsigned int order, Discount d):
         if order > self.order or order < 1:
             raise ValueError('Invalid order')
