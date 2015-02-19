@@ -15,6 +15,7 @@ cdef class Lm(abstract.Lm):
         self.thisptr = new MEModel(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
             raise MemoryError
+        self.lmptr = <abstract.LM *>self.thisptr # to use shared methods
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
@@ -36,21 +37,6 @@ cdef class Lm(abstract.Lm):
         else:
             _fill_buffer_with_array(self._order, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
-
-    def read(self, const char *fname, Boolean limitVocab = False):
-        cdef File *fptr = new File(fname, 'r', 0)
-        if fptr.error():
-            raise IOError
-        ok = self.thisptr.read(deref(fptr), limitVocab)
-        del fptr
-        return ok
-
-    def write(self, const char *fname):
-        cdef File *fptr = new File(fname, 'w', 0)
-        if fptr.error():
-            raise IOError
-        self.thisptr.write(deref(fptr))
-        del fptr
 
     def train(self, Stats ts, alpha = 0.5, sigma2 = 6.0):
         return self.thisptr.estimate(deref(ts.thisptr), alpha, sigma2)

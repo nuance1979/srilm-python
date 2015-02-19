@@ -81,7 +81,9 @@ cdef class Stats:
     def read(self, const char *fname, binary = False):
         mode = 'rb' if binary else 'r'
         cdef File *fptr = new File(fname, mode, 0)
-        if fptr.error():
+        if fptr == NULL:
+            raise MemoryError
+        elif fptr.error():
             raise IOError
         ok = self.thisptr.read(deref(fptr))
         del fptr
@@ -90,7 +92,9 @@ cdef class Stats:
     def write(self, const char *fname, binary = False):
         mode = 'wb' if binary else 'w'
         cdef File *fptr = new File(fname, mode, 0)
-        if fptr.error():
+        if fptr == NULL:
+            raise MemoryError
+        elif fptr.error():
             raise IOError
         if binary:
             self.thisptr.writeBinary(deref(fptr))
@@ -217,9 +221,10 @@ cdef class Lm(abstract.Lm):
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
-        self.thisptr = new Ngram(deref(<c_vocab.Vocab *>(v.thisptr)), order)
+        self.thisptr = new Ngram(deref(v.thisptr), order)
         if self.thisptr == NULL:
             raise MemoryError
+        self.lmptr = <abstract.LM *>self.thisptr # to use shared methods
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
@@ -266,21 +271,6 @@ cdef class Lm(abstract.Lm):
         else:
             _fill_buffer_with_array(self.order-1, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
-
-    def read(self, const char *fname, Boolean limitVocab = False):
-        cdef File *fptr = new File(fname, 'r', 0)
-        if fptr.error():
-            raise IOError
-        ok = self.thisptr.read(deref(fptr), limitVocab)
-        del fptr
-        return ok
-
-    def write(self, const char *fname):
-        cdef File *fptr = new File(fname, 'w', 0)
-        if fptr.error():
-            raise IOError
-        self.thisptr.write(deref(fptr))
-        del fptr
 
     def test(self, Stats ns):
         cdef TextStats *tsptr = new TextStats()
@@ -384,6 +374,7 @@ cdef class CountLm(abstract.Lm):
         self.thisptr = new NgramCountLM(deref(v.thisptr), order)
         if self.thisptr == NULL:
             raise MemoryError
+        self.lmptr = <abstract.LM *>self.thisptr # to use shared methods
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
@@ -406,21 +397,6 @@ cdef class CountLm(abstract.Lm):
             _fill_buffer_with_array(self.order-1, self.keysptr, context)
             return self.thisptr.wordProb(word, self.keysptr)
 
-    def read(self, const char *fname, Boolean limitVocab = False):
-        cdef File *fptr = new File(fname, 'r', 0)
-        if fptr.error():
-            raise IOError
-        ok = self.thisptr.read(deref(fptr), limitVocab)
-        del fptr
-        return ok
-
-    def write(self, const char *fname):
-        cdef File *fptr = new File(fname, 'w', 0)
-        if fptr.error():
-            raise IOError
-        self.thisptr.write(deref(fptr))
-        del fptr
-        
     def train(self, Stats ts, max_iter = 100, min_delta = 0.001):
         self.thisptr.maxEMiters = max_iter
         self.thisptr.minEMdelta = min_delta
