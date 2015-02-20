@@ -16,7 +16,4 @@ cdef extern from "MEModel.h":
 
 cdef class Lm(abstract.Lm):
     cdef MEModel *thisptr
-    cdef VocabIndex *keysptr
-    cdef Vocab _vocab
-    cdef unsigned int _order
 

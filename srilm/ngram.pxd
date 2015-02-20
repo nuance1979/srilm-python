@@ -62,9 +62,7 @@ cdef extern from "Ngram.h":
 
 cdef class Lm(abstract.Lm):
     cdef Ngram *thisptr
-    cdef VocabIndex *keysptr
     cdef c_discount.Discount **dlistptr
-    cdef Vocab _vocab
     cdef list _dlist
 
 cdef class LmIterContext:
@@ -85,9 +83,6 @@ cdef extern from "NgramCountLM.h":
 
 cdef class CountLm(abstract.Lm):
     cdef NgramCountLM *thisptr
-    cdef VocabIndex *keysptr
-    cdef Vocab _vocab
-    cdef unsigned int _order
 
 cdef extern from "SubVocab.h":
     cdef cppclass SubVocab:
@@ -110,6 +105,9 @@ cdef extern from "SimpleClassNgram.h":
 
 cdef class ClassLm(abstract.Lm):
     cdef SimpleClassNgram *thisptr
-    cdef VocabIndex *keysptr
-    cdef Vocab _vocab
-    cdef unsigned int _order
+
+cdef extern from "CacheLM.h":
+    cdef cppclass CacheLM:
+        CacheLM(c_vocab.Vocab &vocab, unsigned historyLength)
+        LogP wordProb(VocabIndex word, const VocabIndex *context)
+

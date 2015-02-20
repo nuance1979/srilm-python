@@ -225,21 +225,16 @@ cdef class Lm(abstract.Lm):
         if self.thisptr == NULL:
             raise MemoryError
         self.lmptr = <abstract.LM *>self.thisptr # to use shared methods
-        self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
-        if self.keysptr == NULL:
-            raise MemoryError
         self.dlistptr = <c_discount.Discount **>PyMem_Malloc(order * sizeof(c_discount.Discount *))
         if self.dlistptr == NULL:
             raise MemoryError
         cdef unsigned int i
         for i in range(order):
             self.dlistptr[i] = NULL
-        self._vocab = v # keep a python reference to vocab
         self._dlist = []
 
     def __dealloc__(self):
         PyMem_Free(self.dlistptr)
-        PyMem_Free(self.keysptr)
         del self.thisptr
 
     property order:
@@ -255,22 +250,6 @@ cdef class Lm(abstract.Lm):
 
     def __len__(self):
         return self.thisptr.numNgrams(self.order)
-
-    def prob(self, VocabIndex word, context):
-        """Return log probability of p(word | context)
-
-        Note that the context is an ngram context in reverse order, i.e., if the text is
-                      ... w_0 w_1 w_2 ...
-        then this function computes
-                      p(w_2 | w_1, w_0)
-        and 'context' should be (w_1, w_0), *not* (w_0, w_1).
-        """
-        if not context:
-            self.keysptr[0] = Vocab_None
-            return self.thisptr.wordProb(word, self.keysptr)
-        else:
-            _fill_buffer_with_array(self.order-1, self.keysptr, context)
-            return self.thisptr.wordProb(word, self.keysptr)
 
     def set_discount(self, unsigned int order, Discount d):
         if order > self.order or order < 1:
@@ -366,27 +345,13 @@ cdef class CountLm(abstract.Lm):
         if self.thisptr == NULL:
             raise MemoryError
         self.lmptr = <abstract.LM *>self.thisptr # to use shared methods
-        self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
-        if self.keysptr == NULL:
-            raise MemoryError
-        self._vocab = v
-        self._order = order
 
     def __dealloc__(self):
-        PyMem_Free(self.keysptr)
         del self.thisptr
 
     property order:
         def __get__(self):
             return self._order
-
-    def prob(self, VocabIndex word, context):
-        if not context:
-            self.keysptr[0] = Vocab_None
-            return self.thisptr.wordProb(word, self.keysptr)
-        else:
-            _fill_buffer_with_array(self.order-1, self.keysptr, context)
-            return self.thisptr.wordProb(word, self.keysptr)
 
     def train(self, Stats ts, max_iter = 100, min_delta = 0.001):
         self.thisptr.maxEMiters = max_iter
@@ -405,6 +370,3 @@ cdef class ClassLm(abstract.Lm):
     property order:
         def __get__(self):
             return self._order
-
-    def prob(self, VocabIndex word, context):
-        pass
