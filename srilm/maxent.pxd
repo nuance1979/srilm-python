@@ -9,8 +9,6 @@ cdef extern from "MEModel.h":
     cdef cppclass MEModel:
         MEModel(c_vocab.Vocab &vocab, unsigned order)
         LogP wordProb(VocabIndex word, const VocabIndex *context)
-        Boolean read(File &file, Boolean limitVocab)
-        Boolean write(File &file)
         Ngram *getNgramLM()
         Boolean estimate(NgramStats &stats, double alpha, double sigma2)
         Boolean adapt(NgramStats &stats, double alpha, double sigma2)
