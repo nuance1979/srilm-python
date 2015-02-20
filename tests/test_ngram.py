@@ -286,9 +286,27 @@ class TestNgramCountLM(unittest.TestCase):
         del self.lm
         del self.vocab
 
+class TestNgramClassLm(unittest.TestCase):
+
+    def setUp(self):
+        self.vocab = srilm.vocab.Vocab()
+        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.lm = srilm.ngram.ClassLm(self.vocab, 3)
+        self.vocab.read('tests/98c1v.txt')
+        self.stats.count_file('tests/98c1.txt')
+
+    def test_order(self):
+        self.assertEqual(self.lm.order, 3)
+
+    def tearDown(self):
+        del self.lm
+        del self.stats
+        del self.vocab
+
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
     suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)
     suite3 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLMInDepth)
     suite4 = unittest.TestLoader().loadTestsFromTestCase(TestNgramCountLM)
-    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2, suite3, suite4]))
+    suite5 = unittest.TestLoader().loadTestsFromTestCase(TestNgramClassLM)
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2, suite3, suite4, suite5]))

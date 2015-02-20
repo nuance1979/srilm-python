@@ -392,3 +392,19 @@ cdef class CountLm(abstract.Lm):
         self.thisptr.maxEMiters = max_iter
         self.thisptr.minEMdelta = min_delta
         return self.thisptr.estimate(deref(ts.thisptr))
+
+cdef class ClassLm(abstract.Lm):
+    """Class-based language model"""
+    def __cinit__(self, Vocab v, unsigned order):
+        self._vocab = v
+        self._order = order
+
+    def __dealloc__(self):
+        pass
+
+    property order:
+        def __get__(self):
+            return self._order
+
+    def prob(self, VocabIndex word, context):
+        pass

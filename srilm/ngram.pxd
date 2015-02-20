@@ -88,3 +88,28 @@ cdef class CountLm(abstract.Lm):
     cdef VocabIndex *keysptr
     cdef Vocab _vocab
     cdef unsigned int _order
+
+cdef extern from "SubVocab.h":
+    cdef cppclass SubVocab:
+        SubVocab(c_vocab.Vocab &baseVocab, Boolean keepNonwords)
+        VocabIndex addWord(VocabIndex wid)
+
+cdef extern from "../../lm/src/ngram-class.cc":
+    cdef cppclass UniqueWordClasses:
+        UniqueWordClasses(c_vocab.Vocab &v, SubVocab &classVocab)
+        void fullMerge(unsigned numClasses)
+        void incrementalMerge(unsigned numClasses)
+        Boolean readClasses(File &file)
+        void writeClasses(File &file)
+
+cdef extern from "SimpleClassNgram.h":
+    cdef cppclass SimpleClassNgram:
+        SimpleClassNgram(c_vocab.Vocab &vocab, SubVocab &classVocab, unsigned order)
+        LogP wordProb(VocabIndex word, const VocabIndex *context)
+        Boolean readClasses(File &file)
+
+cdef class ClassLm(abstract.Lm):
+    cdef SimpleClassNgram *thisptr
+    cdef VocabIndex *keysptr
+    cdef Vocab _vocab
+    cdef unsigned int _order
