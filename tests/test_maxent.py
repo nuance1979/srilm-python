@@ -32,8 +32,11 @@ class TestMaxentLm(unittest.TestCase):
         self.assertEqual(self.lm.prob_ngram(b), lm.prob_ngram(b))
         os.remove(fname)
 
-    def test_train(self):
+    def test_train_test(self):
         self.assertTrue(self.lm.train(self.stats))
+        self.stats.make_test()
+        _, _, ppl = self.lm.test(self.stats)
+        self.assertAlmostEqual(ppl, 6.400844395613356)
 
     def test_to_ngram_lm(self):
         self.assertTrue(self.lm.train(self.stats))
