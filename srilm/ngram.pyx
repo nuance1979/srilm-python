@@ -292,6 +292,10 @@ cdef class Lm(abstract.Lm):
         b = self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
         return b
 
+    def mix_lm(self, Lm in_lm, double in_weight):
+        """Mix a ngram.Lm into this model with weight"""
+        self.thisptr.mixProbs(deref(in_lm.thisptr), in_weight)
+
     def iter(self, unsigned int length):
         if length > self.order - 1:
             raise ValueError('Invalid context length')

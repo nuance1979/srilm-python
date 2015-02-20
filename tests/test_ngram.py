@@ -229,6 +229,12 @@ it was the winter of despair,
         prob, denom, ppl = self.lm.test(s)
         self.assertEqual(str(ppl), 'nan')
 
+    def test_mix(self):
+        lm = srilm.ngram.Lm(self.vocab, 3)
+        lm.read('tests/lm.txt')
+        lm.mix_lm(self.lm, 0.5)
+        self.assertAlmostEqual(lm.prob_ngram(self.vocab.index('how are you'.split())), -0.44557836651802063)
+
     def test_read_write(self):
         fd, fname = tempfile.mkstemp()
         os.close(fd)

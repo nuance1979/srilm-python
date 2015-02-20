@@ -48,14 +48,9 @@ cdef extern from "Ngram.h":
         Ngram(c_vocab.Vocab &vocab, unsigned order)
         unsigned setorder(unsigned neworder)
         LogP wordProb(VocabIndex word, const VocabIndex *context)
-        Boolean read(File &file, Boolean limitVocab)
-        Boolean write(File &file)
-        LogP countsProb(NgramStats &counts, TextStats &stats, unsigned order)
-        NgramCount pplCountsFile(File &file, unsigned order, TextStats &stats, const char *escapeString, Boolean entropy)
         Boolean estimate(NgramStats &stats, c_discount.Discount **discounts)
-        Boolean estimate(NgramStats &stats, NgramCount *mincounts, NgramCount *maxcounts)
-        unsigned pplFile(File &file, TextStats &stats, const char *escapeString)
         NgramCount numNgrams(unsigned int n) const
+        void mixProbs(Ngram &lm2, double lambda0)
 
     cdef cppclass NgramBOsIter:
         NgramBOsIter(const Ngram &lm, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
@@ -84,8 +79,6 @@ cdef extern from "NgramCountLM.h":
     cdef cppclass NgramCountLM:
         NgramCountLM(c_vocab.Vocab &vocab, unsigned order)
         LogP wordProb(VocabIndex word, const VocabIndex *context)
-        Boolean read(File &file, Boolean limitVocab)
-        Boolean write(File &file)
         Boolean estimate(NgramStats &stats)
         unsigned maxEMiters
         double minEMdelta
