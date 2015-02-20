@@ -216,7 +216,7 @@ cdef class StatsIter:
             keys = _create_array_from_buffer(self._iter_order, self.keysptr)
             return (keys, deref(p))
 
-cdef class Lm(abstract.Lm):
+cdef class Lm(base.Lm):
     """Ngram language model"""
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
         if order < 1:
@@ -224,7 +224,7 @@ cdef class Lm(abstract.Lm):
         self.thisptr = new Ngram(deref(v.thisptr), order)
         if self.thisptr == NULL:
             raise MemoryError
-        self.lmptr = <abstract.LM *>self.thisptr # to use shared methods
+        self.lmptr = <base.LM *>self.thisptr # to use shared methods
         self.dlistptr = <c_discount.Discount **>PyMem_Malloc(order * sizeof(c_discount.Discount *))
         if self.dlistptr == NULL:
             raise MemoryError
@@ -336,7 +336,7 @@ cdef class LmIterProb:
         else:
             return (word, deref(p))
 
-cdef class CountLm(abstract.Lm):
+cdef class CountLm(base.Lm):
     """Ngram language model with deleted interpolation, a.k.a. Jelinek-Mercer, smoothing"""
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
         if order < 1:
@@ -344,7 +344,7 @@ cdef class CountLm(abstract.Lm):
         self.thisptr = new NgramCountLM(deref(v.thisptr), order)
         if self.thisptr == NULL:
             raise MemoryError
-        self.lmptr = <abstract.LM *>self.thisptr # to use shared methods
+        self.lmptr = <base.LM *>self.thisptr # to use shared methods
 
     def __dealloc__(self):
         del self.thisptr
@@ -358,7 +358,7 @@ cdef class CountLm(abstract.Lm):
         self.thisptr.minEMdelta = min_delta
         return self.thisptr.estimate(deref(ts.thisptr))
 
-cdef class ClassLm(abstract.Lm):
+cdef class ClassLm(base.Lm):
     """Class-based language model"""
     def __cinit__(self, Vocab v, unsigned order):
         self._vocab = v

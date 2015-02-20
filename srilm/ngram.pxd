@@ -3,7 +3,7 @@ from c_vocab cimport VocabIndex, VocabString
 from vocab cimport Vocab
 from common cimport File, LogP, Boolean, TextStats
 cimport c_discount
-cimport abstract
+cimport base
 
 cdef extern from "NgramStats.h":
     ctypedef unsigned long NgramCount
@@ -60,7 +60,7 @@ cdef extern from "Ngram.h":
         NgramProbsIter(const BOnode &bonode, int(*sort)(VocabIndex, VocabIndex))
         LogP *next(VocabIndex &word)
 
-cdef class Lm(abstract.Lm):
+cdef class Lm(base.Lm):
     cdef Ngram *thisptr
     cdef c_discount.Discount **dlistptr
     cdef list _dlist
@@ -81,7 +81,7 @@ cdef extern from "NgramCountLM.h":
         unsigned maxEMiters
         double minEMdelta
 
-cdef class CountLm(abstract.Lm):
+cdef class CountLm(base.Lm):
     cdef NgramCountLM *thisptr
 
 cdef extern from "SubVocab.h":
@@ -103,7 +103,7 @@ cdef extern from "SimpleClassNgram.h":
         LogP wordProb(VocabIndex word, const VocabIndex *context)
         Boolean readClasses(File &file)
 
-cdef class ClassLm(abstract.Lm):
+cdef class ClassLm(base.Lm):
     cdef SimpleClassNgram *thisptr
 
 cdef extern from "CacheLM.h":

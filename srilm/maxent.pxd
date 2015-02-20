@@ -3,7 +3,7 @@ from c_vocab cimport VocabIndex, Vocab_None
 cimport c_vocab
 from ngram cimport NgramStats, Ngram
 from vocab cimport Vocab
-cimport abstract
+cimport base
 
 cdef extern from "MEModel.h":
     cdef cppclass MEModel:
@@ -14,6 +14,6 @@ cdef extern from "MEModel.h":
         Boolean adapt(NgramStats &stats, double alpha, double sigma2)
         void setMaxIterations(unsigned max)
 
-cdef class Lm(abstract.Lm):
+cdef class Lm(base.Lm):
     cdef MEModel *thisptr
 
