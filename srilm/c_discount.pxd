@@ -22,3 +22,14 @@ cdef extern from "Discount.h":
 
     cdef cppclass WittenBell:
         WittenBell(double mincount)
+
+    cdef cppclass ConstDiscount:
+        ConstDiscount(double d, double mincount)
+        double lowerOrderWeight(NgramCount totalCount, NgramCount observedVocab, NgramCount min2Vocab, NgramCount min3Vocab)
+
+    cdef cppclass AddSmooth:
+        AddSmooth(double delta, double mincount)
+        double discount(NgramCount count, NgramCount totalCount, NgramCount observedVocab)
+
+    cdef cppclass NaturalDiscount:
+        NaturalDiscount(double mincount)
