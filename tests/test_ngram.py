@@ -324,4 +324,5 @@ if __name__ == '__main__':
     suite3 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLMInDepth)
     suite4 = unittest.TestLoader().loadTestsFromTestCase(TestNgramCountLM)
     suite5 = unittest.TestLoader().loadTestsFromTestCase(TestNgramClassLM)
-    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2, suite3, suite4, suite5]))
+    suite6 = unittest.TestLoader().loadTestsFromTestCase(TestNgramCacheLM)
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite1, suite2, suite3, suite4, suite5, suite6]))

@@ -346,9 +346,27 @@ cdef class CountLm(base.Lm):
 cdef class ClassLm(base.Lm):
     """Class-based language model"""
     def __cinit__(self, Vocab v, unsigned order):
-        pass
+        if order < 1:
+            raise ValueError('Invalid order')
+        self._class_vocab_ptr = new SubVocab(deref(v.thisptr), False)
+        if self._class_vocab_ptr == NULL:
+            raise MemoryError
+        self.thisptr = new SimpleClassNgram(deref(v.thisptr), deref(self._class_vocab_ptr), order)
+        if self.thisptr == NULL:
+            raise MemoryError
+        self.lmptr = <base.LM *>self.thisptr
 
     def __dealloc__(self):
+        del self._class_vocab_ptr
+        del self.thisptr
+
+    def read_class(self, const char *fname):
+        pass
+
+    def write_class(self, const char *fname):
+        pass
+
+    def train(self):
         pass
 
 cdef class CacheLm(base.Lm):

@@ -105,6 +105,7 @@ cdef extern from "SimpleClassNgram.h":
 
 cdef class ClassLm(base.Lm):
     cdef SimpleClassNgram *thisptr
+    cdef SubVocab *_class_vocab_ptr
 
 cdef extern from "CacheLM.h":
     cdef cppclass CacheLM:
