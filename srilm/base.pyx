@@ -117,3 +117,19 @@ cdef class Lm:
         prob, denom, ppl = _compute_ppl(tsptr)
         del tsptr
         return (prob, denom, ppl)
+
+    property debug_level:
+
+        def __get__(self):
+            return self.lmptr.debuglevel()
+
+        def __set__(self, unsigned level):
+            self.lmptr.debugme(level)
+
+    property running:
+
+        def __get__(self):
+            return self.lmptr.running()
+
+        def __set__(self, Boolean newstate):
+            self.lmptr.running(newstate)

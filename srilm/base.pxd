@@ -19,6 +19,10 @@ cdef extern from "LM.h":
         Boolean read(File &file, Boolean limitVocab)
         Boolean write(File &file)
         Boolean writeBinary(File &file)
+        void debugme(unsigned level)
+        unsigned debuglevel() const
+        Boolean running() const
+        Boolean running(Boolean newstate)
 
 cdef class Lm:
     cdef LM *lmptr
