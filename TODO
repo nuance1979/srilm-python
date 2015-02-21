@@ -1,6 +1,10 @@
+o Improve ClassLm
+o Add LMServer
 o Add __str__ and/or __repr__ for classes
 o Make sure numpy.array can be used in place of array.array
-o Add maxent.lm module
+x Add CacheLM
+x Add more discounting methods
+x Add maxent.lm module
 x Improve Makefile to run tests with 'make test'
 x Add docstring docs
 x Debug ngram.stats iterator [Use Vocab_None as end-of-seq symbol!!!]
@@ -16,3 +20,4 @@ x Test Lm.read() and Lm.write() arpabo format
 x Add read() and write() for Discount
 x Compare results with directly invoke srilm
 x Add iterator for Lm
+x Improve discount module with duck-typing
