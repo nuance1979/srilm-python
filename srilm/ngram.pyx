@@ -380,7 +380,8 @@ cdef class CacheLm(base.Lm):
         self.lmptr = <base.LM *>self.thisptr 
         self._length = historyLength
         self._order = 1
-
+        self.running = True # very important and easy to miss
+        
     def __dealloc__(self):
         del self.thisptr
 

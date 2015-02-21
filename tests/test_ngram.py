@@ -306,12 +306,17 @@ class TestNgramCacheLm(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
         self.stats = srilm.ngram.Stats(self.vocab, 3)
-        self.lm = srilm.ngram.CacheLm(self.vocab, 3)
+        self.lm = srilm.ngram.CacheLm(self.vocab, 10)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')
 
     def test_length(self):
-        self.assertEqual(self.lm.length, 3)
+        self.assertEqual(self.lm.length, 10)
+
+    def test_prob(self):
+        for w, i in self.stats.iter(2):
+            self.lm.prob_ngram(w)
+        self.assertAlmostEqual(self.lm.prob(self.vocab['<unk>'], None), -0.6989700198173523)
 
     def tearDown(self):
         del self.lm
