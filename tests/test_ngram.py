@@ -251,6 +251,11 @@ it was the winter of despair,
         for c, i in self.lm.iter(1):
             self.assertEqual(len(c), 1)
                 
+    def test_rand_gen(self):
+        srilm.base.rand_seed(1000)
+        ans = ['was', 'the', 'winter', '<unk>', 'it', 'was', 'the', '<unk>', '<unk>']
+        self.assertEqual(self.lm.rand_gen(10), ans)
+
     def tearDown(self):
         del self.stats
         del self.lm

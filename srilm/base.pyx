@@ -1,16 +1,22 @@
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from c_vocab cimport VocabIndex, Vocab_None
-from cpython cimport array
 from ngram cimport Stats
-from common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, _fill_buffer_with_array
+from common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, _fill_buffer_with_array, _create_array_from_buffer
 from vocab cimport Vocab
+from array import array
 
 cdef tuple _compute_ppl(TextStats *tsptr):
     cdef LogP2 prob = tsptr.prob
     cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
     cdef Prob ppl = LogPtoPPL(prob / denom) if denom > 0 else float('NaN')
     return (prob, denom, ppl)
+
+cdef extern from "stdlib.h":
+    cdef void srand48(long seed) # need to declare because it's not in libc.stdlib
+
+def rand_seed(long seed):
+    srand48(seed)
 
 cdef class Lm:
     """Abstract class to encourage uniform interface"""
@@ -50,7 +56,7 @@ cdef class Lm:
            Noe that this function takes ngram in its *natural* order.
         """
         cdef VocabIndex word = ngram[-1]
-        cdef array.array context = ngram[:-1].reverse()
+        context = ngram[:-1].reverse()
         return self.prob(word, context)
     
     def read(self, const char *fname, Boolean limitVocab = False, binary = False):
@@ -88,7 +94,6 @@ cdef class Lm:
         prob, denom, ppl = _compute_ppl(tsptr)
         del tsptr
         return (prob, denom, ppl)
-
 
     def test_text_file(self, fname):
         cdef File *fptr = new File(fname, 'r', 0)
@@ -133,3 +138,16 @@ cdef class Lm:
 
         def __set__(self, Boolean newstate):
             self.lmptr.running(newstate)
+
+    def rand_gen(self, unsigned max_word):
+        cdef VocabIndex *sent = <VocabIndex *>PyMem_Malloc((max_word+1) * sizeof(VocabIndex))
+        if sent == NULL:
+            raise MemoryError
+        sent[max_word] = Vocab_None # sentinel
+        self.lmptr.generateSentence(max_word, sent, NULL)
+        cdef unsigned sent_len = self._vocab.thisptr.length(sent)
+        a = _create_array_from_buffer(sent_len, sent)
+        res = self._vocab.string(a)
+        PyMem_Free(sent)
+        return res
+

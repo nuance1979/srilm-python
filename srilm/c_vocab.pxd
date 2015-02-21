@@ -24,6 +24,7 @@ cdef extern from "Vocab.h":
         VocabIndex &seIndex()
         VocabIndex &pauseIndex()
         Boolean &unkIsWord()
+        unsigned int length(const VocabIndex *words)
 
     cdef cppclass VocabIter:
         VocabIter(Vocab &vocab)
