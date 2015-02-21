@@ -301,6 +301,11 @@ class TestNgramClassLm(unittest.TestCase):
     def test_order(self):
         self.assertEqual(self.lm.order, 3)
 
+    def test_train_class(self):
+        ts = srilm.ngram.Stats(self.vocab, 2)
+        ts.count_file('tests/98c1.txt')
+        self.lm.train_class(ts, 5, 'inc')
+
     def tearDown(self):
         del self.lm
         del self.stats

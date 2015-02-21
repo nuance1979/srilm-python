@@ -92,16 +92,19 @@ cdef extern from "SubVocab.h":
 cdef extern from "../../lm/src/ngram-class.cc":
     cdef cppclass UniqueWordClasses:
         UniqueWordClasses(c_vocab.Vocab &v, SubVocab &classVocab)
+        void initialize(NgramStats &counts, SubVocab &noclassVocab)
         void fullMerge(unsigned numClasses)
         void incrementalMerge(unsigned numClasses)
         Boolean readClasses(File &file)
         void writeClasses(File &file)
+        void writeCounts(File &file) # write class ngram counts
 
 cdef extern from "SimpleClassNgram.h":
     cdef cppclass SimpleClassNgram:
         SimpleClassNgram(c_vocab.Vocab &vocab, SubVocab &classVocab, unsigned order)
         LogP wordProb(VocabIndex word, const VocabIndex *context)
         Boolean readClasses(File &file)
+        void writeClasses(File &file)
 
 cdef class ClassLm(base.Lm):
     cdef SimpleClassNgram *thisptr
