@@ -111,3 +111,6 @@ cdef extern from "CacheLM.h":
         CacheLM(c_vocab.Vocab &vocab, unsigned historyLength)
         LogP wordProb(VocabIndex word, const VocabIndex *context)
 
+cdef class CacheLm(base.Lm):
+    cdef CacheLM *thisptr
+    cdef unsigned _length

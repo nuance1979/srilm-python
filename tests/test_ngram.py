@@ -303,6 +303,23 @@ class TestNgramClassLm(unittest.TestCase):
         del self.stats
         del self.vocab
 
+class TestNgramCacheLm(unittest.TestCase):
+
+    def setUp(self):
+        self.vocab = srilm.vocab.Vocab()
+        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.lm = srilm.ngram.CacheLm(self.vocab, 3)
+        self.vocab.read('tests/98c1v.txt')
+        self.stats.count_file('tests/98c1.txt')
+
+    def test_length(self):
+        self.assertEqual(self.lm.length, 3)
+
+    def tearDown(self):
+        del self.lm
+        del self.stats
+        del self.vocab
+
 if __name__ == '__main__':
     suite1 = unittest.TestLoader().loadTestsFromTestCase(TestNgramStats)
     suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)

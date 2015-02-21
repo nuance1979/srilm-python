@@ -361,8 +361,7 @@ cdef class CountLm(base.Lm):
 cdef class ClassLm(base.Lm):
     """Class-based language model"""
     def __cinit__(self, Vocab v, unsigned order):
-        self._vocab = v
-        self._order = order
+        pass
 
     def __dealloc__(self):
         pass
@@ -370,3 +369,22 @@ cdef class ClassLm(base.Lm):
     property order:
         def __get__(self):
             return self._order
+
+cdef class CacheLm(base.Lm):
+    """Unigram cache language model"""
+    def __cinit__(self, Vocab v, unsigned historyLength):
+        if historyLength < 1:
+            raise ValueError('Invalid history length')
+        self.thisptr = new CacheLM(deref(v.thisptr), historyLength)
+        if self.thisptr == NULL:
+            raise MemoryError
+        self.lmptr = <base.LM *>self.thisptr 
+        self._length = historyLength
+        self._order = 1
+
+    def __dealloc__(self):
+        del self.thisptr
+
+    property length:
+        def __get__(self):
+            return self._length
