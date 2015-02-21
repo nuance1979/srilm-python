@@ -161,11 +161,9 @@ class TestNgramLM(unittest.TestCase):
 
     def test_order(self):
         self.assertEqual(self.lm.order, 3)
-        self.lm.order = 4
-        self.assertEqual(self.lm.order, 4)
-        with self.assertRaises(OverflowError) as cm:
-            self.lm.order = -1
-        self.assertEqual(type(cm.exception), OverflowError)
+        with self.assertRaises(AttributeError) as cm:
+            self.lm.order = 4
+        self.assertEqual(type(cm.exception), AttributeError)
 
     def test_len(self):
         self.assertEqual(len(self.lm), 0)

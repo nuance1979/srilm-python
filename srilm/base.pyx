@@ -15,14 +15,18 @@ cdef tuple _compute_ppl(TextStats *tsptr):
 cdef class Lm:
     """Abstract class to encourage uniform interface"""
     def __cinit__(self, Vocab v, unsigned order):
-        self._order = order
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
         self._vocab = v
+        self._order = order
 
     def __dealloc__(self):
         PyMem_Free(self.keysptr)
+
+    property order:
+        def __get__(self):
+            return self._order
 
     def prob(self, VocabIndex word, context):
         """Return log probability of p(word | context)

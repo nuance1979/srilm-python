@@ -237,17 +237,6 @@ cdef class Lm(base.Lm):
         PyMem_Free(self.dlistptr)
         del self.thisptr
 
-    property order:
-        def __get__(self):
-            return self.thisptr.setorder(0)
-
-        def __set__(self, unsigned neworder):
-            cdef VocabIndex *p = <VocabIndex *>PyMem_Realloc(self.keysptr, (neworder+1) * sizeof(VocabIndex))
-            if p == NULL:
-                raise MemoryError
-            self.keysptr = p
-            self.thisptr.setorder(neworder)
-
     def __len__(self):
         return self.thisptr.numNgrams(self.order)
 
@@ -349,10 +338,6 @@ cdef class CountLm(base.Lm):
     def __dealloc__(self):
         del self.thisptr
 
-    property order:
-        def __get__(self):
-            return self._order
-
     def train(self, Stats ts, max_iter = 100, min_delta = 0.001):
         self.thisptr.maxEMiters = max_iter
         self.thisptr.minEMdelta = min_delta
@@ -365,10 +350,6 @@ cdef class ClassLm(base.Lm):
 
     def __dealloc__(self):
         pass
-
-    property order:
-        def __get__(self):
-            return self._order
 
 cdef class CacheLm(base.Lm):
     """Unigram cache language model"""
