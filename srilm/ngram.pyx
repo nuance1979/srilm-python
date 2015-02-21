@@ -361,7 +361,12 @@ cdef class ClassLm(base.Lm):
         del self.thisptr
 
     def read_class(self, const char *fname):
-        pass
+        cdef File *fptr = new File(fname, 'r', 0)
+        if fptr == NULL:
+            raise MemoryError
+        ok = self.thisptr.readClasses(deref(fptr))
+        del fptr
+        return ok
 
     def write_class(self, const char *fname):
         pass
