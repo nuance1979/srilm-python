@@ -1,6 +1,6 @@
 from libcpp cimport bool
+from cpython cimport array as c_array
 from array import array
-from cpython cimport array
 cimport c_vocab
 
 cdef extern from "Vocab.h":
@@ -38,15 +38,15 @@ cdef extern from "NgramStats.h":
     cdef cppclass NgramStats:
         NgramStats(c_vocab.Vocab &vocab, unsigned int order)
 
-cdef inline void _fill_buffer_with_array(unsigned int order, VocabIndex *buff, array.array words):
+cdef inline void _fill_buffer_with_array(unsigned int order, VocabIndex *buff, c_array.array words):
     cdef int n = min(order, len(words))
     cdef int i
     for i in range(n):
         buff[i] = words[i]
     buff[n] = Vocab_None
 
-cdef inline array.array _create_array_from_buffer(unsigned int order, VocabIndex *buff):
-    cdef array.array a = array('I', [])
+cdef inline c_array.array _create_array_from_buffer(unsigned int order, VocabIndex *buff):
+    cdef c_array.array a = array('I', [])
     cdef int i
     for i in range(order):
         a.append(buff[i])

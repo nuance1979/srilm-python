@@ -9,7 +9,7 @@ class TestMaxentLm(unittest.TestCase):
 
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
-        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 3)
         self.lm = srilm.maxent.Lm(self.vocab, 3)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')

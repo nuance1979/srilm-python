@@ -1,7 +1,7 @@
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from c_vocab cimport VocabIndex, Vocab_None
-from ngram cimport Stats
+from stats cimport Stats
 from common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, _fill_buffer_with_array, _create_array_from_buffer
 from vocab cimport Vocab
 from array import array

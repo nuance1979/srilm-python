@@ -1,6 +1,6 @@
 cimport c_discount
 from c_discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, ConstDiscount, AddSmooth, NaturalDiscount
-from ngram cimport Stats
+from stats cimport Stats
 
 cdef class Discount:
     cdef c_discount.Discount *thisptr

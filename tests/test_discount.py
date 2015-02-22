@@ -41,7 +41,7 @@ it was the season of Darkness, it was the spring of hope,
 it was the winter of despair,
 """
         v = srilm.vocab.Vocab()
-        ts = srilm.ngram.Stats(v, 3)
+        ts = srilm.stats.Stats(v, 3)
         for w in text.split():
             v.add(w)
         ts.count_string(text)

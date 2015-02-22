@@ -9,7 +9,7 @@ class TestNgramStats(unittest.TestCase):
 
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
-        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 3)
 
     def test_order(self):
         self.assertEqual(self.stats.order, 3)
@@ -59,7 +59,7 @@ class TestNgramStats(unittest.TestCase):
         fd, fname = tempfile.mkstemp()
         os.close(fd)
         self.stats.write(fname)
-        new_stats = srilm.ngram.Stats(self.vocab, 3)
+        new_stats = srilm.stats.Stats(self.vocab, 3)
         new_stats.read(fname)
         for w, i in self.stats:
             self.assertEqual(new_stats[w], i)
@@ -77,7 +77,7 @@ class TestNgramStats(unittest.TestCase):
         fd, fname = tempfile.mkstemp()
         os.close(fd)
         self.stats.write(fname, binary=True)
-        new_stats = srilm.ngram.Stats(self.vocab, 3)
+        new_stats = srilm.stats.Stats(self.vocab, 3)
         new_stats.read(fname, binary=True)
         for w, i in self.stats:
             self.assertEqual(new_stats[w], i)
@@ -157,7 +157,7 @@ class TestNgramLM(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
         self.lm = srilm.ngram.Lm(self.vocab, 3)
-        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 3)
 
     def test_order(self):
         self.assertEqual(self.lm.order, 3)
@@ -199,7 +199,7 @@ class TestNgramLMInDepth(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
         self.lm = srilm.ngram.Lm(self.vocab, 3)
-        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 3)
         text = """
 It was the best of times,
 it was the worst of times,
@@ -223,7 +223,7 @@ it was the winter of despair,
     def test_test(self):
         prob, denom, ppl = self.lm.test(self.stats)
         self.assertAlmostEqual(ppl, 10.253298042321083)
-        s = srilm.ngram.Stats(self.vocab, 2)
+        s = srilm.stats.Stats(self.vocab, 2)
         prob, denom, ppl = self.lm.test(s)
         self.assertEqual(str(ppl), 'nan')
 
@@ -266,7 +266,7 @@ class TestNgramCountLM(unittest.TestCase):
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
         self.lm = srilm.ngram.CountLm(self.vocab, 3)
-        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 3)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')
         self.stats.sum()
@@ -293,7 +293,7 @@ class TestNgramClassLm(unittest.TestCase):
 
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
-        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 3)
         self.lm = srilm.ngram.ClassLm(self.vocab, 3)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')
@@ -302,7 +302,7 @@ class TestNgramClassLm(unittest.TestCase):
         self.assertEqual(self.lm.order, 3)
 
     def test_train_class(self):
-        ts = srilm.ngram.Stats(self.vocab, 2)
+        ts = srilm.stats.Stats(self.vocab, 2)
         ts.count_file('tests/98c1.txt')
         self.lm.train_class(ts, 5, 'inc')
 
@@ -315,7 +315,7 @@ class TestNgramCacheLm(unittest.TestCase):
 
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
-        self.stats = srilm.ngram.Stats(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 3)
         self.lm = srilm.ngram.CacheLm(self.vocab, 10)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')

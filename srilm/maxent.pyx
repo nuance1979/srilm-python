@@ -1,7 +1,8 @@
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from vocab cimport Vocab
-from ngram cimport defaultNgramOrder, Stats
+from ngram cimport defaultNgramOrder
+from stats cimport Stats
 cimport ngram
 
 cdef class Lm(base.Lm):
