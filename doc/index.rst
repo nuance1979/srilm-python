@@ -15,9 +15,11 @@ Contents:
 
   .. autoclass:: srilm.vocab.Vocab
 
-.. automodule:: srilm.ngram
+.. automodule:: srilm.stats
 
-  .. autoclass:: srilm.ngram.Stats
+  .. autoclass:: srilm.stats.Stats
+
+.. automodule:: srilm.ngram
 
   .. autoclass:: srilm.ngram.Lm
 
