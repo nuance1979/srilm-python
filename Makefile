@@ -1,4 +1,4 @@
-all: build
+all: build test
 
 build: srilm/*.pyx srilm/*.pxd
 	python2.7 setup.py build_ext --inplace
