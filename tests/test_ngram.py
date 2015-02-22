@@ -145,8 +145,8 @@ class TestNgramStats(unittest.TestCase):
         self.stats.count_string(text)
         b = self.vocab.index('is a'.split())
         self.assertEqual(self.stats[b], 1)
-        s = self.stats.make_test()
-        self.assertEqual(s[b], 0)
+        self.stats.make_test()
+        self.assertEqual(self.stats[b], 0)
 
     def tearDown(self):
         del self.stats

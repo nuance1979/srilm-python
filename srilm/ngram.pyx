@@ -140,7 +140,7 @@ cdef class Stats:
         return self.thisptr.sumCounts()
 
     def make_test(self):
-        """Return a Stats() object for LM testing by stripping away unnecessary counts"""
+        """Prepare for testing by stripping away unnecessary counts"""
         cdef array.array w
         cdef NgramCount c
         cdef unsigned int i
@@ -150,7 +150,11 @@ cdef class Stats:
             if w[0] == self.thisptr.vocab.ssIndex():
                 for i in range(2, self.order):
                     s[w[:i]] += c
-        return s
+        # move data from s into self
+        del self.thisptr
+        self.thisptr = s.thisptr
+        s.thisptr = NULL
+        del s
 
     def __getitem__(self, words):
         cdef NgramCount *p
