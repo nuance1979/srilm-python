@@ -19,7 +19,7 @@ def rand_seed(long seed):
     srand48(seed)
 
 cdef class Lm:
-    """Abstract class to encourage uniform interface"""
+    """Base class to share common code and to encourage uniform interface"""
     def __cinit__(self, Vocab v, unsigned order):
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
