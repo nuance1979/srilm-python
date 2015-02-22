@@ -13,19 +13,31 @@ Contents:
 
 .. automodule:: srilm.vocab
 
-   .. autoclass:: srilm.vocab.Vocab
-
-      .. automethod:: index
+  .. autoclass:: srilm.vocab.Vocab
 
 .. automodule:: srilm.ngram
 
-   .. autoclass:: srilm.ngram.Stats
+  .. autoclass:: srilm.ngram.Stats
 
-   .. autoclass:: srilm.ngram.Lm
+  .. autoclass:: srilm.ngram.Lm
 
-      .. automethod:: prob
+  .. autoclass:: srilm.ngram.CountLm
 
-   .. autoclass:: srilm.ngram.Discount
+  .. autoclass:: srilm.ngram.ClassLm
+
+  .. autoclass:: srilm.ngram.CacheLm
+
+.. automodule:: srilm.discount
+
+  .. autoclass:: srilm.discount.Discount
+
+.. automodule:: srilm.maxent
+
+  .. autoclass:: srilm.maxent.Lm
+
+.. automodule:: srilm.base
+
+  .. autoclass:: srilm.base.Lm
 
 Indices and tables
 ==================
