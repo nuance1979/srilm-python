@@ -94,7 +94,7 @@ cdef class Discount:
         elif self.method == 'good-turing':
             self.discount = []
             for i in range(self.min_count, self.max_count+1):
-                self.append((<GoodTuring *>self.thisptr).discount(i, 0, 0))
+                self.discount.append((<GoodTuring *>self.thisptr).discount(i, 0, 0))
         elif self.method == 'witten-bell':
             self.discount = None
         elif self.method == 'chen-goodman':
