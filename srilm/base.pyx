@@ -12,12 +12,6 @@ cdef tuple _compute_ppl(TextStats *tsptr):
     cdef Prob ppl = LogPtoPPL(prob / denom) if denom > 0 else float('NaN')
     return (prob, denom, ppl)
 
-cdef extern from "stdlib.h":
-    cdef void srand48(long seed) # need to declare because it's not in libc.stdlib
-
-def rand_seed(long seed):
-    srand48(seed)
-
 cdef class Lm:
     """Base class to share common code and to encourage uniform interface"""
     def __cinit__(self, Vocab v, unsigned order):

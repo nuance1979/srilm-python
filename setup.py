@@ -20,6 +20,7 @@ module_dict = {
     'base' : 'srilm/base.pyx',
     'ngram' : 'srilm/ngram.pyx',
     'maxent' : 'srilm/maxent.pyx',
+    'utils' : 'srilm/utils.pyx',
     }
 
 modules = []
