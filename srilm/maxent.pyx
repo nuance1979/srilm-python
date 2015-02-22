@@ -1,18 +1,15 @@
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from cpython cimport array
 from vocab cimport Vocab
 from ngram cimport defaultNgramOrder, Stats
 cimport ngram
-cimport c_vocab
-from common cimport _fill_buffer_with_array, _create_array_from_buffer
 
 cdef class Lm(base.Lm):
     """Maximum Entropy Language Model"""
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
-        self.thisptr = new MEModel(deref(<c_vocab.Vocab *>(v.thisptr)), order)
+        self.thisptr = new MEModel(deref(v.thisptr), order)
         if self.thisptr == NULL:
             raise MemoryError
         self.lmptr = <base.LM *>self.thisptr # to use shared methods
