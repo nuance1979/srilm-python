@@ -31,3 +31,8 @@ cdef extern from "Vocab.h":
         void init()
         VocabString next()
         VocabString next(VocabIndex &index)
+
+cdef extern from "SubVocab.h":
+    cdef cppclass SubVocab:
+        SubVocab(Vocab &baseVocab, Boolean keepNonwords)
+        VocabIndex addWord(VocabIndex wid)

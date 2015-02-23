@@ -1,5 +1,5 @@
 cimport c_vocab
-from c_vocab cimport VocabIndex, VocabString
+from c_vocab cimport VocabIndex, VocabString, SubVocab
 from vocab cimport Vocab
 from stats cimport NgramStats, NgramCount
 from common cimport File, LogP, Boolean, TextStats
@@ -50,21 +50,6 @@ cdef extern from "NgramCountLM.h":
 
 cdef class CountLm(base.Lm):
     cdef NgramCountLM *thisptr
-
-cdef extern from "SubVocab.h":
-    cdef cppclass SubVocab:
-        SubVocab(c_vocab.Vocab &baseVocab, Boolean keepNonwords)
-        VocabIndex addWord(VocabIndex wid)
-
-cdef extern from "../../lm/src/ngram-class.cc":
-    cdef cppclass UniqueWordClasses:
-        UniqueWordClasses(c_vocab.Vocab &v, SubVocab &classVocab)
-        void initialize(NgramStats &counts, SubVocab &noclassVocab)
-        void fullMerge(unsigned numClasses)
-        void incrementalMerge(unsigned numClasses)
-        Boolean readClasses(File &file)
-        void writeClasses(File &file)
-        void writeCounts(File &file) # write class ngram counts
 
 cdef extern from "SimpleClassNgram.h":
     cdef cppclass SimpleClassNgram:

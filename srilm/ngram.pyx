@@ -171,37 +171,6 @@ cdef class ClassLm(base.Lm):
         self.thisptr.writeClasses(deref(fptr))
         del fptr
 
-    def train_class(self, Stats ts, unsigned num_class = 1, method = 'inc', exclude_list = ['<s>', '</s>']):
-        if method not in ['full', 'inc']:
-            raise ValueError('Invalid classing method; expect "full" or "inc"')
-        if ts.order < 2:
-            raise AttributeError('Invalid order for stats; expect >= 2')
-        cdef UniqueWordClasses *classing = new UniqueWordClasses(deref(self._vocab.thisptr), deref(self._class_vocab_ptr))
-        cdef SubVocab *exclude_vocab_ptr = new SubVocab(deref(self._vocab.thisptr), False)
-        for w in exclude_list:
-            exclude_vocab_ptr.addWord(self._vocab.thisptr.getIndex(w))
-        classing.initialize(deref(ts.thisptr), deref(exclude_vocab_ptr))
-        if method == 'full':
-            classing.fullMerge(num_class)
-        else:
-            classing.incrementalMerge(num_class)
-        # load classing results via temp file
-        fd, fname = tempfile.mkstemp()
-        os.close(fd)
-        cdef File *fptr = new File(fname, 'w', 0)
-        if fptr == NULL:
-            raise MemoryError
-        classing.writeClasses(deref(fptr))
-        del fptr
-        cdef File *finptr = new File(fname, 'r', 0)
-        if finptr == NULL:
-            raise MemoryError
-        self.thisptr.readClasses(deref(finptr))
-        del finptr
-        os.remove(fname)
-        del exclude_vocab_ptr
-        del classing
-
 cdef class CacheLm(base.Lm):
     """Unigram cache language model"""
     def __cinit__(self, Vocab v, unsigned historyLength):

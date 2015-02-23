@@ -156,7 +156,11 @@ class TestNgramClassLm(unittest.TestCase):
     def test_train_class(self):
         ts = srilm.stats.Stats(self.vocab, 2)
         ts.count_file('tests/98c1.txt')
-        self.lm.train_class(ts, 5, 'inc')
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        srilm.utils.train_class(ts, 5, fname, 'inc')
+        print fname
+        os.remove(fname)
 
     def tearDown(self):
         del self.lm
