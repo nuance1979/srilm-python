@@ -25,6 +25,9 @@ cdef class Lm(base.Lm):
     def train(self, Stats ts, alpha = 0.5, sigma2 = 6.0):
         return self.thisptr.estimate(deref(ts.thisptr), alpha, sigma2)
 
+    def adapt(self, Stats ts, alpha = 0.5, sigma2 = 0.5):
+        return self.thisptr.adapt(deref(ts.thisptr), alpha, sigma2)
+
     def to_ngram_lm(self):
         cdef Ngram *p = self.thisptr.getNgramLM()
         cdef ngram.Lm new_lm = ngram.Lm(self._vocab, self._order)
