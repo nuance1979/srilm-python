@@ -130,13 +130,16 @@ class TestNgramStats(unittest.TestCase):
         self.stats.count_string('this is a test')
         self.assertEqual(len(self.stats), 7)
 
-    def test_sum(self):
+    def test_sum_counts(self):
         text = 'this is a test'
         for w in text.split():
             self.vocab.add(w)
-        self.stats.count_string('this is a test')
-        self.stats.sum()
-        self.assertEqual(self.stats[self.vocab.index(['is','a'])], 1)
+        a = self.vocab.index('this is a'.split())
+        b = self.vocab.index('this is'.split())
+        self.stats[a] = 1
+        self.assertEqual(self.stats[b], 0)
+        self.stats.sum_counts()
+        self.assertEqual(self.stats[b], 1)
 
     def test_make_test(self):
         text = 'this is a test'

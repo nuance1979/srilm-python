@@ -122,7 +122,6 @@ class TestNgramCountLM(unittest.TestCase):
         self.stats = srilm.stats.Stats(self.vocab, 3)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')
-        self.stats.sum()
 
     def test_train(self):
         self.assertTrue(self.lm.train(self.stats))

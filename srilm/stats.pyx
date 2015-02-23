@@ -95,9 +95,9 @@ cdef class Stats:
         elif fptr.error():
             raise IOError
         if binary:
-            self.thisptr.writeBinary(deref(fptr))
+            self.thisptr.writeBinary(deref(fptr), 0)
         else:
-            self.thisptr.write(deref(fptr))
+            self.thisptr.write(deref(fptr), 0)
         del fptr
 
     def count(self, words):
@@ -131,9 +131,9 @@ cdef class Stats:
         del fptr
         return c
 
-    def sum(self):
+    def sum_counts(self):
         """Recompute lowerer order counts by summing higher order counts"""
-        return self.thisptr.sumCounts()
+        return self.thisptr.sumCounts(self.order)
 
     def make_test(self):
         """Prepare for testing by stripping away unnecessary counts"""
