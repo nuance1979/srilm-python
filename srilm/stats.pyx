@@ -135,6 +135,16 @@ cdef class Stats:
         """Recompute lowerer order counts by summing higher order counts"""
         return self.thisptr.sumCounts(self.order)
 
+    def copy(self):
+        """Return a copy of self"""
+        cdef Stats s = Stats(self._vocab, self.order)
+        cdef NgramCount c
+        cdef unsigned int i
+        for i in range(self.order):
+            for w, c in self.iter(i+1):
+                s[w] = c
+        return s
+
     def make_test(self):
         """Prepare for testing by stripping away unnecessary counts"""
         cdef NgramCount c

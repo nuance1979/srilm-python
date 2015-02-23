@@ -18,17 +18,19 @@ def ngramLmWithWittenBell(order, vocab, train, heldout, test):
     return lm.test(test)
 
 def ngramLmWithKneserNey(order, vocab, train, heldout, test):
+    tr = train.copy() # make a copy because counts will be changed during training
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
         lm.set_discount(i+1, srilm.discount.Discount(method = 'kneser-ney', interpolate = True))
-    lm.train(train)
+    lm.train(tr)
     return lm.test(test)
 
 def ngramLmWithChenGoodman(order, vocab, train, heldout, test):
+    tr = train.copy() # make a copy because counts will be changed during training
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
         lm.set_discount(i+1, srilm.discount.Discount(method = 'chen-goodman', interpolate = True))
-    lm.train(train)
+    lm.train(tr)
     return lm.test(test)
 
 def ngramClassLm(order, vocab, train, heldout, test):
@@ -40,17 +42,10 @@ def ngramClassLm(order, vocab, train, heldout, test):
     return lm.test(test)
 
 def maxentLm(order, vocab, train, heldout, test):
+    tr = train.copy() # make a copy because counts will be changed during training
     lm = srilm.maxent.Lm(vocab, order)
-    lm.train(train)
-    # for reasons I do not understand, MEModel() returns bad results if you test it right after training
-    # the workaround is to save and load
-    fd, fname = tempfile.mkstemp()
-    os.close(fd)
-    lm.write(fname)
-    lm.read(fname)
-    prob, denom, ppl = lm.test(test)
-    os.remove(fname)
-    return (prob, denom, ppl)
+    lm.train(tr)
+    return lm.test(test)
 
 def main(args):
     vocab = srilm.vocab.Vocab()
