@@ -4,8 +4,8 @@ from array import array
 
 cdef class Vocab:
 
-    def __cinit__(self, VocabIndex start = 0, VocabIndex end = c_vocab.Vocab_None-1, bint unk_is_word = True):
-        self.thisptr = new c_vocab.Vocab(start, end)
+    def __cinit__(self, bint unk_is_word = True):
+        self.thisptr = new c_vocab.Vocab()
         cdef Boolean *b = &self.thisptr.unkIsWord()
         b[0] = unk_is_word # very important
 
@@ -39,14 +39,14 @@ cdef class Vocab:
 
     def read(self, const char *fname):
         cdef File *fptr
-        fptr = new File(<const char*>fname, 'r', 1)
+        fptr = new File(fname, 'r', 0)
         cdef bint ok = self.thisptr.read(deref(fptr))
         del fptr
         return ok
 
     def write(self, const char *fname):
         cdef File *fptr
-        fptr = new File(<const char*>fname, 'w', 1)
+        fptr = new File(fname, 'w', 0)
         self.thisptr.write(deref(fptr))
         del fptr
 
@@ -61,8 +61,9 @@ cdef class Vocab:
     def string(self, index):
         cdef VocabString word
         res = []
+        cdef VocabIndex i
         for i in index:
-            word = self.thisptr.getWord(<VocabIndex>i)
+            word = self.thisptr.getWord(i)
             if word == NULL:
                 raise IndexError('Out of vocabulary index')
             res.append(word)

@@ -9,7 +9,7 @@ cdef extern from "Vocab.h":
     ctypedef const char* VocabString
     cdef VocabIndex Vocab_None
     cdef cppclass Vocab:
-        Vocab(VocabIndex start, VocabIndex end)
+        Vocab() # use default
         VocabIndex addWord(VocabString token)
         VocabString getWord(VocabIndex index)
         VocabIndex getIndex(VocabString token, VocabIndex unkIndex)
