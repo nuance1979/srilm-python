@@ -4,21 +4,26 @@ import argparse
 import srilm
 
 def ngramLmWithGoodTuring(order, vocab, train, heldout, test):
+    tr = srilm.stats.Stats(vocab, order)
+    tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
         lm.set_discount(i+1, srilm.discount.Discount(method = 'good-turing'))
-    lm.train(train)
+    lm.train(tr)
     return lm.test(test)
 
 def ngramLmWithWittenBell(order, vocab, train, heldout, test):
+    tr = srilm.stats.Stats(vocab, order)
+    tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
         lm.set_discount(i+1, srilm.discount.Discount(method = 'witten-bell'))
-    lm.train(train)
+    lm.train(tr)
     return lm.test(test)
 
 def ngramLmWithKneserNey(order, vocab, train, heldout, test):
-    tr = train.copy() # make a copy because counts will be changed during training
+    tr = srilm.stats.Stats(vocab, order)
+    tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
         lm.set_discount(i+1, srilm.discount.Discount(method = 'kneser-ney', interpolate = True))
@@ -26,7 +31,8 @@ def ngramLmWithKneserNey(order, vocab, train, heldout, test):
     return lm.test(test)
 
 def ngramLmWithChenGoodman(order, vocab, train, heldout, test):
-    tr = train.copy() # make a copy because counts will be changed during training
+    tr = srilm.stats.Stats(vocab, order)
+    tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
         lm.set_discount(i+1, srilm.discount.Discount(method = 'chen-goodman', interpolate = True))
@@ -34,15 +40,18 @@ def ngramLmWithChenGoodman(order, vocab, train, heldout, test):
     return lm.test(test)
 
 def ngramClassLm(order, vocab, train, heldout, test):
+    tr = srilm.stats.Stats(vocab, order)
+    tr.count_file(train)
     lm = srilm.ngram.ClassLm(vocab, order)
     lm.train_class(heldout, num_class = 100)
     for i in range(order):
         lm.set_discount(i+1, srilm.discount.Discount(method = 'chen-goodman', interpolate = True))
-    lm.train(train)
+    lm.train(tr)
     return lm.test(test)
 
 def maxentLm(order, vocab, train, heldout, test):
-    tr = train.copy() # make a copy because counts will be changed during training
+    tr = srilm.stats.Stats(vocab, order)
+    tr.count_file(train)
     lm = srilm.maxent.Lm(vocab, order)
     lm.train(tr)
     return lm.test(test)
@@ -50,22 +59,21 @@ def maxentLm(order, vocab, train, heldout, test):
 def main(args):
     vocab = srilm.vocab.Vocab()
     vocab.read(args.vocab)
-    train = srilm.stats.Stats(vocab, args.order)
-    train.count_file(args.train)
     heldout = srilm.stats.Stats(vocab, args.order)
     heldout.count_file(args.heldout)
     test = srilm.stats.Stats(vocab, args.order)
     test.count_file(args.test)
     test.make_test()
-    prob, denom, ppl = ngramLmWithGoodTuring(args.order, vocab, train, heldout, test)
+    # we don't make a shared train stats because some model will change train stats during model estimation
+    prob, denom, ppl = ngramLmWithGoodTuring(args.order, vocab, args.train, heldout, test)
     print 'Ngram LM with Good-Turing discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
-    prob, denom, ppl = ngramLmWithWittenBell(args.order, vocab, train, heldout, test)
+    prob, denom, ppl = ngramLmWithWittenBell(args.order, vocab, args.train, heldout, test)
     print 'Ngram LM with Witten-Bell discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
-    prob, denom, ppl = ngramLmWithKneserNey(args.order, vocab, train, heldout, test)
+    prob, denom, ppl = ngramLmWithKneserNey(args.order, vocab, args.train, heldout, test)
     print 'Ngram LM with Kneser-Ney discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
-    prob, denom, ppl = ngramLmWithChenGoodman(args.order, vocab, train, heldout, test)
+    prob, denom, ppl = ngramLmWithChenGoodman(args.order, vocab, args.train, heldout, test)
     print 'Ngram LM with Chen-Goodman discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
-    prob, denom, ppl = maxentLm(args.order, vocab, train, heldout, test)
+    prob, denom, ppl = maxentLm(args.order, vocab, args.train, heldout, test)
     print 'MaxEnt LM: logprob =', prob, 'denom =', denom, 'ppl =', ppl
 
 if __name__ == '__main__':
