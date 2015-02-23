@@ -137,7 +137,10 @@ cdef class CountLm(base.Lm):
         return self.thisptr.estimate(deref(ts.thisptr))
 
 cdef class ClassLm(base.Lm):
-    """Class-based language model"""
+    """Simple bigram class-based language model, where a word belongs to a unique class
+
+    That is, p(w_0 | w_-1) = p(w_0 | c_0) p(c_0 | c_-1)
+    """
     def __cinit__(self, Vocab v, unsigned order):
         if order < 1:
             raise ValueError('Invalid order')
@@ -168,14 +171,11 @@ cdef class ClassLm(base.Lm):
         self.thisptr.writeClasses(deref(fptr))
         del fptr
 
-    def train(self):
-        pass
-
     def train_class(self, Stats ts, unsigned num_class = 1, method = 'inc', exclude_list = ['<s>', '</s>']):
         if method not in ['full', 'inc']:
             raise ValueError('Invalid classing method; expect "full" or "inc"')
-        if ts.order != 2:
-            raise AttributeError('Invalid order for stats; expect 2')
+        if ts.order < 2:
+            raise AttributeError('Invalid order for stats; expect >= 2')
         cdef UniqueWordClasses *classing = new UniqueWordClasses(deref(self._vocab.thisptr), deref(self._class_vocab_ptr))
         cdef SubVocab *exclude_vocab_ptr = new SubVocab(deref(self._vocab.thisptr), False)
         for w in exclude_list:
