@@ -13,7 +13,8 @@ def prob_to_logprob(Prob prob):
 def add_logprob(LogP2 x, LogP2 y):
     return AddLogP(x, y)
 
-def train_class(Stats ts, unsigned num_class, const char *out_classes_fname, method = 'inc', exclude_list = ['<s>', '</s>']):
+def train_class(Stats ts, unsigned num_class, const char *out_classes, const char *out_class_counts, method = 'inc', exclude_list = ['<s>', '</s>']):
+    """Train an agglomerative clustering, aka, Brown clustering from a word bigram Stats"""
     if method not in ['full', 'inc']:
         raise ValueError('Invalid classing method; expect "full" or "inc"')
     if ts.order < 2:
@@ -28,11 +29,16 @@ def train_class(Stats ts, unsigned num_class, const char *out_classes_fname, met
         classing.fullMerge(num_class)
     else:
         classing.incrementalMerge(num_class)
-    cdef File *fptr = new File(out_classes_fname, 'w', 0)
+    cdef File *fptr = new File(out_classes, 'w', 0)
     if fptr == NULL:
         raise MemoryError
     classing.writeClasses(deref(fptr))
     del fptr
+    cdef File *fcptr = new File(out_class_counts, 'w', 0)
+    if fptr == NULL:
+        raise MemoryError
+    classing.writeCounts(deref(fcptr))
+    del fcptr
     del exclude_vocab_ptr
     del classing
     del class_vocab_ptr
