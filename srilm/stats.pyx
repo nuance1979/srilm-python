@@ -35,16 +35,16 @@ cdef class Stats:
                              c('a test </s>') = 1
     No more no less. You can get it by calling make_test().
     """
-    def __cinit__(self, Vocab v, unsigned int order):
+    def __cinit__(self, Vocab v, unsigned int order, open_vocab = False, add_bos = True, add_eos = True):
         self.thisptr = new NgramStats(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
             raise MemoryError
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
-        self.thisptr.openVocab = False # very important and easy to miss!!!
-        self.thisptr.addSentStart = True # turn it on explicitly
-        self.thisptr.addSentEnd = True # ditto
+        self.thisptr.openVocab = open_vocab # very important and easy to miss!!!
+        self.thisptr.addSentStart = add_bos # turn it on explicitly
+        self.thisptr.addSentEnd = add_eos # ditto
         self._vocab = v # keep a python reference to vocab
 
     def __dealloc__(self):
