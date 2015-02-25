@@ -136,14 +136,14 @@ cdef class CountLm(base.Lm):
         self.thisptr.minEMdelta = min_delta
         return self.thisptr.estimate(deref(ts.thisptr))
 
-cdef class ClassLm(base.Lm):
+cdef class SimpleClassLm(base.Lm):
     """Simple bigram class-based language model, where a word belongs to a unique class
 
     That is, p(w_0 | w_-1) = p(w_0 | c_0) p(c_0 | c_-1)
     """
-    def __cinit__(self, Vocab v, unsigned order):
-        if order < 1:
-            raise ValueError('Invalid order')
+    def __cinit__(self, Vocab v, unsigned order = 2):
+        if order != 2:
+            raise ValueError('Invalid order; expect 2')
         self._class_vocab_ptr = new SubVocab(deref(v.thisptr), False)
         if self._class_vocab_ptr == NULL:
             raise MemoryError
@@ -170,6 +170,26 @@ cdef class ClassLm(base.Lm):
             raise MemoryError
         self.thisptr.writeClasses(deref(fptr))
         del fptr
+
+    def train(self, const char *classes, const char *class_counts):
+        """Train with bigram class counts and class definition"""
+        self.read_class(classes)
+        cdef Stats ts = Stats(self._vocab, 2, open_vocab = True)
+        ts.read(class_counts)
+        cdef c_discount.Discount **dlistptr = <c_discount.Discount **>PyMem_Malloc(2 * sizeof(c_discount.Discount *))
+        cdef int i
+        cdef Discount d
+        for i in range(2):
+            d = Discount(method='good-turing')
+            d.estimate(ts, i+1)
+            print d.discount
+            dlistptr[i] = d.thisptr
+            d.thisptr = NULL # transfer ownership
+        b = (<Ngram *>self.thisptr).estimate(deref(ts.thisptr), dlistptr)
+        for i in range(2):
+            del dlistptr[i]
+        PyMem_Free(dlistptr)
+        return b
 
 cdef class CacheLm(base.Lm):
     """Unigram cache language model"""

@@ -141,17 +141,17 @@ class TestNgramCountLM(unittest.TestCase):
         del self.lm
         del self.vocab
 
-class TestNgramClassLm(unittest.TestCase):
+class TestNgramSimpleClassLm(unittest.TestCase):
 
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
-        self.stats = srilm.stats.Stats(self.vocab, 3)
-        self.lm = srilm.ngram.ClassLm(self.vocab, 3)
+        self.stats = srilm.stats.Stats(self.vocab, 2)
+        self.lm = srilm.ngram.SimpleClassLm(self.vocab, 2)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')
 
     def test_order(self):
-        self.assertEqual(self.lm.order, 3)
+        self.assertEqual(self.lm.order, 2)
 
     def test_train_class(self):
         ts = srilm.stats.Stats(self.vocab, 2)
@@ -161,6 +161,18 @@ class TestNgramClassLm(unittest.TestCase):
         fd, fcname = tempfile.mkstemp()
         os.close(fd)
         srilm.utils.train_class(ts, 5, fname, fcname, 'inc')
+        os.remove(fname)
+        os.remove(fcname)
+
+    def test_train(self):
+        ts = srilm.stats.Stats(self.vocab, 2)
+        ts.count_file('tests/98c1.txt')
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        fd, fcname = tempfile.mkstemp()
+        os.close(fd)
+        srilm.utils.train_class(ts, 5, fname, fcname, 'inc')
+        self.lm.train(fname, fcname)
         os.remove(fname)
         os.remove(fcname)
 
@@ -195,6 +207,6 @@ if __name__ == '__main__':
     suite2 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLM)
     suite3 = unittest.TestLoader().loadTestsFromTestCase(TestNgramLMInDepth)
     suite4 = unittest.TestLoader().loadTestsFromTestCase(TestNgramCountLM)
-    suite5 = unittest.TestLoader().loadTestsFromTestCase(TestNgramClassLM)
+    suite5 = unittest.TestLoader().loadTestsFromTestCase(TestNgramSimpleClassLM)
     suite6 = unittest.TestLoader().loadTestsFromTestCase(TestNgramCacheLM)
     unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite2, suite3, suite4, suite5, suite6]))

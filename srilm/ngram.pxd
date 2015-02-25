@@ -58,7 +58,7 @@ cdef extern from "SimpleClassNgram.h":
         Boolean readClasses(File &file)
         void writeClasses(File &file)
 
-cdef class ClassLm(base.Lm):
+cdef class SimpleClassLm(base.Lm):
     cdef SimpleClassNgram *thisptr
     cdef SubVocab *_class_vocab_ptr
 
