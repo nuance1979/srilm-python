@@ -111,7 +111,7 @@ cdef class LmIterProb:
         return self
     
     def __next__(self):
-        cdef VocabIndex word
+        cdef VocabIndex word = 0
         cdef LogP *p = self.iterptr.next(word)
         if p == NULL:
             raise StopIteration
@@ -131,10 +131,37 @@ cdef class CountLm(base.Lm):
     def __dealloc__(self):
         del self.thisptr
 
-    def train(self, Stats ts, max_iter = 100, min_delta = 0.001):
+    def train(self, Stats train, Stats heldout, max_iter = 100, min_delta = 0.001):
         self.thisptr.maxEMiters = max_iter
         self.thisptr.minEMdelta = min_delta
-        return self.thisptr.estimate(deref(ts.thisptr))
+        # initialize the model with a temp file
+        cdef NgramCount s = 0
+        cdef NgramCount c
+        for _, c in train.iter(1):
+            s += c
+        fd, fcname = tempfile.mkstemp()
+        os.close(fd)
+        train.write(fcname)
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        with open(fname, 'w') as f:
+            f.write("""
+order {0}
+mixweights 3
+ 0.5 0.33 0.25
+ 0.5 0.33 0.25
+ 0.5 0.33 0.25
+ 0.5 0.33 0.25
+countmodulus 1
+vocabsize {1}
+totalcount {2}
+counts {3}
+            """.format(self.order, len(self._vocab), s, fcname))
+        self.read(fname)
+        ok = self.thisptr.estimate(deref(heldout.thisptr))
+        os.remove(fname)
+        os.remove(fcname)
+        return ok
 
 cdef class ClassLm(base.Lm):
     """Simple bigram class-based language model, where a word belongs to a unique class
