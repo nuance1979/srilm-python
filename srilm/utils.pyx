@@ -35,7 +35,7 @@ def train_class(Stats ts, unsigned num_class, const char *out_classes, const cha
     classing.writeClasses(deref(fptr))
     del fptr
     cdef File *fcptr = new File(out_class_counts, 'w', 0)
-    if fptr == NULL:
+    if fcptr == NULL:
         raise MemoryError
     classing.writeCounts(deref(fcptr))
     del fcptr
