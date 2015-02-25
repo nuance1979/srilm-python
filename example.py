@@ -1,5 +1,7 @@
 #/usr/bin/python
 
+import os
+import tempfile
 import argparse
 import srilm
 
@@ -39,15 +41,26 @@ def ngramLmWithChenGoodman(order, vocab, train, heldout, test):
     lm.train(tr)
     return lm.test(test)
 
-def ngramClassLm(order, vocab, train, heldout, test):
-    tr = srilm.stats.Stats(vocab, order)
-    tr.count_file(train)
-    lm = srilm.ngram.ClassLm(vocab, order)
-    lm.train_class(heldout, num_class = 100)
-    for i in range(order):
-        lm.set_discount(i+1, srilm.discount.Discount(method = 'chen-goodman', interpolate = True))
-    lm.train(tr)
-    return lm.test(test)
+def ngramSimpleClassLm(order, vocab, train, heldout, test, classes = None, class_count = None):
+    lm = srilm.ngram.SimpleClassLm(vocab, 2)
+    if not classes or not class_count:
+        print "No class definition or class counts specified; inducing classes (this may take a while)...",
+        tr = srilm.stats.Stats(vocab, 2)
+        tr.count_file(train)
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        fd, fcname = tempfile.mkstemp()
+        os.close(fd)
+        srilm.utils.train_class(tr, 1000, fname, fcname)
+        print "done"
+        lm.train(fname, fcname)
+        prob, denom, ppl = lm.test(test)
+        os.remove(fname)
+        os.remove(fcname)
+    else:
+        lm.train(classes, class_count)
+        prob, denom, ppl = lm.test(test)
+    return (prob, denom, ppl)
 
 def ngramCountLm(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
@@ -84,6 +97,8 @@ def main(args):
     print 'Ngram LM with Jelinek-Mercer smoothing: logprob =', prob, 'denom =', denom, 'ppl =', ppl
     prob, denom, ppl = maxentLm(args.order, vocab, args.train, heldout, test)
     print 'MaxEnt LM: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    prob, denom, ppl = ngramSimpleClassLm(args.order, vocab, args.train, heldout, test, args.classes, args.class_counts)
+    print 'Simple bi-gram class LM: logprob =', prob, 'denom =', denom, 'ppl =', ppl
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Train various types of language models on the same train/heldout/test data')
@@ -97,5 +112,9 @@ if __name__ == '__main__':
                         help = 'Heldout text file')
     parser.add_argument('--test', required = True,
                         help = 'Test text file')
+    parser.add_argument('--classes',
+                        help = 'Class definition file')
+    parser.add_argument('--class-counts', dest='class_counts',
+                        help = 'Bigram class count file')
     args = parser.parse_args()
     main(args)
