@@ -54,6 +54,13 @@ cdef class Lm(base.Lm):
         b = self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
         return b
 
+    def prune(self, double threshold, unsigned min_order = 2, base.Lm history_lm = None):
+        """Entropy-based pruning, aka, Stolcke pruning"""
+        if history_lm is None:
+            self.thisptr.pruneProbs(threshold, min_order, NULL)
+        else:
+            self.thisptr.pruneProbs(threshold, min_order, history_lm.lmptr)
+
     def mix_lm(self, Lm in_lm, double in_weight):
         """Mix a ngram.Lm into this model with weight"""
         self.thisptr.mixProbs(deref(in_lm.thisptr), in_weight)
@@ -177,7 +184,7 @@ cdef class SimpleClassLm(base.Lm):
         self.thisptr = new SimpleClassNgram(deref(v.thisptr), deref(self._class_vocab_ptr), order)
         if self.thisptr == NULL:
             raise MemoryError
-        self.lmptr = <base.LM *>self.thisptr
+        self.lmptr = <base.LM *>self.thisptr # to use shared methods
 
     def __dealloc__(self):
         del self._class_vocab_ptr

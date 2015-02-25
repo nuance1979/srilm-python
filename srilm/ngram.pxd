@@ -18,6 +18,7 @@ cdef extern from "Ngram.h":
         Boolean estimate(NgramStats &stats, c_discount.Discount **discounts)
         NgramCount numNgrams(unsigned int n) const
         void mixProbs(Ngram &lm2, double lambda0)
+        void pruneProbs(double threshold, unsigned minorder, base.LM *historyLM)
 
     cdef cppclass NgramBOsIter:
         NgramBOsIter(const Ngram &lm, VocabIndex *keys, unsigned order, int(*sort)(VocabIndex, VocabIndex))
