@@ -201,15 +201,14 @@ cdef class SimpleClassLm(base.Lm):
     def train(self, const char *classes, const char *class_counts):
         """Train with bigram class counts and class definition"""
         self.read_class(classes)
-        cdef Stats ts = Stats(self._vocab, 2, open_vocab = True)
+        cdef Stats ts = Stats(self._vocab, 2)
         ts.read(class_counts)
         cdef c_discount.Discount **dlistptr = <c_discount.Discount **>PyMem_Malloc(2 * sizeof(c_discount.Discount *))
         cdef int i
         cdef Discount d
         for i in range(2):
-            d = Discount(method='good-turing')
+            d = Discount(method='kneser-ney')
             d.estimate(ts, i+1)
-            print d.discount
             dlistptr[i] = d.thisptr
             d.thisptr = NULL # transfer ownership
         b = (<Ngram *>self.thisptr).estimate(deref(ts.thisptr), dlistptr)
