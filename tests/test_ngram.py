@@ -122,21 +122,28 @@ class TestNgramCountLM(unittest.TestCase):
         self.stats = srilm.stats.Stats(self.vocab, 3)
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')
+        self.heldout = srilm.stats.Stats(self.vocab, 3)
+        self.heldout.count_file('tests/98c2.txt')
 
     def test_train(self):
-        self.assertTrue(self.lm.train(self.stats))
+        self.assertTrue(self.lm.train(self.stats, self.heldout))
 
     def test_read_write(self):
         fd, fname = tempfile.mkstemp()
         os.close(fd)
         self.lm.write(fname)
         self.lm.read(fname)
-        self.lm.train(self.stats)
         b = self.vocab.index('it was the'.split())
-        self.assertAlmostEqual(self.lm.prob_ngram(b), -2.033423662185669)
+        self.assertEqual(self.lm.prob_ngram(b), -2.033423662185669)
         os.remove(fname)
+        
+    def test_prob(self):
+        self.assertTrue(self.lm.train(self.stats, self.heldout))
+        b = self.vocab.index('it was the'.split())
+        self.assertAlmostEqual(self.lm.prob_ngram(b), -1.2050670385360718)
 
     def tearDown(self):
+        del self.heldout
         del self.stats
         del self.lm
         del self.vocab

@@ -49,6 +49,13 @@ def ngramClassLm(order, vocab, train, heldout, test):
     lm.train(tr)
     return lm.test(test)
 
+def ngramCountLm(order, vocab, train, heldout, test):
+    tr = srilm.stats.Stats(vocab, order)
+    tr.count_file(train)
+    lm = srilm.ngram.CountLm(vocab, order)
+    lm.train(tr, heldout)
+    return lm.test(test)
+
 def maxentLm(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
     tr.count_file(train)
@@ -73,6 +80,8 @@ def main(args):
     print 'Ngram LM with Kneser-Ney discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
     prob, denom, ppl = ngramLmWithChenGoodman(args.order, vocab, args.train, heldout, test)
     print 'Ngram LM with Chen-Goodman discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    prob, denom, ppl = ngramCountLm(args.order, vocab, args.train, heldout, test)
+    print 'Ngram LM with Jelinek-Mercer smoothing: logprob =', prob, 'denom =', denom, 'ppl =', ppl
     prob, denom, ppl = maxentLm(args.order, vocab, args.train, heldout, test)
     print 'MaxEnt LM: logprob =', prob, 'denom =', denom, 'ppl =', ppl
 
