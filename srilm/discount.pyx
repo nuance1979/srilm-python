@@ -82,7 +82,7 @@ cdef class Discount:
         self.thisptr.interpolate = self.interpolate
 
     def estimate(self, Stats ts, unsigned int order):
-        cdef bint b = self.thisptr.estimate(deref(ts.thisptr), order)
+        b = self.thisptr.estimate(deref(ts.thisptr), order)
         if b:
             self._get_discount()
         return b

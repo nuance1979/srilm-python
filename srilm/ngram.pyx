@@ -43,7 +43,6 @@ cdef class Lm(base.Lm):
         self._dlist.append(d) # keep a python reference to d
 
     def train(self, Stats ts):
-        cdef bint b
         cdef int i
         for i in range(self.order):
             if self.dlistptr[i] == NULL:
@@ -51,8 +50,7 @@ cdef class Lm(base.Lm):
         for i in range(self.order):
             if self._dlist[i].discount is None: 
                 self._dlist[i].estimate(ts, i+1)
-        b = self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
-        return b
+        return self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
 
     def prune(self, double threshold, unsigned min_order = 2, base.Lm history_lm = None):
         """Entropy-based pruning, aka, Stolcke pruning"""
