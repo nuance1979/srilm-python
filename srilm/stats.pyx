@@ -101,9 +101,18 @@ cdef class Stats:
         del fptr
 
     def count(self, words):
-        cdef int i = 0
-        cdef int j = self.order
-        cdef int l = len(words)
+        if self.thisptr.addSentStart and words[0] != self._vocab.bos:
+            words.insert(0, self._vocab.bos)
+        if self.thisptr.addSentEnd and words[-1] != self._vocab.eos:
+            words.append(self._vocab.eos)
+        cdef Py_ssize_t i
+        if words[0] != self._vocab.bos:
+            self.add(words[0], 1)
+        for i in range(2, self.order):
+            self.add(words[:i], 1)
+        i = 0
+        cdef Py_ssize_t j = self.order
+        cdef Py_ssize_t l = len(words)
         while j <= l:
             self.add(words[i:j], 1)
             i += 1
@@ -112,10 +121,11 @@ cdef class Stats:
 
     def count_string(self, string):
         words = string.split()
-        cdef int slen = len(words)
+        cdef Py_ssize_t slen = len(words)
         cdef VocabString *buff = <VocabString *>PyMem_Malloc((slen+1) * sizeof(VocabString))
         if buff == NULL:
             raise MemoryError
+        cdef Py_ssize_t i
         for i in range(slen):
             buff[i] = words[i]
         buff[slen] = NULL # another different ending convention!!!

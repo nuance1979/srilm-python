@@ -119,7 +119,7 @@ class TestNgramStats(unittest.TestCase):
             self.vocab.add(w)
         b = self.vocab.index(words)
         self.assertEqual(self.stats[b], 0)
-        self.assertEqual(self.stats.count(b), 4)
+        self.assertEqual(self.stats.count(b), 6)
         self.assertEqual(self.stats[b], 1)
 
     def test_len(self):
