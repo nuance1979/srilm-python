@@ -1,3 +1,7 @@
+"""
+Module contains a Base LM class for subclassing and a generic client-side LM
+"""
+
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from c_vocab cimport VocabIndex, Vocab_None
@@ -118,7 +122,6 @@ cdef class Lm:
         return (prob, denom, ppl)
 
     property debug_level:
-
         def __get__(self):
             return self.lmptr.debuglevel()
 
@@ -126,7 +129,6 @@ cdef class Lm:
             self.lmptr.debugme(level)
 
     property running:
-
         def __get__(self):
             return self.lmptr.running()
 
@@ -134,6 +136,7 @@ cdef class Lm:
             self.lmptr.running(newstate)
 
     def rand_gen(self, unsigned max_word):
+        """Generate a random sentence from the language model"""
         cdef VocabIndex *sent = <VocabIndex *>PyMem_Malloc((max_word+1) * sizeof(VocabIndex))
         if sent == NULL:
             raise MemoryError
@@ -146,6 +149,7 @@ cdef class Lm:
         return res
 
     def serve(self, unsigned port, unsigned max_client = 0):
+        """Start a language model server"""
         return self.lmptr.probServer(port, max_client)
 
 cdef class ClientLm(Lm):

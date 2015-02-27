@@ -1,3 +1,7 @@
+"""
+Module contains garden variety of ngram discounting methods
+"""
+
 from cython.operator cimport dereference as deref
 try:
     import cPickle as pickle

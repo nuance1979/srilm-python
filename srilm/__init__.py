@@ -1,3 +1,7 @@
+"""
+Python binding for SRI LM Toolkit implemented in Cython
+"""
+
 from srilm import vocab
 from srilm import stats
 from srilm import discount

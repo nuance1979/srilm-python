@@ -1,3 +1,7 @@
+"""
+Module dealing with vocabulary
+"""
+
 from cython.operator cimport dereference as deref
 from cpython cimport array
 from array import array

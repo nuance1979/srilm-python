@@ -1,3 +1,7 @@
+"""
+Module contains garden variety of ngram language models
+"""
+
 from cython.operator cimport dereference as deref
 cimport c_vocab
 from c_vocab cimport Vocab_None

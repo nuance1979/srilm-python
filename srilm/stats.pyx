@@ -1,3 +1,7 @@
+"""
+Module for dealing with ngram counts
+"""
+
 from cython.operator cimport dereference as deref
 cimport c_vocab
 from c_vocab cimport Vocab_None

@@ -1,3 +1,7 @@
+"""
+Module contains utility functions
+"""
+
 from cython.operator cimport dereference as deref
 from stats cimport Stats
 

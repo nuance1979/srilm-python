@@ -1,3 +1,7 @@
+"""
+Module contains the Maximum Entropy Language Model
+"""
+
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from vocab cimport Vocab
