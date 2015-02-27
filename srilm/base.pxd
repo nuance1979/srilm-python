@@ -23,9 +23,17 @@ cdef extern from "LM.h":
         unsigned debuglevel() const
         Boolean running() const
         Boolean running(Boolean newstate)
+        unsigned probServer(unsigned port, unsigned maxClients)
 
 cdef class Lm:
     cdef LM *lmptr
     cdef VocabIndex *keysptr
     cdef Vocab _vocab
     cdef unsigned int _order
+
+cdef extern from "LMClient.h":
+    cdef cppclass LMClient:
+        LMClient(c_vocab.Vocab &vocab, const char *server, unsigned order, unsigned cacheOrder)
+
+cdef class ClientLm(Lm):
+    cdef LMClient *thisptr

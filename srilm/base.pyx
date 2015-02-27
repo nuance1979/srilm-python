@@ -14,7 +14,7 @@ cdef tuple _compute_ppl(TextStats *tsptr):
 
 cdef class Lm:
     """Base class to share common code and to encourage uniform interface"""
-    def __cinit__(self, Vocab v, unsigned order):
+    def __cinit__(self, Vocab v, unsigned order, *args, **kwargs):
         self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
@@ -145,3 +145,16 @@ cdef class Lm:
         PyMem_Free(sent)
         return res
 
+    def serve(self, unsigned port, unsigned max_client = 0):
+        return self.lmptr.probServer(port, max_client)
+
+cdef class ClientLm(Lm):
+    """Client-side language model"""
+    def __cinit__(self, Vocab v, unsigned order, const char *server, unsigned cache_order = 0):
+        self.thisptr = new LMClient(deref(v.thisptr), server, order, cache_order)
+        if self.thisptr == NULL:
+            raise MemoryError
+        self.lmptr = <LM *>self.thisptr
+
+    def __dealloc__(self):
+        del self.thisptr
