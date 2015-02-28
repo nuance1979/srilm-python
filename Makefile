@@ -10,4 +10,4 @@ test:
 	python2.7 -m unittest discover -v tests/
 
 clean:
-	rm -f srilm/*.cpp srilm/*.so srilm/*.html
+	-rm srilm/*.cpp srilm/*.so srilm/*.html
