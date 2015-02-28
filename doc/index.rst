@@ -25,7 +25,7 @@ Contents:
 
   .. autoclass:: srilm.ngram.CountLm
 
-  .. autoclass:: srilm.ngram.ClassLm
+  .. autoclass:: srilm.ngram.SimpleClassLm
 
   .. autoclass:: srilm.ngram.CacheLm
 
@@ -40,6 +40,8 @@ Contents:
 .. automodule:: srilm.base
 
   .. autoclass:: srilm.base.Lm
+
+  .. autoclass:: srilm.base.ClientLm
 
 Indices and tables
 ==================

@@ -173,10 +173,7 @@ counts {3}
         return ok
 
 cdef class SimpleClassLm(base.Lm):
-    """Simple bigram class-based language model, where a word belongs to a unique class
-
-    That is, p(w_0 | w_-1) = p(w_0 | c_0) p(c_0 | c_-1)
-    """
+    """Simple bigram class-based language model, where a word belongs to a unique class"""
     def __cinit__(self, Vocab v, unsigned order = 2):
         if order != 2:
             raise ValueError('Invalid order; expect 2')

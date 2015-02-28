@@ -11,34 +11,7 @@ from array import array
 from common cimport _fill_buffer_with_array, _create_array_from_buffer
 
 cdef class Stats:
-    """Holds ngram counts in a trie
-
-    Note that Ngram LM training needs ngram counts of *all* orders but testing needs only as much as you need.
-    For example, to train a 3-gram LM from a sentence 'this is a test', you need the following counts:
-                             c('<s> this is') = 1
-                             c('this is a') = 1
-                             c('is a test') = 1
-                             c('a test </s>') = 1
-                             c('<s> this') = 1
-                             c('this is') = 1
-                             c('is a') = 1
-                             c('a test') = 1
-                             c('test </s>') = 1
-                             c('<s>') = 1
-                             c('this') = 1
-                             c('is') = 1
-                             c('a') = 1
-                             c('test') = 1
-                             c('</s>') = 1
-    You can get it by calling count_string('this is a test').
-    In contrast, if you need to testing on a sentence 'this is a test', you *only* need the following counts:
-                             c('<s> this') = 1     # this is a 2-gram!
-                             c('<s> this is') = 1
-                             c('this is a') = 1
-                             c('is a test') = 1
-                             c('a test </s>') = 1
-    No more no less. You can get it by calling make_test().
-    """
+    """Ngram counts stored in a trie"""
     def __cinit__(self, Vocab v, unsigned int order, open_vocab = False, add_bos = True, add_eos = True):
         self.thisptr = new NgramStats(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
