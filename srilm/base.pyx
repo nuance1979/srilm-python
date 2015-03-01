@@ -29,11 +29,16 @@ cdef class Lm:
         PyMem_Free(self.keysptr)
 
     property order:
+        """Order of the language model
+
+        Most language models make a Markovian assumption that the predicted word is fully
+        specified by its history/context of length (order-1).
+        """
         def __get__(self):
             return self._order
 
     def prob(self, VocabIndex word, context):
-        """Return log probability of p(word | context)
+        """Compute log probability of p(word | context)
 
         Note that the context is an ngram context in reverse order, i.e., if the text is
                       ... w_0 w_1 w_2 ...
@@ -49,15 +54,16 @@ cdef class Lm:
             return self.lmptr.wordProb(word, self.keysptr)
 
     def prob_ngram(self, ngram):
-        """Return log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
+        """Compute log probability of p(ngram[-1] | ngram[-2], ngram[-3], ...)
 
-           Noe that this function takes ngram in its *natural* order.
+           Note that this function takes ngram in its *natural* order.
         """
         cdef VocabIndex word = ngram[-1]
         context = ngram[:-1].reverse()
         return self.prob(word, context)
     
     def read(self, const char *fname, Boolean limitVocab = False, binary = False):
+        """Read the language model from a file"""
         mode = 'rb' if binary else 'r'
         cdef File *fptr = new File(fname, mode, 0)
         if fptr == NULL:
@@ -69,6 +75,7 @@ cdef class Lm:
         return ok
 
     def write(self, const char *fname, binary = False):
+        """Write the language to a file"""
         mode = 'wb' if binary else 'w'
         cdef File *fptr = new File(fname, mode, 0)
         if fptr == NULL:
@@ -82,9 +89,14 @@ cdef class Lm:
         del fptr
 
     def train(self, Stats ts):
+        """Train the language model"""
         raise NotImplementedError('Abstract class method')
 
     def test(self, Stats ns):
+        """Test the language model with ngram counts stored in Stats
+
+        Returns a tuple of (log_probability, denominator, perplexity)
+        """
         cdef TextStats *tsptr = new TextStats()
         if tsptr == NULL:
             raise MemoryError
@@ -94,6 +106,10 @@ cdef class Lm:
         return (prob, denom, ppl)
 
     def test_text_file(self, fname):
+        """Test the language model with a text file
+
+        Returns a tuple of (log_probability, denominator, perplexity)
+        """
         cdef File *fptr = new File(fname, 'r', 0)
         if fptr == NULL:
             raise MemoryError
@@ -108,6 +124,10 @@ cdef class Lm:
         return (prob, denom, ppl)
 
     def test_counts_file(self, fname, unsigned order):
+        """Test the language model with a count file
+
+        Returns a tuple of (log_probability, denominator, perplexity)
+        """
         cdef File *fptr = new File(fname, 'r', 0)
         if fptr == NULL:
             raise MemoryError
@@ -122,6 +142,7 @@ cdef class Lm:
         return (prob, denom, ppl)
 
     property debug_level:
+        """Verbosity level for debugging"""
         def __get__(self):
             return self.lmptr.debuglevel()
 
@@ -129,6 +150,7 @@ cdef class Lm:
             self.lmptr.debugme(level)
 
     property running:
+        """Flag of 'running' mode"""
         def __get__(self):
             return self.lmptr.running()
 
@@ -136,7 +158,7 @@ cdef class Lm:
             self.lmptr.running(newstate)
 
     def rand_gen(self, unsigned max_word):
-        """Generate a random sentence from the language model"""
+        """Generate a random sentence of word indices from the language model"""
         cdef VocabIndex *sent = <VocabIndex *>PyMem_Malloc((max_word+1) * sizeof(VocabIndex))
         if sent == NULL:
             raise MemoryError

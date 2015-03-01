@@ -53,6 +53,7 @@ cdef class Discount:
         del self.thisptr
 
     def _set_default(self):
+        """Set sensible default values for each type of discount"""
         self.interpolate = False
         self.min_count = 0
         self.max_count = float('Inf')
@@ -86,13 +87,14 @@ cdef class Discount:
         self.thisptr.interpolate = self.interpolate
 
     def estimate(self, Stats ts, unsigned int order):
+        """Estimate the discount value from ngram counts Stats"""
         b = self.thisptr.estimate(deref(ts.thisptr), order)
         if b:
             self._get_discount()
         return b
 
     cdef void _get_discount(self):
-        """get estimated discount through 'reverse-engineering'"""
+        """Get estimated discount through 'reverse-engineering'"""
         if self.method == 'kneser-ney':
             self.discount = (<KneserNey *>self.thisptr).lowerOrderWeight(1, 1, 0, 0)
         elif self.method == 'good-turing':
@@ -105,6 +107,7 @@ cdef class Discount:
             self.discount = [(<ModKneserNey *>self.thisptr).lowerOrderWeight(1, 1, 0, 0), (<ModKneserNey *>self.thisptr).lowerOrderWeight(1, 1, 1, 0), (<ModKneserNey *>self.thisptr).lowerOrderWeight(1, 1, 1, 1)]
 
     def read(self, fname):
+        """Read discount from a file"""
         with open(fname, 'rb') as f:
             data = pickle.load(f)
         self.method = data['method']
@@ -114,6 +117,7 @@ cdef class Discount:
         self.max_count = data['max_count']
 
     def write(self, fname):
+        """Write discount to a file"""
         data = {'method': self.method,
                 'discount': self.discount,
                 'interpolate': self.interpolate,
@@ -122,4 +126,3 @@ cdef class Discount:
         }
         with open(fname, 'wb') as fout:
             pickle.dump(data, fout, 2)
-

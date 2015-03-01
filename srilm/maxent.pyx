@@ -22,17 +22,16 @@ cdef class Lm(base.Lm):
     def __dealloc__(self):
         del self.thisptr
 
-    property order:
-        def __get__(self):
-            return self._order
-
     def train(self, Stats ts, alpha = 0.5, sigma2 = 6.0):
+        """Train the MaxEnt language model with ngram counts"""
         return self.thisptr.estimate(deref(ts.thisptr), alpha, sigma2)
 
     def adapt(self, Stats ts, alpha = 0.5, sigma2 = 0.5):
+        """Adapt the MaxEnt language model with ngram counts"""
         return self.thisptr.adapt(deref(ts.thisptr), alpha, sigma2)
 
     def to_ngram_lm(self):
+        """Convert the MaxEnt language model into an ARPABO-format ngram LM"""
         cdef Ngram *p = self.thisptr.getNgramLM()
         cdef ngram.Lm new_lm = ngram.Lm(self._vocab, self._order)
         del new_lm.thisptr

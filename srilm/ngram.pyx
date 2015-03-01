@@ -36,9 +36,15 @@ cdef class Lm(base.Lm):
         del self.thisptr
 
     def __len__(self):
+        """Get the number of highest order ngram probabilites in the language model"""
         return self.thisptr.numNgrams(self.order)
 
     def set_discount(self, unsigned int order, Discount d):
+        """Set the discount object for a specific ngram order
+
+        Note that in theory, you can even 'mix-and-match' different type of discounts
+        in the same language model.
+        """
         if order > self.order or order < 1:
             raise ValueError('Invalid order')
         if d.thisptr == NULL:
@@ -47,6 +53,7 @@ cdef class Lm(base.Lm):
         self._dlist.append(d) # keep a python reference to d
 
     def train(self, Stats ts):
+        """Traint the Ngram language model from ngram counts"""
         cdef int i
         for i in range(self.order):
             if self.dlistptr[i] == NULL:
@@ -57,7 +64,7 @@ cdef class Lm(base.Lm):
         return self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
 
     def prune(self, double threshold, unsigned min_order = 2, base.Lm history_lm = None):
-        """Entropy-based pruning, aka, Stolcke pruning"""
+        """Prune the Ngram language model with Entropy-based pruning, aka, Stolcke pruning"""
         if history_lm is None:
             self.thisptr.pruneProbs(threshold, min_order, NULL)
         else:
@@ -68,6 +75,10 @@ cdef class Lm(base.Lm):
         self.thisptr.mixProbs(deref(in_lm.thisptr), in_weight)
 
     def iter(self, unsigned int length):
+        """Iterate through context/history of certain length
+
+        Returns a tuple of (array_of_the_context, iterator_for_the_probs_under_this_context)
+        """
         if length > self.order - 1:
             raise ValueError('Invalid context length')
         return _create_iter_context(self.thisptr, length)
@@ -128,7 +139,7 @@ cdef class LmIterProb:
             return (word, deref(p))
 
 cdef class CountLm(base.Lm):
-    """Ngram language model with deleted interpolation, a.k.a. Jelinek-Mercer, smoothing"""
+    """Ngram language model with deleted interpolation, a.k.a. Jelinek-Mercer smoothing"""
     def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
@@ -141,6 +152,11 @@ cdef class CountLm(base.Lm):
         del self.thisptr
 
     def train(self, Stats train, Stats heldout, max_iter = 100, min_delta = 0.001):
+        """Train the Jelinek-Mercer-smoothed ngram language model from ngram counts
+
+        Note that you *need* to use a different, usually much smaller, heldout ngram counts
+        from the main train ngram counts.
+        """
         self.thisptr.maxEMiters = max_iter
         self.thisptr.minEMdelta = min_delta
         # initialize the model with a temp file
@@ -190,6 +206,10 @@ cdef class SimpleClassLm(base.Lm):
         del self.thisptr
 
     def read_class(self, const char *fname):
+        """Read class definition from a file
+
+        In fact, the file defines a unigram language model of p(w | c).
+        """
         cdef File *fptr = new File(fname, 'r', 0)
         if fptr == NULL:
             raise MemoryError
@@ -198,6 +218,10 @@ cdef class SimpleClassLm(base.Lm):
         return ok
 
     def write_class(self, const char *fname):
+        """Write class definition to a file
+
+        In fact, the file defines a unigram language model of p(w | c).
+        """
         cdef File *fptr = new File(fname, 'w', 0)
         if fptr == NULL:
             raise MemoryError
@@ -205,7 +229,7 @@ cdef class SimpleClassLm(base.Lm):
         del fptr
 
     def train(self, const char *classes, const char *class_counts):
-        """Train with bigram class counts and class definition"""
+        """Train the simple class-based language model from bigram class counts and class definition"""
         self.read_class(classes)
         cdef Stats ts = Stats(self._vocab, 2)
         ts.read(class_counts)
@@ -240,5 +264,6 @@ cdef class CacheLm(base.Lm):
         del self.thisptr
 
     property length:
+        """Length of the cache"""
         def __get__(self):
             return self._length
