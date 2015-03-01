@@ -43,6 +43,8 @@ Contents:
 
   .. autoclass:: srilm.base.ClientLm
 
+.. automodule:: srilm.utils
+
 Indices and tables
 ==================
 
