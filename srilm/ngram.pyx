@@ -9,10 +9,7 @@ from vocab cimport Vocab
 from stats cimport Stats
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
-from array import array
-from common cimport _fill_buffer_with_array, _create_array_from_buffer
-import os
-import tempfile
+from common cimport _create_array_from_buffer
 
 cdef class Lm(base.Lm):
     """Ngram language model"""
@@ -157,6 +154,8 @@ cdef class CountLm(base.Lm):
         Note that you *need* to use a different, usually much smaller, heldout ngram counts
         from the main train ngram counts.
         """
+        import os
+        import tempfile
         self.thisptr.maxEMiters = max_iter
         self.thisptr.minEMdelta = min_delta
         # initialize the model with a temp file

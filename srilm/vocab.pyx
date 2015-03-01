@@ -4,7 +4,6 @@ Module dealing with vocabulary
 
 from cython.operator cimport dereference as deref
 from cpython cimport array
-from array import array
 
 cdef class Vocab:
     """A Vocabulary manages a mapping between word string and word index"""
@@ -65,7 +64,8 @@ cdef class Vocab:
 
     def index(self, words):
         """Map a list of word strings to an array of word indices"""
-        cdef array.array res = array('I', [])
+        from array import array
+        res = array('I', [])
         cdef VocabIndex index
         for w in words:
             index = self.thisptr.getIndex(<VocabString>w, self.thisptr.unkIndex())

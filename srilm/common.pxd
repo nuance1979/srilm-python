@@ -1,6 +1,5 @@
 from libcpp cimport bool
 from cpython cimport array as c_array
-from array import array
 cimport c_vocab
 
 cdef extern from "Vocab.h":
@@ -46,6 +45,7 @@ cdef inline void _fill_buffer_with_array(unsigned int order, VocabIndex *buff, c
     buff[n] = Vocab_None
 
 cdef inline c_array.array _create_array_from_buffer(unsigned int order, VocabIndex *buff):
+    from array import array
     cdef c_array.array a = array('I', [])
     cdef int i
     for i in range(order):

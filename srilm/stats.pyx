@@ -7,7 +7,6 @@ cimport c_vocab
 from c_vocab cimport Vocab_None
 from vocab cimport Vocab
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from array import array
 from common cimport _fill_buffer_with_array, _create_array_from_buffer
 
 cdef class Stats:

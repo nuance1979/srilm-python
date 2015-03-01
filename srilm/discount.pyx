@@ -3,10 +3,6 @@ Module contains garden variety of ngram discounting methods
 """
 
 from cython.operator cimport dereference as deref
-try:
-    import cPickle as pickle
-except:
-    import pickle
 
 cdef class Discount:
     """Hold parameters for Ngram discount/smoothing method
@@ -108,6 +104,10 @@ cdef class Discount:
 
     def read(self, fname):
         """Read discount from a file"""
+        try:
+            import cPickle as pickle
+        except:
+            import pickle
         with open(fname, 'rb') as f:
             data = pickle.load(f)
         self.method = data['method']
@@ -118,6 +118,10 @@ cdef class Discount:
 
     def write(self, fname):
         """Write discount to a file"""
+        try:
+            import cPickle as pickle
+        except:
+            import pickle
         data = {'method': self.method,
                 'discount': self.discount,
                 'interpolate': self.interpolate,
