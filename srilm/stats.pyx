@@ -29,10 +29,12 @@ cdef class Stats:
         del self.thisptr
 
     property order:
+        """Ngram order of the counts"""
         def __get__(self):
             return self.thisptr.getorder()
 
     def add(self, words, NgramCount inc):
+        """Increase the count of an ngram"""
         cdef NgramCount *p
         if not words:
             p = self.thisptr.insertCount(NULL)
@@ -43,6 +45,7 @@ cdef class Stats:
             p[0] += inc
 
     def remove(self, words):
+        """Remove an ngram"""
         cdef NgramCount count
         cdef Boolean b
         if not words:
@@ -54,6 +57,7 @@ cdef class Stats:
             return count if b else 0
 
     def read(self, const char *fname, binary = False):
+        """Read counts from a file"""
         mode = 'rb' if binary else 'r'
         cdef File *fptr = new File(fname, mode, 0)
         if fptr == NULL:
@@ -65,6 +69,7 @@ cdef class Stats:
         return ok
 
     def write(self, const char *fname, binary = False):
+        """Write counts to a file"""
         mode = 'wb' if binary else 'w'
         cdef File *fptr = new File(fname, mode, 0)
         if fptr == NULL:
@@ -78,6 +83,7 @@ cdef class Stats:
         del fptr
 
     def count(self, words):
+        """Count an array of indices"""
         if self.thisptr.addSentStart and words[0] != self._vocab.bos:
             words.insert(0, self._vocab.bos)
         if self.thisptr.addSentEnd and words[-1] != self._vocab.eos:
@@ -97,6 +103,7 @@ cdef class Stats:
         return l
 
     def count_string(self, string):
+        """Count a list of strings"""
         words = string.split()
         cdef Py_ssize_t slen = len(words)
         cdef VocabString *buff = <VocabString *>PyMem_Malloc((slen+1) * sizeof(VocabString))
@@ -111,6 +118,7 @@ cdef class Stats:
         return c
 
     def count_file(self, const char *fname):
+        """Count a text file"""
         cdef File *fptr = new File(fname, 'r', 0)
         if fptr.error():
             raise IOError
@@ -149,6 +157,7 @@ cdef class Stats:
         del s
 
     def __getitem__(self, words):
+        """Get the count of an ngram"""
         cdef NgramCount *p
         if not words:
             p = self.thisptr.findCount(NULL)
@@ -159,6 +168,7 @@ cdef class Stats:
             return 0 if p == NULL else deref(p)
 
     def __setitem__(self, words, NgramCount count):
+        """Set the count of an ngram"""
         cdef NgramCount *p
         if not words:
             p = self.thisptr.insertCount(NULL)
@@ -169,9 +179,11 @@ cdef class Stats:
             p[0] = count
 
     def __delitem__(self, words):
+        """Remove an ngram"""
         self.remove(words)
 
     def __len__(self):
+        """Get the total count of ngrams of the highest order"""
         cdef NgramCount s = 0
         cdef NgramCount i
         for _, i in self:
@@ -179,9 +191,11 @@ cdef class Stats:
         return s
 
     def __iter__(self):
+        """Iterate through ngrams of the highest order"""
         return self.iter(self.order)
 
     def iter(self, unsigned int order):
+        """Iterate through ngrams of a certain order"""
         if order < 1 or order > self.order:
             raise ValueError('Invalid order')        
         return _create_stats_iter(self.thisptr, order)
