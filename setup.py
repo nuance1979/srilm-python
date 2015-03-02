@@ -7,7 +7,7 @@ machine_type = subprocess.check_output(["/bin/bash", "../sbin/machine-type"]).st
 if machine_type == 'i686-m64':
     compile_args = ['-fopenmp']
     link_args = ['-fopenmp']
-    lib_dirs = ['/lm/scratch/yi_su/local/lib']
+    lib_dirs = []
 elif machine_type == 'macosx':
     compile_args = None
     link_args = None
@@ -44,7 +44,7 @@ for n, s in module_dict.iteritems():
 
 setup(
     name = 'srilm',
-    version = '0.1',
+    version = '1.0.0',
     description = 'Python binding for SRI Language Modeling Toolkit implemented in Cython',
     author = 'Yi Su',
     author_email = 'nuance1979@hotmail.com',
