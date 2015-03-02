@@ -43,7 +43,11 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+    master_doc = 'index_rtd'
+else:
+    master_doc = 'index'
 
 # General information about the project.
 project = u'SRILM Python Binding'
