@@ -12,17 +12,18 @@ Instead of faithfully wrapping SRILM C++ classes, we create a new set of APIs to
 while preserving the raw power of SRILM Toolkit as much as possible. In the process, we also try to 'smooth away' 
 some of the idiosyncrasies of the SRILM APIs.
 
-DEPENDENCY
-----------
+DEPENDENCIES
+------------
 
-* SRI LM Toolkit >= 1.7.1
-* Cython >= 0.20.1
-* (optional) Sphinx >= 1.2.2
+* `SRI LM Toolkit <http://www.speech.sri.com/projects/srilm>`_ >= 1.7.1
+* `liblbfgs <http://www.chokkan.org/software/liblbfgs>`_ >= 1.10 (for MaxEnt LM)
+* `Cython <http://cython.org>`_ >= 0.20.1
+* (optional) `Sphinx <http://sphinx-doc.org>`_ >= 1.2.2
 
 INSTALL
 -------
 
-To get started, first download `SRI Language Modeling Toolkit <http://www.speech.sri.com/projects/srilm>`_ 
+To get started, first download `SRI Language Modeling Toolkit <http://www.speech.sri.com/projects/srilm>`_.
 
 Then check out this project and put it *under* the root directory of SRILM::
 
@@ -36,12 +37,18 @@ Then check out this project and put it *under* the root directory of SRILM::
    $ cd srilm-python
    $ patch ../lm/src/MEModel.cc < srilm/MEModel.cc.patch
 
-   Then you need to rebuild SRILM to finish the patch.
+   Note that you need to (re)build SRILM to activate it.
+
+Build SRILM Toolkit with 'HAVE_LIBLBFGS=1' to make sure MaxEnt LM is usable. 
 
 Now you can build this project by::
 
   $ cd srilm-python
   $ make
+
+You might need to specify your library and/or include pathes by editing either setup.py or Makefile. Note that there are '--include-dirs' and '--library-dirs' options for 'python setup.py build_ext'. See usage by::
+
+  $ python ./setup.py build_ext --help
 
 If successful, you can take a look at the example script::
 
@@ -60,8 +67,8 @@ You can read it here or make it from scratch by::
 
   $ make docs
 
-UNITTEST
---------
+UNIT TESTS
+----------
 
 You can run unit tests by::
 
