@@ -72,7 +72,7 @@ cdef class Lm:
         return ok
 
     def write(self, const char *fname, binary = False):
-        """Write the language to a file"""
+        """Write the language model to a file"""
         mode = 'wb' if binary else 'w'
         cdef File *fptr = new File(fname, mode, 0)
         if fptr == NULL:
