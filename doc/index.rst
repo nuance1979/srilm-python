@@ -11,39 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: srilm.vocab
-
-  .. autoclass:: srilm.vocab.Vocab
-
-.. automodule:: srilm.stats
-
-  .. autoclass:: srilm.stats.Stats
-
-.. automodule:: srilm.ngram
-
-  .. autoclass:: srilm.ngram.Lm
-
-  .. autoclass:: srilm.ngram.CountLm
-
-  .. autoclass:: srilm.ngram.SimpleClassLm
-
-  .. autoclass:: srilm.ngram.CacheLm
-
-.. automodule:: srilm.discount
-
-  .. autoclass:: srilm.discount.Discount
-
-.. automodule:: srilm.maxent
-
-  .. autoclass:: srilm.maxent.Lm
-
-.. automodule:: srilm.base
-
-  .. autoclass:: srilm.base.Lm
-
-  .. autoclass:: srilm.base.ClientLm
-
-.. automodule:: srilm.utils
+   modules.rst
 
 Indices and tables
 ==================
