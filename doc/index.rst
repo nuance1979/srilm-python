@@ -77,10 +77,12 @@ You can run unit tests by::
 API
 ---
 
-.. toctree::
-   :maxdepth: 2
+You can get usage info the Python way, e.g.,::
 
-   modules.rst
+  $ python
+  ...
+  >>> import srilm
+  >>> help(srilm.vocab.Vocab)
 
 Indices and tables
 ==================

@@ -45,9 +45,8 @@ source_suffix = '.rst'
 # The master toctree document.
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
-    master_doc = 'index_rtd'
-else:
-    master_doc = 'index'
+    os.system('mv -f index_rtd.rst index.rst')
+master_doc = 'index'
 
 # General information about the project.
 project = u'SRILM Python Binding'
