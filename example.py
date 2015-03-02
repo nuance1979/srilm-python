@@ -5,12 +5,16 @@ import tempfile
 import argparse
 import srilm
 
+# magic min/max numbers; see ngram-count.cc
+gtmin = [1, 1, 1, 2, 2, 2, 2, 2, 2, 2]
+gtmax = [5, 1, 7, 7, 7, 7, 7, 7, 7, 7]
+
 def ngramLmWithGoodTuring(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
     tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
-        lm.set_discount(i+1, srilm.discount.Discount(method = 'good-turing'))
+        lm.set_discount(i+1, srilm.discount.Discount(method = 'good-turing', min_count = gtmin[i+1], max_count = gtmax[i+1]))
     lm.train(tr)
     return lm.test(test)
 
@@ -19,7 +23,7 @@ def ngramLmWithWittenBell(order, vocab, train, heldout, test):
     tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
-        lm.set_discount(i+1, srilm.discount.Discount(method = 'witten-bell'))
+        lm.set_discount(i+1, srilm.discount.Discount(method = 'witten-bell', min_count = gtmin[i+1]))
     lm.train(tr)
     return lm.test(test)
 
