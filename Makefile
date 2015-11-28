@@ -12,3 +12,4 @@ test:
 
 clean:
 	-rm srilm/*.cpp srilm/*.so srilm/*.html
+	-rm -rf build
