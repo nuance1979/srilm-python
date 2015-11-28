@@ -11,7 +11,7 @@ if machine_type == 'i686-m64':
 elif machine_type == 'macosx':
     compile_args = None
     link_args = None
-    lib_dirs = ['/opt/local/lib']
+    lib_dirs = ['/usr/lib', '/usr/local/lib']
 
 module_dict = {
     'vocab' : 'srilm/vocab.pyx',
