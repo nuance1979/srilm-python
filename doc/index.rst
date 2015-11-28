@@ -35,7 +35,7 @@ Then check out this project and put it *under* the root directory of SRILM::
    There is a minor bug in SRILM 1.7.1. You can optionally patch it by::
 
    $ cd srilm-python
-   $ patch ../lm/src/MEModel.cc < srilm/MEModel.cc.patch
+   $ patch $SRILM/lm/src/MEModel.cc < srilm/MEModel.cc.patch
 
    Note that you need to (re)build SRILM to activate it.
 
@@ -46,9 +46,19 @@ Now you can build this project by::
   $ cd srilm-python
   $ make
 
+If you specified build options in your SRILM build, then use the same option again::
+
+  $ cd srilm-python
+  $ make OPTION=<your_srilm_build_option>
+
+.. note::
+
+   There is one test failure with OPTION=_c. I suspect it's a minor SRILM bug.
+
 You might need to specify your library and/or include pathes by editing either setup.py or Makefile. Note that there are '--include-dirs' and '--library-dirs' options for 'python setup.py build_ext'. See usage by::
 
   $ python ./setup.py build_ext --help
+
 
 EXAMPLES
 --------
