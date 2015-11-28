@@ -1,8 +1,18 @@
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
 import subprocess
+import sys
+
+srilm_option = ""
+copy_args = sys.argv[1:]
+if '--srilm-option' in copy_args:
+    ind = copy_args.index('--srilm-option')
+    copy_args.pop(ind)
+    val = copy_args.pop(ind)
+    srilm_option = "" if val == "null" else val
 
 machine_type = subprocess.check_output(["/bin/bash", "../sbin/machine-type"]).strip()
+lib_path = machine_type + srilm_option
 
 if machine_type == 'i686-m64':
     compile_args = ['-fopenmp']
@@ -12,6 +22,16 @@ elif machine_type == 'macosx':
     compile_args = None
     link_args = None
     lib_dirs = ['/usr/lib', '/usr/local/lib']
+
+compact_def_macros = [('USE_SARRAY', 1), ('USE_SARRAY_TRIE', 1), ('USE_SARRAY_MAP2', 1)]
+if srilm_option == '_c':
+    def_macros = compact_def_macros
+elif srilm_option == '_s':
+    def_macros = compact_def_macros + [('USE_SHORT_VOCAB', 1), ('USE_XCOUNTS', 1)]
+elif srilm_option == '_l':
+    def_macros = compact_def_macros + [('USE_LONGLONG_COUNTS', 1), ('USE_XCOUNTS', 1)]
+else:
+    def_macros = []
 
 module_dict = {
     'vocab' : 'srilm/vocab.pyx',
@@ -29,16 +49,16 @@ for n, s in module_dict.iteritems():
         name = n,
         sources = [s],
         language = 'c++',
-        define_macros = [('HAVE_ZOPEN','1')],
+        define_macros = [('HAVE_ZOPEN','1')] + def_macros,
         include_dirs = ['../include'],
         libraries = ['lbfgs'],
-        library_dirs = ['../lib/%s' % machine_type] + lib_dirs,
+        library_dirs = ['../lib/%s' % lib_path] + lib_dirs,
         extra_compile_args = compile_args,
         extra_link_args = link_args,
-        extra_objects = ['../lib/%s/liboolm.a' % machine_type, 
-                         '../lib/%s/libdstruct.a' % machine_type,
-                         '../lib/%s/libmisc.a' % machine_type,
-                         '../lib/%s/libz.a' % machine_type]
+        extra_objects = ['../lib/%s/liboolm.a' % lib_path,
+                         '../lib/%s/libdstruct.a' % lib_path,
+                         '../lib/%s/libmisc.a' % lib_path,
+                         '../lib/%s/libz.a' % lib_path]
         ))
 
 
@@ -51,5 +71,6 @@ setup(
     license = 'MIT',
     packages = ['srilm'],
     ext_package = 'srilm',
-    ext_modules = cythonize(modules, annotate=True)
+    ext_modules = cythonize(modules, annotate=True),
+    script_args = copy_args
 )
