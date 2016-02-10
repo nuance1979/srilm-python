@@ -1,5 +1,7 @@
 import unittest
-import srilm
+import srilm.vocab
+import srilm.stats
+import srilm.maxent
 import array
 import random
 import tempfile

@@ -1,5 +1,9 @@
 import unittest
-import srilm
+import srilm.vocab
+import srilm.ngram
+import srilm.stats
+import srilm.discount
+import srilm.utils
 import array
 import random
 import tempfile

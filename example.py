@@ -3,7 +3,11 @@
 import os
 import tempfile
 import argparse
-import srilm
+import srilm.vocab
+import srilm.stats
+import srilm.ngram
+import srilm.discount
+import srilm.maxent
 
 # magic min/max numbers; see ngram-count.cc
 gtmin = [1, 1, 1, 2, 2, 2, 2, 2, 2, 2]

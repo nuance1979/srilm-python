@@ -1,5 +1,5 @@
 import unittest
-import srilm
+import srilm.vocab
 import array
 
 class TestVocab(unittest.TestCase):
