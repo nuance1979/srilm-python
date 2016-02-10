@@ -6,6 +6,7 @@ import random
 import tempfile
 import os
 
+
 class TestNgramStats(unittest.TestCase):
 
     def setUp(self):
@@ -19,24 +20,24 @@ class TestNgramStats(unittest.TestCase):
         self.assertEqual(type(cm.exception), AttributeError)
 
     def test_get(self):
-        words = array.array('I', [1,2,3])
+        words = array.array('I', [1, 2, 3])
         self.assertEqual(self.stats[words], 0)
-        self.assertRaises(TypeError, self.stats.__getitem__, [1,2,3])
+        self.assertRaises(TypeError, self.stats.__getitem__, [1, 2, 3])
 
     def test_set(self):
-        words = array.array('I', [1,2,3])
+        words = array.array('I', [1, 2, 3])
         self.stats[words] = 100
         self.assertEqual(self.stats[words], 100)
-        self.assertRaises(TypeError, self.stats.__setitem__, [1,2,3], 100)
-    
+        self.assertRaises(TypeError, self.stats.__setitem__, [1, 2, 3], 100)
+
     def test_add(self):
-        words = array.array('I', [1,2,3])
+        words = array.array('I', [1, 2, 3])
         self.assertEqual(self.stats[words], 0)
         self.stats.add(words, 10)
         self.assertEqual(self.stats[words], 10)
 
     def test_remove(self):
-        words = array.array('I', [1,2,3])
+        words = array.array('I', [1, 2, 3])
         self.stats[words] = 100
         del self.stats[words]
         self.assertEqual(self.stats[words], 0)
@@ -44,18 +45,18 @@ class TestNgramStats(unittest.TestCase):
     def test_iter(self):
         for i in range(100):
             self.vocab.add('word%d' % i)
-        words = array.array('I', [1,2,3])
+        words = array.array('I', [1, 2, 3])
         for i in range(1000):
-            words[random.randint(0,2)] = random.randint(0,100) 
-            self.stats[words] = random.randint(1,1000)
+            words[random.randint(0, 2)] = random.randint(0, 100)
+            self.stats[words] = random.randint(1, 1000)
         for w, i in self.stats.iter(2):
             self.assertEqual(len(w), 2)
             self.assertEqual(self.stats[w], i)
 
     def test_read_write(self):
-        words = array.array('I', [1,2,3])
+        words = array.array('I', [1, 2, 3])
         self.stats[words] = 15
-        words = array.array('I', [1,2,0])
+        words = array.array('I', [1, 2, 0])
         self.stats[words] = 2
         fd, fname = tempfile.mkstemp()
         os.close(fd)
@@ -71,9 +72,9 @@ class TestNgramStats(unittest.TestCase):
         self.assertRaises(IOError, self.stats.write, '/i/do/not/exist')
 
     def test_read_write_binary(self):
-        words = array.array('I', [1,2,3])
+        words = array.array('I', [1, 2, 3])
         self.stats[words] = 15
-        words = array.array('I', [1,2,0])
+        words = array.array('I', [1, 2, 0])
         self.stats[words] = 2
         fd, fname = tempfile.mkstemp()
         os.close(fd)
@@ -125,7 +126,7 @@ class TestNgramStats(unittest.TestCase):
 
     def test_len(self):
         self.assertEqual(len(self.stats), 0)
-        a = array.array('I', [1,2,3])
+        a = array.array('I', [1, 2, 3])
         self.stats[a] = 3
         self.assertEqual(len(self.stats), 3)
         self.stats.count_string('this is a test')

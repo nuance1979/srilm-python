@@ -1,7 +1,5 @@
-#/usr/bin/python
+#!/usr/bin/python
 
-import os
-import tempfile
 import argparse
 import srilm.vocab
 import srilm.stats
@@ -13,41 +11,46 @@ import srilm.maxent
 gtmin = [1, 1, 1, 2, 2, 2, 2, 2, 2, 2]
 gtmax = [5, 1, 7, 7, 7, 7, 7, 7, 7, 7]
 
+
 def ngramLmWithGoodTuring(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
     tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
-        lm.set_discount(i+1, srilm.discount.Discount(method = 'good-turing', min_count = gtmin[i+1], max_count = gtmax[i+1]))
+        lm.set_discount(i + 1, srilm.discount.Discount(method='good-turing', min_count=gtmin[i + 1], max_count=gtmax[i + 1]))
     lm.train(tr)
     return lm.test(test)
+
 
 def ngramLmWithWittenBell(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
     tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
-        lm.set_discount(i+1, srilm.discount.Discount(method = 'witten-bell', min_count = gtmin[i+1]))
+        lm.set_discount(i + 1, srilm.discount.Discount(method='witten-bell', min_count=gtmin[i + 1]))
     lm.train(tr)
     return lm.test(test)
+
 
 def ngramLmWithKneserNey(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
     tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
-        lm.set_discount(i+1, srilm.discount.Discount(method = 'kneser-ney', interpolate = True))
+        lm.set_discount(i + 1, srilm.discount.Discount(method='kneser-ney', interpolate=True))
     lm.train(tr)
     return lm.test(test)
+
 
 def ngramLmWithChenGoodman(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
     tr.count_file(train)
     lm = srilm.ngram.Lm(vocab, order)
     for i in range(order):
-        lm.set_discount(i+1, srilm.discount.Discount(method = 'chen-goodman', interpolate = True))
+        lm.set_discount(i + 1, srilm.discount.Discount(method='chen-goodman', interpolate=True))
     lm.train(tr)
     return lm.test(test)
+
 
 def ngramCountLm(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
@@ -56,12 +59,14 @@ def ngramCountLm(order, vocab, train, heldout, test):
     lm.train(tr, heldout)
     return lm.test(test)
 
+
 def maxentLm(order, vocab, train, heldout, test):
     tr = srilm.stats.Stats(vocab, order)
     tr.count_file(train)
     lm = srilm.maxent.Lm(vocab, order)
     lm.train(tr)
     return lm.test(test)
+
 
 def main(args):
     vocab = srilm.vocab.Vocab()
@@ -86,16 +91,16 @@ def main(args):
     print 'MaxEnt LM: logprob =', prob, 'denom =', denom, 'ppl =', ppl
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'Train various types of language models on the same train/heldout/test data')
-    parser.add_argument('--order', type = int, default = 3,
-                        help = 'Order of the model')
-    parser.add_argument('--vocab', required = True,
-                        help = 'Vocabulary file')
-    parser.add_argument('--train', required = True,
-                        help = 'Training text file')
-    parser.add_argument('--heldout', required = True,
-                        help = 'Heldout text file')
-    parser.add_argument('--test', required = True,
-                        help = 'Test text file')
+    parser = argparse.ArgumentParser(description='Train various types of language models on the same train/heldout/test data')
+    parser.add_argument('--order', type=int, default=3,
+                        help='Order of the model')
+    parser.add_argument('--vocab', required=True,
+                        help='Vocabulary file')
+    parser.add_argument('--train', required=True,
+                        help='Training text file')
+    parser.add_argument('--heldout', required=True,
+                        help='Heldout text file')
+    parser.add_argument('--test', required=True,
+                        help='Test text file')
     args = parser.parse_args()
     main(args)

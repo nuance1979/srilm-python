@@ -2,10 +2,9 @@ import unittest
 import srilm.vocab
 import srilm.stats
 import srilm.discount
-import array
-import random
 import tempfile
 import os
+
 
 class TestNgramDiscount(unittest.TestCase):
 
@@ -17,19 +16,8 @@ class TestNgramDiscount(unittest.TestCase):
         self.assertTrue(self.discount.interpolate)
         self.assertRaises(ValueError, srilm.discount.Discount, 'xixi-haha')
         with self.assertRaises(ValueError) as cm:
-            d = srilm.discount.Discount(method='kneser-ney', discount='haha')
+            srilm.discount.Discount(method='kneser-ney', discount='haha')
         self.assertEqual(type(cm.exception), ValueError)
-
-    def test_read_write(self):
-        self.discount.discount = 0.1
-        fd, fname = tempfile.mkstemp()
-        os.close(fd)
-        self.discount.write(fname)
-        d = srilm.discount.Discount()
-        d.read(fname)
-#        self.assertEqual(d.discount, 0.1)
-#        self.assertEqual(d.method, 'kneser-ney')
-        os.remove(fname)
 
     def test_estimate(self):
         text = """

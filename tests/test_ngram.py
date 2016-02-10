@@ -4,13 +4,12 @@ import srilm.ngram
 import srilm.stats
 import srilm.discount
 import srilm.utils
-import array
-import random
 import tempfile
 import os
 
+
 class TestNgramLM(unittest.TestCase):
-    
+
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
         self.lm = srilm.ngram.Lm(self.vocab, 3)
@@ -30,11 +29,11 @@ class TestNgramLM(unittest.TestCase):
 
     def test_compare_with_command_line(self):
         # reference was created with this command line
-        cmd = '../bin/i686-m64/ngram-count -order 3 -vocab tests/98c1v.txt -unk -ukndiscount -interpolate -lm tests/lm.txt -text tests/98c1.txt -gt3min 1'
+        # cmd = '../bin/i686-m64/ngram-count -order 3 -vocab tests/98c1v.txt -unk -ukndiscount -interpolate -lm tests/lm.txt -text tests/98c1.txt -gt3min 1'
         self.vocab.read('tests/98c1v.txt')
         self.stats.count_file('tests/98c1.txt')
         for i in range(3):
-            self.lm.set_discount(i+1, srilm.discount.Discount(method='kneser-ney', interpolate=True))
+            self.lm.set_discount(i + 1, srilm.discount.Discount(method='kneser-ney', interpolate=True))
         self.lm.train(self.stats)
         fd, fname = tempfile.mkstemp()
         os.close(fd)
@@ -50,6 +49,7 @@ class TestNgramLM(unittest.TestCase):
         del self.stats
         del self.lm
         del self.vocab
+
 
 class TestNgramLMInDepth(unittest.TestCase):
 
@@ -70,12 +70,12 @@ it was the winter of despair,
         for w in text.split():
             self.vocab.add(w)
         self.stats.count_string(text)
-        for i in range(1,4):
+        for i in range(1, 4):
             self.lm.set_discount(i, srilm.discount.Discount(method='kneser-ney'))
         self.assertTrue(self.lm.train(self.stats))
 
     def test_train(self):
-        self.assertAlmostEqual(self.lm.prob_ngram(self.vocab.index(['it','was','the'])), -2.5774917602539062)
+        self.assertAlmostEqual(self.lm.prob_ngram(self.vocab.index(['it', 'was', 'the'])), -2.5774917602539062)
 
     def test_test(self):
         prob, denom, ppl = self.lm.test(self.stats)
@@ -114,7 +114,7 @@ it was the winter of despair,
                 self.assertEqual(self.lm.prob(w, c), p)
         for c, i in self.lm.iter(1):
             self.assertEqual(len(c), 1)
-                
+
     def test_rand_gen(self):
         srilm.utils.rand_seed(1000)
         ans = ['was', 'the', 'winter', '<unk>', 'it', 'was', 'the', '<unk>', '<unk>']
@@ -125,8 +125,9 @@ it was the winter of despair,
         del self.lm
         del self.vocab
 
+
 class TestNgramCountLM(unittest.TestCase):
-    
+
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
         self.lm = srilm.ngram.CountLm(self.vocab, 3)
@@ -147,7 +148,7 @@ class TestNgramCountLM(unittest.TestCase):
         b = self.vocab.index('it was the'.split())
         self.assertEqual(self.lm.prob_ngram(b), -2.033423662185669)
         os.remove(fname)
-        
+
     def test_prob(self):
         self.assertTrue(self.lm.train(self.stats, self.heldout))
         b = self.vocab.index('it was the'.split())
@@ -159,7 +160,8 @@ class TestNgramCountLM(unittest.TestCase):
         del self.lm
         del self.vocab
 
-class TestNgramSimpleClassLm(unittest.TestCase):
+
+class TestNgramSimpleClassLM(unittest.TestCase):
 
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()
@@ -199,7 +201,8 @@ class TestNgramSimpleClassLm(unittest.TestCase):
         del self.stats
         del self.vocab
 
-class TestNgramCacheLm(unittest.TestCase):
+
+class TestNgramCacheLM(unittest.TestCase):
 
     def setUp(self):
         self.vocab = srilm.vocab.Vocab()

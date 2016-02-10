@@ -12,6 +12,9 @@ docs:
 test:
 	python2.7 -m unittest discover -v tests/
 
+check-style:
+	flake8 --show-source --ignore=E501 srilm/*.py tests/*.py *.py
+
 clean:
 	python2.7 setup.py clean
 	-rm srilm/*.cpp srilm/*.so srilm/*.html

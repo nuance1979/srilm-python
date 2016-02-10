@@ -2,10 +2,9 @@ import unittest
 import srilm.vocab
 import srilm.stats
 import srilm.maxent
-import array
-import random
 import tempfile
 import os
+
 
 class TestMaxentLm(unittest.TestCase):
 

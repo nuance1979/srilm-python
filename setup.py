@@ -34,43 +34,38 @@ else:
     def_macros = []
 
 module_dict = {
-    'vocab' : 'srilm/vocab.pyx',
-    'stats' : 'srilm/stats.pyx',
-    'discount' : 'srilm/discount.pyx',
-    'base' : 'srilm/base.pyx',
-    'ngram' : 'srilm/ngram.pyx',
-    'maxent' : 'srilm/maxent.pyx',
-    'utils' : 'srilm/utils.pyx',
-    }
+    'vocab': 'srilm/vocab.pyx',
+    'stats': 'srilm/stats.pyx',
+    'discount': 'srilm/discount.pyx',
+    'base': 'srilm/base.pyx',
+    'ngram': 'srilm/ngram.pyx',
+    'maxent': 'srilm/maxent.pyx',
+    'utils': 'srilm/utils.pyx'}
 
 modules = []
 for n, s in module_dict.iteritems():
-    modules.append(Extension(
-        name = n,
-        sources = [s],
-        language = 'c++',
-        define_macros = [('HAVE_ZOPEN','1')] + def_macros,
-        include_dirs = ['../include'],
-        libraries = ['lbfgs'],
-        library_dirs = ['../lib/%s' % lib_path] + lib_dirs,
-        extra_compile_args = compile_args,
-        extra_link_args = link_args,
-        extra_objects = ['../lib/%s/liboolm.a' % lib_path,
-                         '../lib/%s/libdstruct.a' % lib_path,
-                         '../lib/%s/libmisc.a' % lib_path,
-                         '../lib/%s/libz.a' % lib_path]
-        ))
+    modules.append(
+        Extension(name=n,
+                  sources=[s],
+                  language='c++',
+                  define_macros=[('HAVE_ZOPEN', '1')] + def_macros,
+                  include_dirs=['../include'],
+                  libraries=['lbfgs'],
+                  library_dirs=['../lib/%s' % lib_path] + lib_dirs,
+                  extra_compile_args=compile_args,
+                  extra_link_args=link_args,
+                  extra_objects=['../lib/%s/liboolm.a' % lib_path,
+                                 '../lib/%s/libdstruct.a' % lib_path,
+                                 '../lib/%s/libmisc.a' % lib_path,
+                                 '../lib/%s/libz.a' % lib_path]))
 
-
-setup(
-    name = 'srilm',
-    version = '1.0.0',
-    description = 'Python binding for SRI Language Modeling Toolkit implemented in Cython',
-    author = 'Yi Su',
-    author_email = 'nuance1979@hotmail.com',
-    license = 'MIT',
-    packages = ['srilm'],
-    ext_package = 'srilm',
-    ext_modules = cythonize(modules, annotate=True),
-    script_args = copy_args
-)
+setup(name='srilm',
+      version='1.0.0',
+      description='Python binding for SRI Language Modeling Toolkit implemented in Cython',
+      author='Yi Su',
+      author_email='nuance1979@hotmail.com',
+      license='MIT',
+      packages=['srilm'],
+      ext_package='srilm',
+      ext_modules=cythonize(modules, annotate=True),
+      script_args=copy_args)
