@@ -5,6 +5,9 @@ all: build test
 build: srilm/*.pyx srilm/*.pxd
 	python2.7 setup.py build_ext --inplace --srilm-option $(OPTION)
 
+egg: build
+	python2.7 setup.py bdist_egg
+
 docs:
 	sphinx-apidoc -f -o doc/ srilm/
 	cd doc; make html; cd -
