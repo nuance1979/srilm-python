@@ -60,7 +60,7 @@ for n, s in module_dict.items():
                                  '../lib/%s/libz.a' % lib_path]))
 
 setup(name='srilm',
-      version='1.0.0',
+      version='2.0.0',
       description='Python binding for SRI Language Modeling Toolkit implemented in Cython',
       author='Yi Su',
       author_email='nuance1979@hotmail.com',
