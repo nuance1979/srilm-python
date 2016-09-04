@@ -6,7 +6,7 @@
 Welcome to SRILM Python Binding's documentation!
 ================================================
 
-This project aims to bring the power of the SRILM Toolkit to Python. 
+This project aims to bring the power of the SRILM Toolkit to Python 3. 
 
 Instead of faithfully wrapping SRILM C++ classes, we create a new set of APIs to give them a Pythonic look-and-feel 
 while preserving the raw power of SRILM Toolkit as much as possible. In the process, we also try to 'smooth away' 
@@ -15,6 +15,7 @@ some of the idiosyncrasies of the SRILM APIs.
 DEPENDENCIES
 ------------
 
+* `Python 3 <http://www.python.org>`_ >= 3.5.2
 * `SRI LM Toolkit <http://www.speech.sri.com/projects/srilm>`_ >= 1.7.1
 * `liblbfgs <http://www.chokkan.org/software/liblbfgs>`_ >= 1.10 (for MaxEnt LM)
 * `Cython <http://cython.org>`_ >= 0.20.1
@@ -57,7 +58,7 @@ If you specified build options in your SRILM build, then use the same option aga
 
 You might need to specify your library and/or include pathes by editing either setup.py or Makefile. Note that there are '--include-dirs' and '--library-dirs' options for 'python setup.py build_ext'. See usage by::
 
-  $ python ./setup.py build_ext --help
+  $ python3 ./setup.py build_ext --help
 
 
 EXAMPLES
@@ -65,21 +66,21 @@ EXAMPLES
 
 If successful, you can take a look at the example script::
 
-  $ python ./example.py --help
+  $ ./example.py --help
 
 Or try it interactively by::
 
-  $ python
+  $ python3
   ...
   >>> import srilm
 
 I also included a shell script calling SRILM command line tools corresponding to the example.py script::
   
-  $ bash ./example.sh
+  $ ./example.sh
 
 As a sanity check, here are the output of example.sh with the WSJ portion of Penn Treebank with the 'industry standard' split and preprocessing::
 
-  $ bash ./example.sh 3 wsj/dict wsj/text.00-20 wsj/text.21-22 wsj/text.23-24 2>/dev/null
+  $ ./example.sh 3 wsj/dict wsj/text.00-20 wsj/text.21-22 wsj/text.23-24 2>/dev/null
   Ngram LM with Good-Turing discount:
   file /home/yisu/Work/data/wsj/text.23-24: 3761 sentences, 78669 words, 0 OOVs
   0 zeroprobs, logprob= -182850 ppl= 165.292 ppl1= 211.009
@@ -101,7 +102,7 @@ As a sanity check, here are the output of example.sh with the WSJ portion of Pen
 
 And for example.py::
 
-  $ python example.py --order 3 --vocab wsj/dict --train wsj/text.00-20 --heldout text.21-22 --test text.23-24 2>/dev/null
+  $ ./example.py --order 3 --vocab wsj/dict --train wsj/text.00-20 --heldout wsj/text.21-22 --test wsj/text.23-24 2>/dev/null
   Ngram LM with Good-Turing discount: logprob = -182850.498553 denom = 82430.0 ppl = 165.291999209
   Ngram LM with Witten-Bell discount: logprob = -183186.586563 denom = 82430.0 ppl = 166.851104561
   Ngram LM with Kneser-Ney discount: logprob = -179527.687043 denom = 82430.0 ppl = 150.64028419
