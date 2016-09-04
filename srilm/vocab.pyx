@@ -5,12 +5,13 @@ Module dealing with vocabulary
 from cython.operator cimport dereference as deref
 from cpython cimport array
 
+
 cdef class Vocab:
     """A Vocabulary manages a mapping between word string and word index"""
-    def __cinit__(self, bint unk_is_word = True):
+    def __cinit__(self, bint unk_is_word=True):
         self.thisptr = new c_vocab.Vocab()
         cdef Boolean *b = &self.thisptr.unkIsWord()
-        b[0] = unk_is_word # very important
+        b[0] = unk_is_word  # very important
 
     def __dealloc__(self):
         del self.thisptr

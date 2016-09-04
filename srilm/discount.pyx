@@ -4,20 +4,21 @@ Module contains garden variety of ngram discounting methods
 
 from cython.operator cimport dereference as deref
 
+
 cdef class Discount:
     """Hold parameters for Ngram discount/smoothing method
 
-    Note that you need one Discount() obj for each ngram order. If Discount.discount 
+    Note that you need one Discount() obj for each ngram order. If Discount.discount
     is provided, it will be used in Lm.train(); otherwise, it will be set with the
     estimated value.
     """
-    def __cinit__(self, method = None, discount = None, interpolate=None, min_count = None, max_count = None):
+    def __cinit__(self, method=None, discount=None, interpolate=None, min_count=None, max_count=None):
         self.method = None
         if method is not None:
             if method in ['kneser-ney', 'good-turing', 'witten-bell', 'chen-goodman', 'absolute', 'additive', 'natural']:
                 self.method = method
             else:
-                raise ValueError('Unknown smoothing method: '+ method)
+                raise ValueError('Unknown smoothing method: %s' % method)
         self._set_default()
         if discount is not None:
             if self.method == 'good-turing':
@@ -95,7 +96,7 @@ cdef class Discount:
             self.discount = (<KneserNey *>self.thisptr).lowerOrderWeight(1, 1, 0, 0)
         elif self.method == 'good-turing':
             self.discount = []
-            for i in range(self.min_count, self.max_count+1):
+            for i in range(self.min_count, self.max_count + 1):
                 self.discount.append((<GoodTuring *>self.thisptr).discount(i, 0, 0))
         elif self.method == 'witten-bell':
             self.discount = None
@@ -126,7 +127,6 @@ cdef class Discount:
                 'discount': self.discount,
                 'interpolate': self.interpolate,
                 'min_count': self.min_count,
-                'max_count': self.max_count
-        }
+                'max_count': self.max_count}
         with open(fname, 'wb') as fout:
             pickle.dump(data, fout, 2)

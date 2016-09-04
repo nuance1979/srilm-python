@@ -9,16 +9,18 @@ from stats cimport Stats
 from common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, _fill_buffer_with_array, _create_array_from_buffer
 from vocab cimport Vocab
 
+
 cdef tuple _compute_ppl(TextStats *tsptr):
     cdef LogP2 prob = tsptr.prob
     cdef double denom = tsptr.numWords - tsptr.numOOVs - tsptr.zeroProbs + tsptr.numSentences
     cdef Prob ppl = LogPtoPPL(prob / denom) if denom > 0 else float('NaN')
     return (prob, denom, ppl)
 
+
 cdef class Lm:
     """Base class to share common code and to encourage uniform interface"""
     def __cinit__(self, Vocab v, unsigned order, *args, **kwargs):
-        self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
+        self.keysptr = <VocabIndex *>PyMem_Malloc((order + 1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
         self._vocab = v
@@ -39,7 +41,7 @@ cdef class Lm:
     def prob(self, VocabIndex word, context):
         """Compute log probability of p(word | context)
 
-        Note that the context is an ngram context in reverse order, 
+        Note that the context is an ngram context in reverse order,
         i.e., if the text is ... w_0 w_1 w_2 ..., then this function computes p(w_2 | w_1, w_0)
         and 'context' should be (w_1, w_0), *not* (w_0, w_1).
         """
@@ -58,8 +60,8 @@ cdef class Lm:
         cdef VocabIndex word = ngram[-1]
         context = ngram[:-1].reverse()
         return self.prob(word, context)
-    
-    def read(self, fname, Boolean limitVocab = False, binary = False):
+
+    def read(self, fname, Boolean limitVocab=False, binary=False):
         """Read the language model from a file"""
         mode = b'rb' if binary else b'r'
         cdef File *fptr = new File(fname.encode(), mode, 0)
@@ -71,7 +73,7 @@ cdef class Lm:
         del fptr
         return ok
 
-    def write(self, fname, binary = False):
+    def write(self, fname, binary=False):
         """Write the language model to a file"""
         mode = b'wb' if binary else b'w'
         cdef File *fptr = new File(fname.encode(), mode, 0)
@@ -156,10 +158,10 @@ cdef class Lm:
 
     def rand_gen(self, unsigned max_word):
         """Generate a random sentence of word indices from the language model"""
-        cdef VocabIndex *sent = <VocabIndex *>PyMem_Malloc((max_word+1) * sizeof(VocabIndex))
+        cdef VocabIndex *sent = <VocabIndex *>PyMem_Malloc((max_word + 1) * sizeof(VocabIndex))
         if sent == NULL:
             raise MemoryError
-        sent[max_word] = Vocab_None # sentinel
+        sent[max_word] = Vocab_None  # sentinel
         self.lmptr.generateSentence(max_word, sent, NULL)
         cdef unsigned sent_len = self._vocab.thisptr.length(sent)
         a = _create_array_from_buffer(sent_len, sent)
@@ -167,13 +169,14 @@ cdef class Lm:
         PyMem_Free(sent)
         return res
 
-    def serve(self, unsigned port, unsigned max_client = 0):
+    def serve(self, unsigned port, unsigned max_client=0):
         """Start a language model server"""
         return self.lmptr.probServer(port, max_client)
 
+
 cdef class ClientLm(Lm):
     """Client-side language model"""
-    def __cinit__(self, Vocab v, unsigned order, server, unsigned cache_order = 0):
+    def __cinit__(self, Vocab v, unsigned order, server, unsigned cache_order=0):
         self.thisptr = new LMClient(deref(v.thisptr), server.encode(), order, cache_order)
         if self.thisptr == NULL:
             raise MemoryError

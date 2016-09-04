@@ -11,15 +11,16 @@ from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
 from common cimport _create_array_from_buffer
 
+
 cdef class Lm(base.Lm):
     """Ngram language model"""
-    def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
+    def __cinit__(self, Vocab v, unsigned order=defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
         self.thisptr = new Ngram(deref(v.thisptr), order)
         if self.thisptr == NULL:
             raise MemoryError
-        self.lmptr = <base.LM *>self.thisptr # to use shared methods
+        self.lmptr = <base.LM *>self.thisptr  # to use shared methods
         self.dlistptr = <c_discount.Discount **>PyMem_Malloc(order * sizeof(c_discount.Discount *))
         if self.dlistptr == NULL:
             raise MemoryError
@@ -47,20 +48,20 @@ cdef class Lm(base.Lm):
         if d.thisptr == NULL:
             raise ValueError('Corrupted Discount object')
         self.dlistptr[order - 1] = d.thisptr
-        self._dlist.append(d) # keep a python reference to d
+        self._dlist.append(d)  # keep a python reference to d
 
     def train(self, Stats ts):
         """Traint the Ngram language model from ngram counts"""
         cdef int i
         for i in range(self.order):
             if self.dlistptr[i] == NULL:
-                raise RuntimeError('Discount for order %d is not set yet; use set_discount()' % i+1)
+                raise RuntimeError('Discount for order %d is not set yet; use set_discount()' % i + 1)
         for i in range(self.order):
-            if self._dlist[i].discount is None: 
-                self._dlist[i].estimate(ts, i+1)
+            if self._dlist[i].discount is None:
+                self._dlist[i].estimate(ts, i + 1)
         return self.thisptr.estimate(deref(ts.thisptr), self.dlistptr)
 
-    def prune(self, double threshold, unsigned min_order = 2, base.Lm history_lm = None):
+    def prune(self, double threshold, unsigned min_order=2, base.Lm history_lm=None):
         """Prune the Ngram language model with Entropy-based pruning, aka, Stolcke pruning"""
         if history_lm is None:
             self.thisptr.pruneProbs(threshold, min_order, NULL)
@@ -83,9 +84,10 @@ cdef class Lm(base.Lm):
     def __iter__(self):
         return self.iter(self.order - 1)
 
+
 cdef LmIterContext _create_iter_context(Ngram *lmptr, unsigned int order):
     it = LmIterContext()
-    it.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex)) # iterator should manage its own buffer
+    it.keysptr = <VocabIndex *>PyMem_Malloc((order + 1) * sizeof(VocabIndex))  # iterator should manage its own buffer
     if it.keysptr == NULL:
         raise MemoryError
     it.iterptr = new NgramBOsIter(deref(lmptr), it.keysptr, order, NULL)
@@ -93,6 +95,7 @@ cdef LmIterContext _create_iter_context(Ngram *lmptr, unsigned int order):
         raise MemoryError
     it._iter_order = order
     return it
+
 
 cdef class LmIterContext:
     """LM context iterator"""
@@ -112,12 +115,14 @@ cdef class LmIterContext:
             h = _create_iter_prob(p)
             return (keys, h)
 
+
 cdef LmIterProb _create_iter_prob(BOnode *p):
     it = LmIterProb()
     it.iterptr = new NgramProbsIter(deref(p), NULL)
     if it.iterptr == NULL:
         raise MemoryError
     return it
+
 
 cdef class LmIterProb:
     """LM probability iterator"""
@@ -126,7 +131,7 @@ cdef class LmIterProb:
 
     def __iter__(self):
         return self
-    
+
     def __next__(self):
         cdef VocabIndex word = 0
         cdef LogP *p = self.iterptr.next(word)
@@ -135,20 +140,21 @@ cdef class LmIterProb:
         else:
             return (word, deref(p))
 
+
 cdef class CountLm(base.Lm):
     """Ngram language model with deleted interpolation, a.k.a. Jelinek-Mercer smoothing"""
-    def __cinit__(self, Vocab v, unsigned order = defaultNgramOrder):
+    def __cinit__(self, Vocab v, unsigned order=defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
         self.thisptr = new NgramCountLM(deref(v.thisptr), order)
         if self.thisptr == NULL:
             raise MemoryError
-        self.lmptr = <base.LM *>self.thisptr # to use shared methods
+        self.lmptr = <base.LM *>self.thisptr  # to use shared methods
 
     def __dealloc__(self):
         del self.thisptr
 
-    def train(self, Stats train, Stats heldout, max_iter = 100, min_delta = 0.001):
+    def train(self, Stats train, Stats heldout, max_iter=100, min_delta=0.001):
         """Train the Jelinek-Mercer-smoothed ngram language model from ngram counts
 
         Note that you *need* to use a different, usually much smaller, heldout ngram counts
@@ -187,9 +193,10 @@ counts {3}
         os.remove(fcname)
         return ok
 
+
 cdef class SimpleClassLm(base.Lm):
     """Simple bigram class-based language model, where a word belongs to a unique class"""
-    def __cinit__(self, Vocab v, unsigned order = 2):
+    def __cinit__(self, Vocab v, unsigned order=2):
         if order != 2:
             raise ValueError('Invalid order; expect 2')
         self._class_vocab_ptr = new SubVocab(deref(v.thisptr), False)
@@ -198,7 +205,7 @@ cdef class SimpleClassLm(base.Lm):
         self.thisptr = new SimpleClassNgram(deref(v.thisptr), deref(self._class_vocab_ptr), order)
         if self.thisptr == NULL:
             raise MemoryError
-        self.lmptr = <base.LM *>self.thisptr # to use shared methods
+        self.lmptr = <base.LM *>self.thisptr  # to use shared methods
 
     def __dealloc__(self):
         del self._class_vocab_ptr
@@ -236,14 +243,15 @@ cdef class SimpleClassLm(base.Lm):
         cdef int i
         for i in range(2):
             d = Discount(method='kneser-ney')
-            d.estimate(ts, i+1)
+            d.estimate(ts, i + 1)
             dlistptr[i] = d.thisptr
-            d.thisptr = NULL # transfer ownership
+            d.thisptr = NULL  # transfer ownership
         b = (<Ngram *>self.thisptr).estimate(deref(ts.thisptr), dlistptr)
         for i in range(2):
             del dlistptr[i]
         PyMem_Free(dlistptr)
         return b
+
 
 cdef class CacheLm(base.Lm):
     """Unigram cache language model"""
@@ -253,11 +261,11 @@ cdef class CacheLm(base.Lm):
         self.thisptr = new CacheLM(deref(v.thisptr), historyLength)
         if self.thisptr == NULL:
             raise MemoryError
-        self.lmptr = <base.LM *>self.thisptr 
+        self.lmptr = <base.LM *>self.thisptr
         self._length = historyLength
         self._order = 1
-        self.running = True # very important and easy to miss
-        
+        self.running = True  # very important and easy to miss
+
     def __dealloc__(self):
         del self.thisptr
 

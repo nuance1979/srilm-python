@@ -9,19 +9,20 @@ from vocab cimport Vocab
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from common cimport _fill_buffer_with_array, _create_array_from_buffer
 
+
 cdef class Stats:
     """Ngram counts stored in a trie"""
-    def __cinit__(self, Vocab v, unsigned int order, open_vocab = False, add_bos = True, add_eos = True):
+    def __cinit__(self, Vocab v, unsigned int order, open_vocab=False, add_bos=True, add_eos=True):
         self.thisptr = new NgramStats(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
             raise MemoryError
-        self.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex))
+        self.keysptr = <VocabIndex *>PyMem_Malloc((order + 1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
             raise MemoryError
-        self.thisptr.openVocab = open_vocab # very important and easy to miss!!!
-        self.thisptr.addSentStart = add_bos # turn it on explicitly
-        self.thisptr.addSentEnd = add_eos # ditto
-        self._vocab = v # keep a python reference to vocab
+        self.thisptr.openVocab = open_vocab  # very important and easy to miss!!!
+        self.thisptr.addSentStart = add_bos  # turn it on explicitly
+        self.thisptr.addSentEnd = add_eos  # ditto
+        self._vocab = v  # keep a python reference to vocab
 
     def __dealloc__(self):
         PyMem_Free(self.keysptr)
@@ -55,7 +56,7 @@ cdef class Stats:
             b = self.thisptr.removeCount(self.keysptr, &count)
             return count if b else 0
 
-    def read(self, fname, binary = False):
+    def read(self, fname, binary=False):
         """Read counts from a file"""
         mode = b'rb' if binary else b'r'
         cdef File *fptr = new File(fname.encode(), mode, 0)
@@ -67,7 +68,7 @@ cdef class Stats:
         del fptr
         return ok
 
-    def write(self, fname, binary = False):
+    def write(self, fname, binary=False):
         """Write counts to a file"""
         mode = b'wb' if binary else b'w'
         cdef File *fptr = new File(fname.encode(), mode, 0)
@@ -105,13 +106,13 @@ cdef class Stats:
         """Count a list of strings"""
         words = string.encode().split()
         cdef Py_ssize_t slen = len(words)
-        cdef VocabString *buff = <VocabString *>PyMem_Malloc((slen+1) * sizeof(VocabString))
+        cdef VocabString *buff = <VocabString *>PyMem_Malloc((slen + 1) * sizeof(VocabString))
         if buff == NULL:
             raise MemoryError
         cdef Py_ssize_t i
         for i in range(slen):
             buff[i] = words[i]
-        buff[slen] = NULL # another different ending convention!!!
+        buff[slen] = NULL  # another different ending convention!!!
         cdef unsigned int c = self.thisptr.countSentence(buff)
         PyMem_Free(buff)
         return c
@@ -135,7 +136,7 @@ cdef class Stats:
         cdef NgramCount c
         cdef unsigned int i
         for i in range(self.order):
-            for w, c in self.iter(i+1):
+            for w, c in self.iter(i + 1):
                 s[w] = c
         return s
 
@@ -196,12 +197,13 @@ cdef class Stats:
     def iter(self, unsigned int order):
         """Iterate through ngrams of a certain order"""
         if order < 1 or order > self.order:
-            raise ValueError('Invalid order')        
+            raise ValueError('Invalid order')
         return _create_stats_iter(self.thisptr, order)
+
 
 cdef StatsIter _create_stats_iter(NgramStats *statsptr, unsigned int order):
     it = StatsIter()
-    it.keysptr = <VocabIndex *>PyMem_Malloc((order+1) * sizeof(VocabIndex)) # iterator should manage its own buffer
+    it.keysptr = <VocabIndex *>PyMem_Malloc((order + 1) * sizeof(VocabIndex))  # iterator should manage its own buffer
     if it.keysptr == NULL:
         raise MemoryError
     it.iterptr = new NgramsIter(deref(statsptr), it.keysptr, order, NULL)
@@ -209,13 +211,14 @@ cdef StatsIter _create_stats_iter(NgramStats *statsptr, unsigned int order):
         raise MemoryError
     it._iter_order = order
     return it
- 
+
+
 cdef class StatsIter:
     """Ngram stats iterator"""
     def __dealloc__(self):
         PyMem_Free(self.keysptr)
         del self.iterptr
-    
+
     def __iter__(self):
         return self
 
