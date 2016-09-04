@@ -21,4 +21,4 @@ check-style:
 
 clean:
 	python3 setup.py clean
-	-rm -rf srilm/*.cpp srilm/*.so srilm/*.html build dist
+	-rm -rf srilm/*.cpp srilm/*.so srilm/*.html build dist srilm.egg-info
