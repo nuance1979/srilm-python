@@ -35,9 +35,9 @@ cdef class Vocab:
         def __get__(self):
             return self.thisptr.pauseIndex()
 
-    def add(self, VocabString token):
+    def add(self, token):
         """Add a word with an interned index"""
-        return self.thisptr.addWord(token)
+        return self.thisptr.addWord(token.encode())
 
     def get(self, key):
         """Get the index of a string or the string of an index"""
@@ -47,18 +47,18 @@ cdef class Vocab:
         """Remove a word by string or index"""
         self.__delitem__(key)
 
-    def read(self, const char *fname):
+    def read(self, fname):
         """Read vocabulary from a file"""
         cdef File *fptr
-        fptr = new File(fname, 'r', 0)
+        fptr = new File(fname.encode(), 'r', 0)
         cdef bint ok = self.thisptr.read(deref(fptr))
         del fptr
         return ok
 
-    def write(self, const char *fname):
+    def write(self, fname):
         """Write vocabulary to a file"""
         cdef File *fptr
-        fptr = new File(fname, 'w', 0)
+        fptr = new File(fname.encode(), 'w', 0)
         self.thisptr.write(deref(fptr))
         del fptr
 
@@ -68,7 +68,8 @@ cdef class Vocab:
         res = array('I', [])
         cdef VocabIndex index
         for w in words:
-            index = self.thisptr.getIndex(<VocabString>w, self.thisptr.unkIndex())
+            wb = w.encode()
+            index = self.thisptr.getIndex(<VocabString>wb, self.thisptr.unkIndex())
             res.append(index)
         return res
 
@@ -81,7 +82,7 @@ cdef class Vocab:
             word = self.thisptr.getWord(i)
             if word == NULL:
                 raise IndexError('Out of vocabulary index')
-            res.append(word)
+            res.append(word.decode())
         return res
 
     def __iter__(self):
@@ -98,32 +99,37 @@ cdef class Vocab:
             del self.iterptr
             raise StopIteration
         else:
-            return (<bytes>s, index)
+            sb = <bytes>s
+            return (sb.decode(), index)
 
-    def __contains__(self, VocabString token):
-        return self.thisptr.getIndex(token) != c_vocab.Vocab_None
+    def __contains__(self, token):
+        tokenb = token.encode()
+        return self.thisptr.getIndex(<VocabString>tokenb) != c_vocab.Vocab_None
 
     def __getitem__(self, key):
         """Get the index of a string or the string of an index"""
         cdef VocabString word
         cdef VocabIndex index
-        if isinstance(key, basestring):
-            index = self.thisptr.getIndex(<VocabString>key)
+        if isinstance(key, str):
+            keyb = key.encode()
+            index = self.thisptr.getIndex(<VocabString>keyb)
             return None if index == c_vocab.Vocab_None else index
         elif isinstance(key, (int, long)):
             word = self.thisptr.getWord(key)
-            return None if word == NULL else <bytes>word
+            wordb = <bytes>word
+            return None if word == NULL else wordb.decode()
         else:
-            raise TypeError('Expect string or int')
+            raise TypeError('Expect str or int')
 
     def __delitem__(self, key):
         """Remove a word by string or index"""
-        if isinstance(key, basestring):
-            self.thisptr.remove(<VocabString>key)
+        if isinstance(key, str):
+            keyb = key.encode()
+            self.thisptr.remove(<VocabString>keyb)
         elif isinstance(key, (int, long)):
             self.thisptr.remove(<VocabIndex>key)
         else:
-            raise TypeError('Expect string or int')
+            raise TypeError('Expect str or int')
 
     def __len__(self):
         """Get the number of words in the vocabulary"""

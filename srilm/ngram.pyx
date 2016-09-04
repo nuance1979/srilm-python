@@ -204,37 +204,36 @@ cdef class SimpleClassLm(base.Lm):
         del self._class_vocab_ptr
         del self.thisptr
 
-    def read_class(self, const char *fname):
+    def read_class(self, fname):
         """Read class definition from a file
 
         In fact, the file defines a unigram language model of p(w | c).
         """
-        cdef File *fptr = new File(fname, 'r', 0)
+        cdef File *fptr = new File(fname.encode(), b'r', 0)
         if fptr == NULL:
             raise MemoryError
         ok = self.thisptr.readClasses(deref(fptr))
         del fptr
         return ok
 
-    def write_class(self, const char *fname):
+    def write_class(self, fname):
         """Write class definition to a file
 
         In fact, the file defines a unigram language model of p(w | c).
         """
-        cdef File *fptr = new File(fname, 'w', 0)
+        cdef File *fptr = new File(fname.encode(), b'w', 0)
         if fptr == NULL:
             raise MemoryError
         self.thisptr.writeClasses(deref(fptr))
         del fptr
 
-    def train(self, const char *classes, const char *class_counts):
+    def train(self, classes, class_counts):
         """Train the simple class-based language model from bigram class counts and class definition"""
         self.read_class(classes)
-        cdef Stats ts = Stats(self._vocab, 2)
+        ts = Stats(self._vocab, 2)
         ts.read(class_counts)
         cdef c_discount.Discount **dlistptr = <c_discount.Discount **>PyMem_Malloc(2 * sizeof(c_discount.Discount *))
         cdef int i
-        cdef Discount d
         for i in range(2):
             d = Discount(method='kneser-ney')
             d.estimate(ts, i+1)

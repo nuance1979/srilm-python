@@ -11,16 +11,16 @@ if '--srilm-option' in copy_args:
     val = copy_args.pop(ind)
     srilm_option = "" if val == "null" else val
 
-machine_type = subprocess.check_output(["/bin/bash", "../sbin/machine-type"]).strip()
+machine_type = subprocess.check_output(["/bin/bash", "../sbin/machine-type"]).strip().decode('ascii')
 lib_path = machine_type + srilm_option
 
+lib_dirs = []
+compile_args = None
+link_args = None
 if machine_type == 'i686-m64':
     compile_args = ['-fopenmp']
     link_args = ['-fopenmp']
-    lib_dirs = []
 elif machine_type == 'macosx':
-    compile_args = None
-    link_args = None
     lib_dirs = ['/usr/lib', '/usr/local/lib']
 
 compact_def_macros = [('USE_SARRAY', 1), ('USE_SARRAY_TRIE', 1), ('USE_SARRAY_MAP2', 1)]
@@ -43,7 +43,7 @@ module_dict = {
     'utils': 'srilm/utils.pyx'}
 
 modules = []
-for n, s in module_dict.iteritems():
+for n, s in module_dict.items():
     modules.append(
         Extension(name=n,
                   sources=[s],

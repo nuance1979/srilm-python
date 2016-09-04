@@ -20,7 +20,7 @@ class TestVocab(unittest.TestCase):
     def test_add(self):
         self.vocab.add('xixi')
         self.assertIn('xixi', self.vocab)
-        self.assertRaises(TypeError, self.vocab.add, 123)
+        self.assertRaises(AttributeError, self.vocab.add, 123)
 
     def test_delete(self):
         del self.vocab['<s>']

@@ -55,10 +55,10 @@ cdef class Stats:
             b = self.thisptr.removeCount(self.keysptr, &count)
             return count if b else 0
 
-    def read(self, const char *fname, binary = False):
+    def read(self, fname, binary = False):
         """Read counts from a file"""
-        mode = 'rb' if binary else 'r'
-        cdef File *fptr = new File(fname, mode, 0)
+        mode = b'rb' if binary else b'r'
+        cdef File *fptr = new File(fname.encode(), mode, 0)
         if fptr == NULL:
             raise MemoryError
         elif fptr.error():
@@ -67,10 +67,10 @@ cdef class Stats:
         del fptr
         return ok
 
-    def write(self, const char *fname, binary = False):
+    def write(self, fname, binary = False):
         """Write counts to a file"""
-        mode = 'wb' if binary else 'w'
-        cdef File *fptr = new File(fname, mode, 0)
+        mode = b'wb' if binary else b'w'
+        cdef File *fptr = new File(fname.encode(), mode, 0)
         if fptr == NULL:
             raise MemoryError
         elif fptr.error():
@@ -103,7 +103,7 @@ cdef class Stats:
 
     def count_string(self, string):
         """Count a list of strings"""
-        words = string.split()
+        words = string.encode().split()
         cdef Py_ssize_t slen = len(words)
         cdef VocabString *buff = <VocabString *>PyMem_Malloc((slen+1) * sizeof(VocabString))
         if buff == NULL:
@@ -116,9 +116,9 @@ cdef class Stats:
         PyMem_Free(buff)
         return c
 
-    def count_file(self, const char *fname):
+    def count_file(self, fname):
         """Count a text file"""
-        cdef File *fptr = new File(fname, 'r', 0)
+        cdef File *fptr = new File(fname.encode(), b'r', 0)
         if fptr.error():
             raise IOError
         cdef unsigned int c = self.thisptr.countFile(deref(fptr))

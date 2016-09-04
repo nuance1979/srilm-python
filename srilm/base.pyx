@@ -59,10 +59,10 @@ cdef class Lm:
         context = ngram[:-1].reverse()
         return self.prob(word, context)
     
-    def read(self, const char *fname, Boolean limitVocab = False, binary = False):
+    def read(self, fname, Boolean limitVocab = False, binary = False):
         """Read the language model from a file"""
-        mode = 'rb' if binary else 'r'
-        cdef File *fptr = new File(fname, mode, 0)
+        mode = b'rb' if binary else b'r'
+        cdef File *fptr = new File(fname.encode(), mode, 0)
         if fptr == NULL:
             raise MemoryError
         elif fptr.error():
@@ -71,10 +71,10 @@ cdef class Lm:
         del fptr
         return ok
 
-    def write(self, const char *fname, binary = False):
+    def write(self, fname, binary = False):
         """Write the language model to a file"""
-        mode = 'wb' if binary else 'w'
-        cdef File *fptr = new File(fname, mode, 0)
+        mode = b'wb' if binary else b'w'
+        cdef File *fptr = new File(fname.encode(), mode, 0)
         if fptr == NULL:
             raise MemoryError
         elif fptr.error():
@@ -107,7 +107,7 @@ cdef class Lm:
 
         Returns a tuple of (log_probability, denominator, perplexity)
         """
-        cdef File *fptr = new File(fname, 'r', 0)
+        cdef File *fptr = new File(fname.encode(), b'r', 0)
         if fptr == NULL:
             raise MemoryError
         elif fptr.error():
@@ -125,7 +125,7 @@ cdef class Lm:
 
         Returns a tuple of (log_probability, denominator, perplexity)
         """
-        cdef File *fptr = new File(fname, 'r', 0)
+        cdef File *fptr = new File(fname.encode(), b'r', 0)
         if fptr == NULL:
             raise MemoryError
         elif fptr.error():
@@ -173,8 +173,8 @@ cdef class Lm:
 
 cdef class ClientLm(Lm):
     """Client-side language model"""
-    def __cinit__(self, Vocab v, unsigned order, const char *server, unsigned cache_order = 0):
-        self.thisptr = new LMClient(deref(v.thisptr), server, order, cache_order)
+    def __cinit__(self, Vocab v, unsigned order, server, unsigned cache_order = 0):
+        self.thisptr = new LMClient(deref(v.thisptr), server.encode(), order, cache_order)
         if self.thisptr == NULL:
             raise MemoryError
         self.lmptr = <LM *>self.thisptr
