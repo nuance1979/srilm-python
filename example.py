@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import argparse
 import srilm.vocab
@@ -78,17 +78,17 @@ def main(args):
     test.make_test()
     # we don't make a shared train stats because some model will change train stats during model estimation
     prob, denom, ppl = ngramLmWithGoodTuring(args.order, vocab, args.train, heldout, test)
-    print 'Ngram LM with Good-Turing discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    print('Ngram LM with Good-Turing discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl)
     prob, denom, ppl = ngramLmWithWittenBell(args.order, vocab, args.train, heldout, test)
-    print 'Ngram LM with Witten-Bell discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    print('Ngram LM with Witten-Bell discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl)
     prob, denom, ppl = ngramLmWithKneserNey(args.order, vocab, args.train, heldout, test)
-    print 'Ngram LM with Kneser-Ney discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    print('Ngram LM with Kneser-Ney discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl)
     prob, denom, ppl = ngramLmWithChenGoodman(args.order, vocab, args.train, heldout, test)
-    print 'Ngram LM with Chen-Goodman discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    print('Ngram LM with Chen-Goodman discount: logprob =', prob, 'denom =', denom, 'ppl =', ppl)
     prob, denom, ppl = ngramCountLm(args.order, vocab, args.train, heldout, test)
-    print 'Ngram LM with Jelinek-Mercer smoothing: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    print('Ngram LM with Jelinek-Mercer smoothing: logprob =', prob, 'denom =', denom, 'ppl =', ppl)
     prob, denom, ppl = maxentLm(args.order, vocab, args.train, heldout, test)
-    print 'MaxEnt LM: logprob =', prob, 'denom =', denom, 'ppl =', ppl
+    print('MaxEnt LM: logprob =', prob, 'denom =', denom, 'ppl =', ppl)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train various types of language models on the same train/heldout/test data')
