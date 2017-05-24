@@ -75,7 +75,7 @@ it was the winter of despair,
         self.assertTrue(self.lm.train(self.stats))
 
     def test_train(self):
-        self.assertAlmostEqual(self.lm.prob_ngram(self.vocab.index(['it', 'was', 'the'])), -2.5774917602539062)
+        self.assertAlmostEqual(self.lm.prob_ngram(self.vocab.index(['it', 'was', 'the'])), -0.034446828067302704)
 
     def test_test(self):
         prob, denom, ppl = self.lm.test(self.stats)
@@ -88,7 +88,7 @@ it was the winter of despair,
         lm = srilm.ngram.Lm(self.vocab, 3)
         lm.read('tests/lm.txt')
         lm.mix_lm(self.lm, 0.5)
-        self.assertAlmostEqual(lm.prob_ngram(self.vocab.index('how are you'.split())), -0.44557836651802063)
+        self.assertAlmostEqual(lm.prob_ngram(self.vocab.index('how are you'.split())), -0.34906116127967834)
 
     def test_prune(self):
         lm = srilm.ngram.Lm(self.vocab, 2)
@@ -152,7 +152,7 @@ class TestNgramCountLM(unittest.TestCase):
     def test_prob(self):
         self.assertTrue(self.lm.train(self.stats, self.heldout))
         b = self.vocab.index('it was the'.split())
-        self.assertAlmostEqual(self.lm.prob_ngram(b), -1.2050670385360718)
+        self.assertAlmostEqual(self.lm.prob_ngram(b), -0.30357399582862854)
 
     def tearDown(self):
         del self.heldout
