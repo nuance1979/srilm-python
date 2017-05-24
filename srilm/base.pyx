@@ -58,7 +58,8 @@ cdef class Lm:
            Note that this function takes ngram in its *natural* order.
         """
         cdef VocabIndex word = ngram[-1]
-        context = ngram[:-1].reverse()
+        context = ngram[:-1]
+        context.reverse()
         return self.prob(word, context)
 
     def read(self, fname, Boolean limitVocab=False, binary=False):
