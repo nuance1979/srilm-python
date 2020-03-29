@@ -34,19 +34,19 @@ else:
     def_macros = []
 
 module_dict = {
-    'vocab': 'srilm/vocab.pyx',
-    'stats': 'srilm/stats.pyx',
-    'discount': 'srilm/discount.pyx',
-    'base': 'srilm/base.pyx',
-    'ngram': 'srilm/ngram.pyx',
-    'maxent': 'srilm/maxent.pyx',
-    'utils': 'srilm/utils.pyx'}
+    'vocab': ['srilm/vocab.pyx','srilm/c_vocab.pxd'],
+    'stats': ['srilm/stats.pyx'],
+    'discount': ['srilm/discount.pyx'],
+    'base': ['srilm/base.pyx'],
+    'ngram': ['srilm/ngram.pyx'],
+    'maxent': ['srilm/maxent.pyx'],
+    'utils': ['srilm/utils.pyx']}
 
 modules = []
 for n, s in module_dict.items():
     modules.append(
         Extension(name=n,
-                  sources=[s],
+                  sources=s,
                   language='c++',
                   define_macros=[('HAVE_ZOPEN', '1')] + def_macros,
                   include_dirs=['../include'],
@@ -67,5 +67,5 @@ setup(name='srilm',
       license='MIT',
       packages=['srilm'],
       ext_package='srilm',
-      ext_modules=cythonize(modules, annotate=True),
+      ext_modules=cythonize(modules, annotate=True, language_level="3"),
       script_args=copy_args)

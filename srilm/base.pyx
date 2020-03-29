@@ -4,10 +4,10 @@ Module contains a Base LM class for subclassing and a generic client-side LM
 
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from c_vocab cimport VocabIndex, Vocab_None
-from stats cimport Stats
-from common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, _fill_buffer_with_array, _create_array_from_buffer
-from vocab cimport Vocab
+from srilm.c_vocab cimport VocabIndex, Vocab_None
+from srilm.stats cimport Stats
+from srilm.common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, _fill_buffer_with_array, _create_array_from_buffer
+from srilm.vocab cimport Vocab
 
 
 cdef tuple _compute_ppl(TextStats *tsptr):

@@ -1,6 +1,6 @@
 from libcpp cimport bool
 from cpython cimport array as c_array
-cimport c_vocab
+from srilm cimport c_vocab
 
 cdef extern from "Vocab.h":
     ctypedef unsigned int VocabIndex
