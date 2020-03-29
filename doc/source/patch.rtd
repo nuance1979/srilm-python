@@ -1,0 +1,12 @@
+130,131c130
+< .. toctree::
+<    :maxdepth: 2
+---
+> You can get usage info the Python way, e.g.,::
+133c132,135
+<    modules.rst
+---
+>   $ python3
+>   ...
+>   >>> import srilm
+>   >>> help(srilm.vocab.Vocab)

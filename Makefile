@@ -9,7 +9,7 @@ egg: build
 	python3 setup.py bdist_egg
 
 docs:
-	sphinx-apidoc -f -o doc/ srilm/
+	sphinx-apidoc -f -o doc/source srilm/
 	cd doc; make html; cd -
 
 test:

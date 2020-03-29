@@ -66,8 +66,10 @@ for n, s in module_dict.items():
                 "../lib/%s/libmisc.a" % lib_path,
                 "../lib/%s/libz.a" % lib_path,
             ],
+            cython_directives={"embedsignature": True},
         )
     )
+
 
 setup(
     name="srilm",
