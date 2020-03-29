@@ -6,6 +6,7 @@ from cython.operator cimport dereference as deref
 from srilm cimport c_discount
 from srilm.c_discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, ConstDiscount, AddSmooth, NaturalDiscount
 from srilm.stats cimport Stats
+import pickle
 
 cdef class Discount:
     """Hold parameters for Ngram discount/smoothing method
@@ -34,7 +35,7 @@ cdef class Discount:
                     for d in discount:
                         assert isinstance(d, (int, long, float))
                         self.discount.append(d)
-                except:
+                except Exception:
                     raise ValueError('Expect list of numbers for Good-Turing discount')
             elif not isinstance(discount, (int, long, float)):
                 raise ValueError('Expect a number for discount')
@@ -112,10 +113,6 @@ cdef class Discount:
 
     def read(self, fname):
         """Read discount from a file"""
-        try:
-            import cPickle as pickle
-        except:
-            import pickle
         with open(fname, 'rb') as f:
             data = pickle.load(f)
         self.method = data['method']
@@ -126,10 +123,6 @@ cdef class Discount:
 
     def write(self, fname):
         """Write discount to a file"""
-        try:
-            import cPickle as pickle
-        except:
-            import pickle
         data = {'method': self.method,
                 'discount': self.discount,
                 'interpolate': self.interpolate,

@@ -101,12 +101,12 @@ cdef class Stats:
             self.add(words[:i], 1)
         i = 0
         cdef Py_ssize_t j = self.order
-        cdef Py_ssize_t l = len(words)
-        while j <= l:
+        cdef Py_ssize_t num_words = len(words)
+        while j <= num_words:
             self.add(words[i:j], 1)
             i += 1
             j += 1
-        return l
+        return num_words
 
     def count_string(self, string):
         """Count a list of strings"""
