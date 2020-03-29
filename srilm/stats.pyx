@@ -3,15 +3,21 @@ Module for dealing with ngram counts
 """
 
 from cython.operator cimport dereference as deref
-cimport c_vocab
-from c_vocab cimport Vocab_None
-from vocab cimport Vocab
+from srilm cimport c_vocab
+from srilm.c_vocab cimport Vocab_None, VocabIndex, VocabString
+from srilm.vocab cimport Vocab
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from common cimport _fill_buffer_with_array, _create_array_from_buffer
+from srilm.common cimport _fill_buffer_with_array, _create_array_from_buffer
+from srilm.stats cimport NgramStats, NgramCount, NgramsIter
+from srilm.common cimport File, Boolean
 
 
 cdef class Stats:
     """Ngram counts stored in a trie"""
+    cdef NgramStats *thisptr
+    cdef VocabIndex *keysptr
+    cdef Vocab _vocab
+
     def __cinit__(self, Vocab v, unsigned int order, open_vocab=False, add_bos=True, add_eos=True):
         self.thisptr = new NgramStats(deref(<c_vocab.Vocab *>(v.thisptr)), order)
         if self.thisptr == NULL:
@@ -215,6 +221,10 @@ cdef StatsIter _create_stats_iter(NgramStats *statsptr, unsigned int order):
 
 cdef class StatsIter:
     """Ngram stats iterator"""
+    cdef NgramsIter *iterptr
+    cdef VocabIndex *keysptr
+    cdef unsigned int _iter_order
+
     def __dealloc__(self):
         PyMem_Free(self.keysptr)
         del self.iterptr

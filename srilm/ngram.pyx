@@ -3,17 +3,24 @@ Module contains garden variety of ngram language models
 """
 
 from cython.operator cimport dereference as deref
-cimport c_vocab
-from c_vocab cimport Vocab_None
-from vocab cimport Vocab
-from stats cimport Stats
+from srilm cimport c_vocab
+from srilm.c_vocab cimport Vocab_None, VocabIndex
+from srilm.vocab cimport Vocab
+from srilm.stats cimport Stats
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
-from common cimport _create_array_from_buffer
+from srilm.discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, Discount
+from srilm.common cimport _create_array_from_buffer, LogP, NgramCount, File
+from srilm.ngram cimport Ngram, NgramCountLM, SimpleClassNgram, CacheLM
+from srilm.ngram cimport NgramBOsIter, BOnode, NgramProbsIter, SubVocab, defaultNgramOrder
+from srilm cimport c_discount, base
 
 
 cdef class Lm(base.Lm):
     """Ngram language model"""
+    cdef Ngram *thisptr
+    cdef c_discount.Discount **dlistptr
+    cdef list _dlist
+
     def __cinit__(self, Vocab v, unsigned order=defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
@@ -99,6 +106,10 @@ cdef LmIterContext _create_iter_context(Ngram *lmptr, unsigned int order):
 
 cdef class LmIterContext:
     """LM context iterator"""
+    cdef NgramBOsIter *iterptr
+    cdef VocabIndex *keysptr
+    cdef unsigned int _iter_order
+
     def __dealloc__(self):
         del self.iterptr
         PyMem_Free(self.keysptr)
@@ -126,6 +137,8 @@ cdef LmIterProb _create_iter_prob(BOnode *p):
 
 cdef class LmIterProb:
     """LM probability iterator"""
+    cdef NgramProbsIter *iterptr
+
     def __dealloc__(self):
         del self.iterptr
 
@@ -143,6 +156,8 @@ cdef class LmIterProb:
 
 cdef class CountLm(base.Lm):
     """Ngram language model with deleted interpolation, a.k.a. Jelinek-Mercer smoothing"""
+    cdef NgramCountLM *thisptr
+
     def __cinit__(self, Vocab v, unsigned order=defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
@@ -196,6 +211,9 @@ counts {3}
 
 cdef class SimpleClassLm(base.Lm):
     """Simple bigram class-based language model, where a word belongs to a unique class"""
+    cdef SimpleClassNgram *thisptr
+    cdef SubVocab *_class_vocab_ptr
+
     def __cinit__(self, Vocab v, unsigned order=2):
         if order != 2:
             raise ValueError('Invalid order; expect 2')
@@ -255,6 +273,9 @@ cdef class SimpleClassLm(base.Lm):
 
 cdef class CacheLm(base.Lm):
     """Unigram cache language model"""
+    cdef CacheLM *thisptr
+    cdef unsigned _length
+
     def __cinit__(self, Vocab v, unsigned historyLength):
         if historyLength < 1:
             raise ValueError('Invalid history length')

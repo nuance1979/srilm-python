@@ -7,16 +7,15 @@ import os
 
 
 class TestNgramDiscount(unittest.TestCase):
-
     def setUp(self):
-        self.discount = srilm.discount.Discount(method='kneser-ney', interpolate=True)
+        self.discount = srilm.discount.Discount(method="kneser-ney", interpolate=True)
 
     def test_init(self):
-        self.assertEqual(self.discount.method, 'kneser-ney')
+        self.assertEqual(self.discount.method, "kneser-ney")
         self.assertTrue(self.discount.interpolate)
-        self.assertRaises(ValueError, srilm.discount.Discount, 'xixi-haha')
+        self.assertRaises(ValueError, srilm.discount.Discount, "xixi-haha")
         with self.assertRaises(ValueError) as cm:
-            srilm.discount.Discount(method='kneser-ney', discount='haha')
+            srilm.discount.Discount(method="kneser-ney", discount="haha")
         self.assertEqual(type(cm.exception), ValueError)
 
     def test_estimate(self):
@@ -53,6 +52,7 @@ it was the winter of despair,
     def tearDown(self):
         del self.discount
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     suite = unittest.TestLoader().loadTestsFromTestCase(TestNgramDiscount)
     unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite([suite]))

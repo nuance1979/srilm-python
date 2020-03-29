@@ -3,7 +3,9 @@ Module contains garden variety of ngram discounting methods
 """
 
 from cython.operator cimport dereference as deref
-
+from srilm cimport c_discount
+from srilm.c_discount cimport ModKneserNey, KneserNey, GoodTuring, WittenBell, ConstDiscount, AddSmooth, NaturalDiscount
+from srilm.stats cimport Stats
 
 cdef class Discount:
     """Hold parameters for Ngram discount/smoothing method
@@ -12,6 +14,11 @@ cdef class Discount:
     is provided, it will be used in Lm.train(); otherwise, it will be set with the
     estimated value.
     """
+    cdef c_discount.Discount *thisptr
+    cdef void _init_thisptr(self)
+    cdef void _get_discount(self)
+    cdef public method, discount, interpolate, min_count, max_count
+
     def __cinit__(self, method=None, discount=None, interpolate=None, min_count=None, max_count=None):
         self.method = None
         if method is not None:

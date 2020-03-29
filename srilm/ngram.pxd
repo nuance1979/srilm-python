@@ -1,10 +1,10 @@
-cimport c_vocab
-from c_vocab cimport VocabIndex, VocabString, SubVocab
-from vocab cimport Vocab
-from stats cimport NgramStats, NgramCount
-from common cimport File, LogP, Boolean, TextStats
-cimport c_discount
-cimport base
+from srilm cimport c_vocab
+from srilm.c_vocab cimport VocabIndex, VocabString, SubVocab
+from srilm.vocab cimport Vocab
+from srilm.stats cimport NgramStats, NgramCount
+from srilm.common cimport File, LogP, Boolean, TextStats
+from srilm cimport c_discount
+from srilm cimport base
 
 cdef extern from "Ngram.h":
     cdef const unsigned defaultNgramOrder
