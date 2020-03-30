@@ -1,5 +1,5 @@
 from libcpp cimport bool
-from common cimport File
+from srilm.common cimport File
 
 cdef extern from "Boolean.h":
     ctypedef bool Boolean

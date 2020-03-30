@@ -1,4 +1,4 @@
-from common cimport Boolean, NgramCount, NgramStats
+from srilm.common cimport Boolean, NgramCount, NgramStats
 
 cdef extern from "Discount.h":
     cdef cppclass Discount:

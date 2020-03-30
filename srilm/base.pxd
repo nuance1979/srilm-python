@@ -1,7 +1,7 @@
-from c_vocab cimport VocabIndex
-cimport c_vocab
-from common cimport Boolean, TextStats, File, LogP
-from vocab cimport Vocab
+from srilm.c_vocab cimport VocabIndex
+from srilm cimport c_vocab
+from srilm.common cimport Boolean, TextStats, File, LogP
+from srilm.vocab cimport Vocab
 
 cdef extern from "NgramStats.h":
     ctypedef unsigned long NgramCount

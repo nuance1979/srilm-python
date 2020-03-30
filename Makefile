@@ -9,7 +9,7 @@ egg: build
 	python3 setup.py bdist_egg
 
 docs:
-	sphinx-apidoc -f -o doc/ srilm/
+	sphinx-apidoc -f -o doc/source srilm/
 	cd doc; make html; cd -
 
 test:
@@ -17,7 +17,7 @@ test:
 
 check-style:
 	flake8 --show-source --ignore=E501 srilm/*.py tests/*.py *.py
-	flake8 --show-source --ignore=E501,E225,E901,E402 srilm/*.pyx
+	flake8 --show-source --ignore=E501,E225,E901,E402,E999 srilm/*.pyx
 
 clean:
 	python3 setup.py clean

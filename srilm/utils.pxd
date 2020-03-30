@@ -1,7 +1,7 @@
-cimport c_vocab
-from c_vocab cimport SubVocab
-from stats cimport NgramStats
-from common cimport File, Boolean
+from srilm cimport c_vocab
+from srilm.c_vocab cimport SubVocab
+from srilm.stats cimport NgramStats
+from srilm.common cimport File, Boolean
 
 cdef extern from "stdlib.h":
     cdef void srand48(long seed) # need to declare because it's not in libc.stdlib

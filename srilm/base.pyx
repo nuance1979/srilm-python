@@ -4,10 +4,12 @@ Module contains a Base LM class for subclassing and a generic client-side LM
 
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from c_vocab cimport VocabIndex, Vocab_None
-from stats cimport Stats
-from common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, _fill_buffer_with_array, _create_array_from_buffer
-from vocab cimport Vocab
+from srilm.c_vocab cimport VocabIndex, Vocab_None
+from srilm.stats cimport Stats
+from srilm.common cimport Boolean, File, LogP, Prob, LogP2, TextStats, LogPtoPPL, NgramCount
+from srilm.common cimport _fill_buffer_with_array, _create_array_from_buffer
+from srilm.vocab cimport Vocab
+from srilm.base cimport LM, LMClient
 
 
 cdef tuple _compute_ppl(TextStats *tsptr):
@@ -16,9 +18,13 @@ cdef tuple _compute_ppl(TextStats *tsptr):
     cdef Prob ppl = LogPtoPPL(prob / denom) if denom > 0 else float('NaN')
     return (prob, denom, ppl)
 
-
 cdef class Lm:
     """Base class to share common code and to encourage uniform interface"""
+    cdef LM *lmptr
+    cdef VocabIndex *keysptr
+    cdef Vocab _vocab
+    cdef unsigned int _order
+
     def __cinit__(self, Vocab v, unsigned order, *args, **kwargs):
         self.keysptr = <VocabIndex *>PyMem_Malloc((order + 1) * sizeof(VocabIndex))
         if self.keysptr == NULL:
@@ -176,6 +182,8 @@ cdef class Lm:
 
 cdef class ClientLm(Lm):
     """Client-side language model"""
+    cdef LMClient *thisptr
+
     def __cinit__(self, Vocab v, unsigned order, server, unsigned cache_order=0):
         self.thisptr = new LMClient(deref(v.thisptr), server.encode(), order, cache_order)
         if self.thisptr == NULL:

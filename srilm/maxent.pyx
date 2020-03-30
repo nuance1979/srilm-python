@@ -4,14 +4,20 @@ Module contains the Maximum Entropy Language Model
 
 from cython.operator cimport dereference as deref
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from vocab cimport Vocab
-from ngram cimport defaultNgramOrder
-from stats cimport Stats
-cimport ngram
+from srilm.vocab cimport Vocab
+from srilm.ngram cimport defaultNgramOrder, Ngram
+from srilm.stats cimport Stats, NgramStats
+from srilm cimport ngram
+from srilm.maxent cimport MEModel
+from srilm.common cimport Boolean, LogP, File
+from srilm.c_vocab cimport VocabIndex, Vocab_None
+from srilm cimport base
 
 
 cdef class Lm(base.Lm):
     """Maximum Entropy Language Model"""
+    cdef MEModel *thisptr
+
     def __cinit__(self, Vocab v, unsigned order=defaultNgramOrder):
         if order < 1:
             raise ValueError('Invalid order')
