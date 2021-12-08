@@ -4,10 +4,15 @@ Module dealing with vocabulary
 
 from cython.operator cimport dereference as deref
 from cpython cimport array
-
+from srilm.common cimport File, Boolean
+from srilm cimport c_vocab
+from srilm.c_vocab cimport VocabIndex, VocabString, VocabIter
 
 cdef class Vocab:
     """A Vocabulary manages a mapping between word string and word index"""
+    cdef c_vocab.Vocab *thisptr
+    cdef VocabIter *iterptr
+
     def __cinit__(self, bint unk_is_word=True):
         self.thisptr = new c_vocab.Vocab()
         cdef Boolean *b = &self.thisptr.unkIsWord()

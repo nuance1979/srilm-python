@@ -1,10 +1,10 @@
-from common cimport Boolean, LogP, File
-from c_vocab cimport VocabIndex, Vocab_None
-cimport c_vocab
-from stats cimport NgramStats
-from ngram cimport Ngram
-from vocab cimport Vocab
-cimport base
+from srilm.common cimport Boolean, LogP, File
+from srilm.c_vocab cimport VocabIndex, Vocab_None
+from srilm cimport c_vocab
+from srilm.stats cimport NgramStats
+from srilm.ngram cimport Ngram
+from srilm.vocab cimport Vocab
+from srilm cimport base
 
 cdef extern from "MEModel.h":
     cdef cppclass MEModel:

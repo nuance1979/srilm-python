@@ -3,7 +3,11 @@ Module contains utility functions
 """
 
 from cython.operator cimport dereference as deref
-from stats cimport Stats
+from srilm.stats cimport Stats
+from srilm.common cimport LogP2, Prob, File
+from srilm.ngram cimport SubVocab
+from srilm.utils cimport UniqueWordClasses, srand48
+from srilm.utils cimport LogPtoProb, ProbToLogP, AddLogP, SubLogP, MixLogP
 
 
 def rand_seed(long seed):
